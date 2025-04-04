@@ -1,4 +1,4 @@
-name: Publish to npm and Docker Hub
+name: Build and Publish
 
 on:
   push:
@@ -6,8 +6,10 @@ on:
       - main # Or your default branch
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
+    outputs:
+      package_version: ${{ steps.get_version.outputs.version }} # Output version for other jobs
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -15,53 +17,99 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Use Node.js 20.x or adjust as needed
-          registry-url: 'https://registry.npmjs.org/'
+          node-version: '20'
 
       - name: Install dependencies
-        run: npm ci # Use ci for cleaner installs in CI
+        run: npm ci
 
       - name: Build project
         run: npm run build
+
+      - name: Get package version
+        id: get_version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            build/
+            package.json
+            package-lock.json
+            README.md
+            Dockerfile # Include Dockerfile if needed for docker build context
+            # Add any other files needed by publish jobs
+
+  publish-npm:
+    needs: build # Depends on the build job
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' # Only run on push to main
+    steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: . # Download to current directory
+
+      # Optional: Verify downloaded files if needed
+      # - run: ls -la
 
       - name: Publish to npm
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # Docker Steps Start Here
+  publish-docker:
+    needs: build # Depends on the build job
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' # Only run on push to main
+    steps:
+      - name: Checkout repository (needed for git sha tag)
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: . # Download to current directory, overwriting local files if necessary
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-        # Needed for building multi-platform images if desired, good practice
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-        # Sets up Docker buildx for efficient building
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }} # Use password for access token
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: shtse8/filesystem-mcp # Replace with your Docker Hub username/repo
+          images: shtse8/pdf-reader-mcp # *** UPDATED IMAGE NAME ***
           tags: |
             type=schedule
             type=ref,event=branch
             type=ref,event=pr
-            type=semver,pattern={{version}} # Use package.json version
-            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{version}},value=${{ needs.build.outputs.package_version }} # Use version from build job
+            type=semver,pattern={{major}}.{{minor}},value=${{ needs.build.outputs.package_version }}
             type=sha # Add git sha tag
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: .
-          push: ${{ github.event_name != 'pull_request' }} # Only push on main branch pushes
+          context: . # Context now includes downloaded artifacts + checked out repo files
+          push: true # Already checked condition in 'if'
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
