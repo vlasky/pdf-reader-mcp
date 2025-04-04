@@ -1,9 +1,5 @@
 import { z } from 'zod';
-// Import pdfjs-dist. Need to figure out the correct import path/style for Node.js
-// Use the legacy build and try the .mjs extension, which seems more likely based on the top-level build directory.
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
-// Setting workerSrc might still be relevant depending on the exact operations, but let's see if the legacy build alone fixes DOMMatrix.
-// pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/build/pdf.worker.js'; // This might not be strictly needed for text extraction in Node, but often included in examples. Let's try without first.
 import fs from 'node:fs/promises';
 import { resolvePath } from '../utils/pathUtils.js';
 import { McpError, ErrorCode } from "@modelcontextprotocol/sdk/types.js";
@@ -30,28 +26,33 @@ const parsePageRanges = (ranges: string): number[] => {
     return Array.from(pages).sort((a, b) => a - b);
 };
 
-// Define the Zod schema (remains the same)
+// Define the schema for a single PDF source
+const PdfSourceSchema = z.object({
+    path: z.string().min(1).optional().describe("Relative path to the local PDF file."),
+    url: z.string().url().optional().describe("URL of the PDF file."),
+}).strict().refine(
+    (data) => (data.path && !data.url) || (!data.path && data.url),
+    { message: "Each source must have either 'path' or 'url', but not both." }
+);
+
+// Define the Zod schema for the consolidated tool supporting multiple sources
 const ReadPdfArgsSchema = z.object({
-  path: z.string().min(1).optional().describe("Relative path to the local PDF file."),
-  url: z.string().url().optional().describe("URL of the PDF file."),
-  include_full_text: z.boolean().optional().default(false).describe("Include the full text content of the PDF."),
-  include_metadata: z.boolean().optional().default(true).describe("Include metadata and info objects."),
-  include_page_count: z.boolean().optional().default(true).describe("Include the total number of pages."),
+  sources: z.array(PdfSourceSchema).min(1).describe("An array of PDF sources to process."),
+  include_full_text: z.boolean().optional().default(false).describe("Include the full text content of each PDF."),
+  include_metadata: z.boolean().optional().default(true).describe("Include metadata and info objects for each PDF."),
+  include_page_count: z.boolean().optional().default(true).describe("Include the total number of pages for each PDF."),
   pages: z.union([
     z.array(z.number().int().positive()).min(1),
     z.string().min(1).refine(val => /^[0-9,\-]+$/.test(val), { message: "Page string must contain only numbers, commas, and hyphens." })
-  ]).optional().describe("Extract text only from specific pages (1-based) or ranges (e.g., [1, 3, 5] or '1,3-5,7'). If provided, 'include_full_text' is ignored and output contains 'page_texts' array."),
+  ]).optional().describe("Extract text only from specific pages (1-based) or ranges (e.g., [1, 3, 5] or '1,3-5,7') for each PDF. If provided, 'include_full_text' is ignored."),
 }).strict().refine(
-    (data) => (data.path && !data.url) || (!data.path && data.url),
-    { message: "Either 'path' or 'url' must be provided, but not both." }
-).refine(
     (data) => !(data.pages && data.include_full_text),
-    { message: "Cannot request both 'pages' (specific page text) and 'include_full_text' (full document text) simultaneously. If 'pages' is provided, only text for those pages will be returned." }
+    { message: "Cannot request both 'pages' (specific page text) and 'include_full_text' (full document text) simultaneously." }
 );
 
 type ReadPdfArgs = z.infer<typeof ReadPdfArgsSchema>;
 
-// Define the handler function using pdfjs-dist
+// Define the handler function using pdfjs-dist, now handling multiple sources
 const handleReadPdfFunc = async (args: unknown) => {
   let parsedArgs: ReadPdfArgs;
   try {
@@ -64,8 +65,7 @@ const handleReadPdfFunc = async (args: unknown) => {
   }
 
   const {
-    path: relativePath,
-    url,
+    sources,
     include_full_text,
     include_metadata,
     include_page_count,
@@ -73,8 +73,6 @@ const handleReadPdfFunc = async (args: unknown) => {
   } = parsedArgs;
 
   let targetPages: number[] | undefined = undefined;
-  let pagesToProcess: number[] = []; // All pages or specific pages
-
   if (requestedPagesInput) {
       try {
           if (typeof requestedPagesInput === 'string') {
@@ -85,153 +83,125 @@ const handleReadPdfFunc = async (args: unknown) => {
           if (targetPages.length === 0 || targetPages.some(p => p <= 0)) {
               throw new Error("Page numbers must be positive integers.");
           }
-          pagesToProcess = targetPages; // Process only specified pages
       } catch (error: any) {
           throw new McpError(ErrorCode.InvalidParams, `Invalid page specification: ${error.message}`);
       }
   }
 
-  let pdfDataSource: Buffer | { url: string };
-  let sourceDescription: string = 'unknown source';
+  const results: any[] = [];
 
-  try {
-    // 1. Prepare PDF data source
-    if (relativePath) {
-      sourceDescription = `'${relativePath}'`;
-      const safePath = resolvePath(relativePath);
-      pdfDataSource = await fs.readFile(safePath);
-    } else if (url) {
-      sourceDescription = `'${url}'`;
-      // pdfjs can directly take a URL
-      pdfDataSource = { url: url };
-    } else {
-      throw new McpError(ErrorCode.InvalidParams, "Missing 'path' or 'url'.");
+  for (const source of sources) {
+    let pdfDataSource: Buffer | { url: string };
+    let sourceDescription: string = source.path ? `'${source.path}'` : (source.url ? `'${source.url}'` : 'unknown source');
+    let individualResult: any = { source: source.path ?? source.url }; // Identify which result corresponds to which source
+
+    try {
+      // 1. Prepare PDF data source for this source
+      if (source.path) {
+        const safePath = resolvePath(source.path);
+        pdfDataSource = await fs.readFile(safePath);
+      } else if (source.url) {
+        pdfDataSource = { url: source.url }; // pdfjs handles URL fetching
+      } else {
+        // Should be caught by schema validation, but good to have safeguard
+         throw new McpError(ErrorCode.InvalidParams, "Source missing 'path' or 'url'.");
+      }
+
+      // 2. Load PDF document
+      const loadingTask = pdfjsLib.getDocument(pdfDataSource);
+      // Note: Catching errors within the loop to allow processing other sources
+      const pdfDocument = await loadingTask.promise.catch((err: any) => {
+          console.error(`[PDF Reader MCP] PDF.js loading error for ${sourceDescription}:`, err);
+          throw new McpError(ErrorCode.InvalidRequest, `Failed to load PDF document. Reason: ${err?.message || 'Unknown loading error'}`, { cause: err });
+      });
+
+      // 3. Extract requested data
+      const output: any = {};
+      const totalPages = pdfDocument.numPages;
+
+      if (include_metadata) {
+          const metadata = await pdfDocument.getMetadata();
+          output.info = metadata?.info;
+          output.metadata = metadata?.metadata?.getAll();
+      }
+      if (include_page_count) {
+          output.num_pages = totalPages;
+      }
+
+      let pagesToProcess: number[] = [];
+      if (targetPages) {
+          pagesToProcess = targetPages.filter(p => p <= totalPages); // Only process valid pages for this doc
+          const invalidPages = targetPages.filter(p => p > totalPages);
+          if (invalidPages.length > 0) {
+              output.warnings = output.warnings || [];
+              output.warnings.push(`Requested page numbers ${invalidPages.join(', ')} exceed total pages (${totalPages}).`);
+          }
+      } else if (include_full_text) {
+          pagesToProcess = Array.from({ length: totalPages }, (_, i) => i + 1);
+      }
+
+      // 4. Extract text content if needed
+      const extractedPageTexts: { page: number; text: string }[] = [];
+      if (pagesToProcess.length > 0) {
+          for (const pageNum of pagesToProcess) {
+              try {
+                  const page = await pdfDocument.getPage(pageNum);
+                  const textContent = await page.getTextContent();
+                  const pageText = textContent.items.map((item: any) => item.str).join('');
+                  extractedPageTexts.push({ page: pageNum, text: pageText });
+              } catch (pageError: any) {
+                   console.warn(`[PDF Reader MCP] Error getting text content for page ${pageNum} in ${sourceDescription}: ${pageError.message}`);
+                   if (targetPages) { // Only add error text if specific pages were requested
+                      extractedPageTexts.push({ page: pageNum, text: `Error processing page: ${pageError.message}` });
+                   }
+              }
+          }
+          extractedPageTexts.sort((a, b) => a.page - b.page);
+      }
+
+      // 5. Populate output text fields
+      if (targetPages) {
+          output.page_texts = extractedPageTexts;
+          // Note: missing_pages calculation might be complex if some pages error out
+      } else if (include_full_text) {
+          output.full_text = extractedPageTexts.map(p => p.text).join('\n\n');
+      }
+
+      // Add extracted data to the individual result
+      individualResult = { ...individualResult, ...output, success: true };
+
+    } catch (error: any) {
+      // Catch errors specific to this source
+      let errorMessage = `Failed to process PDF from ${sourceDescription}.`;
+       if (error instanceof McpError) {
+           errorMessage = error.message; // Use McpError message directly
+       } else if (source.path && error.code === 'ENOENT') {
+           const safePath = resolvePath(source.path); // Resolve again for error message
+           errorMessage = `File not found at '${source.path}'. Resolved to: ${safePath}`;
+       } else if (error instanceof Error) {
+          errorMessage += ` Reason: ${error.message}`;
+       } else {
+          errorMessage += ` Unknown error: ${String(error)}`;
+       }
+       individualResult.error = errorMessage;
+       individualResult.success = false;
     }
+    results.push(individualResult);
+  } // End loop over sources
 
-    // 2. Load PDF document
-    // Disable worker thread for Node.js environment
-    const loadingTask = pdfjsLib.getDocument(pdfDataSource);
-    loadingTask.promise.catch((err: any) => { // Add type for err
-        // Catch loading errors early
-        console.error(`[PDF Reader MCP] PDF.js loading error for ${sourceDescription}:`, err);
-        // Throw a more specific error if possible, otherwise rethrow
-        throw new McpError(ErrorCode.InvalidRequest, `Failed to load PDF document from ${sourceDescription}. Reason: ${err?.message || 'Unknown loading error'}`, { cause: err });
-    });
-    const pdfDocument = await loadingTask.promise;
-
-
-    // 3. Extract requested data
-    const output: any = {};
-    const totalPages = pdfDocument.numPages;
-
-    // Get metadata if requested
-    if (include_metadata) {
-        const metadata = await pdfDocument.getMetadata();
-        // pdfjs-dist separates info and metadata differently than pdf-parse
-        output.info = metadata?.info; // Author, Creator, Dates etc.
-        output.metadata = metadata?.metadata?.getAll(); // Raw metadata stream content
-    }
-
-    // Get page count if requested
-    if (include_page_count) {
-        output.num_pages = totalPages;
-    }
-
-    // Determine which pages need text extraction
-    if (!targetPages && include_full_text) {
-        // Need all pages for full text
-        pagesToProcess = Array.from({ length: totalPages }, (_, i) => i + 1);
-    } else if (!targetPages && !include_full_text) {
-        // No text needed
-        pagesToProcess = [];
-    }
-    // If targetPages is set, pagesToProcess is already assigned
-
-    // Validate requested page numbers against total pages
-    const invalidPages = pagesToProcess.filter(p => p > totalPages);
-     if (invalidPages.length > 0) {
-        throw new McpError(ErrorCode.InvalidParams, `Requested page numbers ${invalidPages.join(', ')} exceed total pages (${totalPages}).`);
-    }
-
-
-    // 4. Extract text content if needed
-    const extractedPageTexts: { page: number; text: string }[] = [];
-    if (pagesToProcess.length > 0) {
-        for (const pageNum of pagesToProcess) {
-            try {
-                const page = await pdfDocument.getPage(pageNum);
-                const textContent = await page.getTextContent();
-                // Join items into a single string for the page
-                const pageText = textContent.items.map((item: any) => item.str).join(''); // Use empty string join for better flow? Or space? Let's try space.
-                // const pageText = textContent.items.map((item: any) => item.str).join(' ');
-                 extractedPageTexts.push({ page: pageNum, text: pageText });
-            } catch (pageError: any) {
-                 console.warn(`[PDF Reader MCP] Error getting text content for page ${pageNum}: ${pageError.message}`);
-                 // Add error entry if processing specific pages, otherwise skip for full text?
-                 if (targetPages) {
-                    extractedPageTexts.push({ page: pageNum, text: `Error processing page: ${pageError.message}` });
-                 }
-            }
-        }
-        extractedPageTexts.sort((a, b) => a.page - b.page); // Ensure order
-    }
-
-    // 5. Populate output text fields
-    if (targetPages) {
-        output.page_texts = extractedPageTexts;
-        const foundPages = extractedPageTexts.map(t => t.page);
-        const missingPages = targetPages.filter(p => !foundPages.includes(p));
-         if (missingPages.length > 0) {
-            output.missing_pages = missingPages;
-        }
-    } else if (include_full_text) {
-        // Combine text from all processed pages
-        output.full_text = extractedPageTexts.map(p => p.text).join('\n\n'); // Add double newline between pages?
-    }
-
-
-    // 6. Final checks and return
-    let resultObject = output;
-    if (Object.keys(output).length === 0) {
-        resultObject = { message: "No information requested. Set include_full_text, include_metadata, include_page_count to true or provide specific pages." };
-    }
-
-    // Format the result according to MCP CallToolResponse structure
-    return {
-        content: [{
-            type: "text",
-            text: JSON.stringify(resultObject, null, 2) // Pretty print JSON
-        }]
-    };
-
-  } catch (error: any) {
-    if (error instanceof McpError) throw error;
-
-    let errorMessage = `Failed to process PDF from ${sourceDescription}.`;
-    if (relativePath && error.code === 'ENOENT') { // Keep ENOENT check
-      const safePath = resolvePath(relativePath);
-      errorMessage = `File not found at '${relativePath}'. Resolved to: ${safePath}`;
-    } else if (error instanceof Error) {
-       errorMessage += ` Reason: ${error.message}`;
-    } else {
-       errorMessage += ` Unknown error: ${String(error)}`;
-    }
-    // Check for specific pdfjs errors if possible
-    if (error?.name === 'PasswordException') {
-         throw new McpError(ErrorCode.InvalidRequest, `PDF from ${sourceDescription} is password protected.`, { cause: error });
-    }
-     if (error?.name === 'InvalidPDFException') {
-         throw new McpError(ErrorCode.InvalidRequest, `Invalid or corrupted PDF document from ${sourceDescription}.`, { cause: error });
-    }
-
-    throw new McpError(ErrorCode.InternalError, errorMessage, { cause: error });
-  }
+  // Format the final result containing the array of individual results
+  return {
+      content: [{
+          type: "text",
+          text: JSON.stringify({ results }, null, 2) // Wrap the array in a 'results' key
+      }]
+  };
 };
 
 // Export the consolidated ToolDefinition
 export const readPdfToolDefinition: ToolDefinition = {
   name: 'read_pdf',
-  description: 'Reads content, metadata, or page count from a PDF file (local or URL) using pdfjs-dist, controlled by parameters.',
+  description: 'Reads content, metadata, or page count from one or more PDF files (local or URL) using pdfjs-dist, controlled by parameters.',
   schema: ReadPdfArgsSchema,
   handler: handleReadPdfFunc,
 };

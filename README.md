@@ -89,55 +89,68 @@ This server provides a single, powerful tool: `read_pdf`.
 - **Description:** Reads content, metadata, or page count from a PDF file (local
   or URL), controlled by parameters.
 - **Input:** An object containing:
-  - `path` (string, optional): Relative path to the local PDF file.
-  - `url` (string, optional): URL of the PDF file.
-  - **Note:** Exactly one of `path` or `url` must be provided.
+  - `sources` (array): **Required.** An array of source objects. Each object
+    must contain _either_ `path` (string, relative path to local PDF) _or_ `url`
+    (string, URL of PDF).
   - `include_full_text` (boolean, optional, default `false`): Include the full
-    text content. Ignored if `pages` is provided.
+    text content for each PDF. Ignored if `pages` is provided.
   - `include_metadata` (boolean, optional, default `true`): Include metadata
-    (`info` and `metadata` objects).
+    (`info` and `metadata` objects) for each PDF.
   - `include_page_count` (boolean, optional, default `true`): Include the total
-    number of pages (`num_pages`).
+    number of pages (`num_pages`) for each PDF.
   - `pages` (string | number[], optional): Extract text only from specific pages
-    (1-based) or ranges (e.g., `[1, 3, 5]` or `'1,3-5,7'`). If provided, output
-    contains `page_texts` array instead of `full_text`.
-- **Output:** An object containing the requested information, e.g.:
-  - `full_text` (string, if `include_full_text` is true and `pages` is not
-    provided)
-  - `page_texts` (array of `{ page: number, text: string }`, if `pages` is
-    provided)
-  - `missing_pages` (array of numbers, if `pages` was provided and some were not
-    found/rendered)
-  - `info` (object, if `include_metadata` is true)
-  - `metadata` (object, if `include_metadata` is true)
-  - `num_pages` (number, if `include_page_count` is true)
-  - `message` (string, if no information was requested)
+    (1-based) or ranges (e.g., `[1, 3, 5]` or `'1,3-5,7'`) for each PDF. If
+    provided, output contains `page_texts` array instead of `full_text`.
+- **Output:** An object containing a `results` array. Each element corresponds
+  to a source in the input `sources` array and has the following structure:
+  - `source` (string): The original path or URL.
+  - `success` (boolean): True if processing succeeded, false otherwise.
+  - `error` (string, optional): Error message if `success` is false.
+  - `data` (object, optional): Contains the extracted data if `success` is true:
+    - `full_text` (string, optional)
+    - `page_texts` (array, optional): Array of `{ page: number, text: string }`.
+    - `missing_pages` (array, optional)
+    - `info` (object, optional)
+    - `metadata` (object, optional)
+    - `num_pages` (number, optional)
+    - `warnings` (array, optional) **Example Usage:**
 
-**Example Usage:**
-
-1. **Get metadata and page count (default):**
-   ```json
-   { "path": "report.pdf" }
-   ```
-   _(Output: `{ "info": {...}, "metadata": {...}, "num_pages": 10 }`)_
-
-2. **Get full text:**
+1. **Get metadata and page count for multiple files:**
    ```json
    {
-     "url": "http://example.com/document.pdf",
+     "sources": [
+       { "path": "report.pdf" },
+       { "url": "http://example.com/another.pdf" },
+       { "path": "nonexistent.pdf" }
+     ]
+   }
+   ```
+   _(Example Output:
+   `{ "results": [ { "source": "report.pdf", "success": true, "data": { "info": {...}, "metadata": {...}, "num_pages": 10 } }, { "source": "http://example.com/another.pdf", "success": true, "data": { "info": {...}, "metadata": {...}, "num_pages": 5 } }, { "source": "nonexistent.pdf", "success": false, "error": "File not found..." } ] }`)_
+
+2. **Get full text for one file:**
+   ```json
+   {
+     "sources": [{ "url": "http://example.com/document.pdf" }],
      "include_full_text": true,
      "include_metadata": false,
      "include_page_count": false
    }
    ```
-   _(Output: `{ "full_text": "..." }`)_
+   _(Example Output:
+   `{ "results": [ { "source": "http://example.com/document.pdf", "success": true, "data": { "full_text": "..." } } ] }`)_
 
-3. **Get text from pages 1 and 3-5:**
+3. **Get text from pages 1 and 3-5 for one file (excluding defaults):**
    ```json
-   { "path": "manual.pdf", "pages": "1,3-5" }
+   {
+     "sources": [{ "path": "manual.pdf" }],
+     "pages": "1,3-5",
+     "include_metadata": false,
+     "include_page_count": false
+   }
    ```
-   _(Output:
-   `{ "page_texts": [ { "page": 1, "text": "..." }, { "page": 3, "text": "..." }, ... ], "info": {...}, "metadata": {...}, "num_pages": 50 }`)_
+   _(Example Output:
+   `{ "results": [ { "source": "manual.pdf", "success": true, "data": { "page_texts": [ { "page": 1, "text": "..." }, { "page": 3, "text": "..." }, ... ] } } ] }`)_
 
 ---
 

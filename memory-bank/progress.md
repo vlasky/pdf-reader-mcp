@@ -4,27 +4,27 @@
 
 - **Project Setup:** Cloned from `filesystem-mcp`, dependencies installed
   (`pdf-parse` added).
-- **Core Tool Handler (Consolidated, using `pdfjs-dist`):**
-  - `read_pdf`: Implemented with parameters, supports local path and URL,
-    integrated. Logic rewritten to use `pdfjs-dist`.
-- **MCP Server Structure:** Basic server setup inherited from `filesystem-mcp`
-  allows the server to start and list only the PDF tools. Unused filesystem
-  handlers removed.
+- **Core Tool Handler (Consolidated, using `pdfjs-dist`, multi-source):**
+  - `read_pdf`: Implemented with parameters, supports an array of local
+    paths/URLs (`sources`), integrated. Returns an array of results.
+- **MCP Server Structure:** Basic server setup allows the server to start and
+  list the single `read_pdf` tool. All unused handlers removed.
 - **Documentation:**
   - `README.md`: Updated with PDF tool descriptions.
   - Memory Bank: Core files created/updated with initial context.
 
 ## 2. What's Left to Build/Verify
 
-- **Compilation:** Need to run `npm run build` again after switching to
-  `pdfjs-dist`.
+- **Compilation:** Need to run `npm run build` again after adding multi-source
+  support.
 - **Runtime Testing:**
   - Verify the server starts correctly.
-  - Test the consolidated `read_pdf` tool with various parameter combinations,
-    using both local paths and URLs via `@modelcontextprotocol/inspector` or a
-    live agent.
-  - Specifically test `read_pdf_page_text` with different page ranges and edge
-    cases.
+  - Test the consolidated `read_pdf` tool with various parameter combinations
+    and multiple sources (paths and URLs mixed) via
+    `@modelcontextprotocol/inspector` or a live agent. Verify the `results`
+    array structure and error handling per source.
+  - Specifically test `read_pdf` with the `pages` parameter for different page
+    ranges and edge cases across multiple sources.
   - Verify error handling (e.g., file not found, URL fetch errors, corrupted
     PDF).
 - **Testing Framework:** Consider adding automated tests (e.g., using Jest or
@@ -36,9 +36,8 @@
 
 ## 3. Current Status
 
-Switch to `pdfjs-dist` and rewrite of `read_pdf` handler is complete.
-Documentation updated. Ready for final build and testing. Ready for final build
-and testing.
+Added multi-source support to `read_pdf` handler. Documentation updated. Ready
+for final build and testing.
 
 ## 4. Known Issues/Risks
 
@@ -49,5 +48,6 @@ and testing.
   implemented. More specific PDF parsing errors might need refinement based on
   testing.
 - **Performance:** Performance on very large PDF files hasn't been tested.
-- **Tool Consolidation:** The single `read_pdf` handler is complex due to
-  library switch and parameter handling. Thorough testing is crucial.
+- **Multi-Source Handling:** The handler now loops through sources. Error
+  handling for individual sources within the loop needs careful testing. Output
+  structure is now an array of results.

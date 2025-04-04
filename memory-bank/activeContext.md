@@ -18,11 +18,14 @@ implementing the core PDF reading tools based on the `filesystem-mcp` template.
   `pdfjs-dist`.
 - Updated `README.md` and Memory Bank files to reflect the switch to
   `pdfjs-dist` and the consolidated tool.
+- **Added Multiple Source Support:** Modified `read_pdf` handler and schema to
+  accept an array of `sources` (each with `path` or `url`) and return an array
+  of results. Updated `README.md` and Memory Bank files again.
 
 ## 3. Next Steps
 
 - Update `memory-bank/progress.md` to reflect tool consolidation.
-- Build the project (`npm run build`) again after switching to `pdfjs-dist`.
+- Build the project (`npm run build`) again after adding multi-source support.
 - Consider adding basic tests for the PDF handlers.
 - Commit the initial implementation to the Git repository.
 - Potentially test the server using `@modelcontextprotocol/inspector` or by
@@ -36,3 +39,4 @@ implementing the core PDF reading tools based on the `filesystem-mcp` template.
   and `getTextContent`) to handle specific page requests internally.
 - Removed inherited filesystem tools.
 - Consolidated tools into a single `read_pdf` handler.
+- Added support for processing multiple sources in a single call.
