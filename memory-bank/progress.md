@@ -10,7 +10,8 @@
   - `get_pdf_metadata`: Implemented, integrated.
   - `get_pdf_page_count`: Implemented, integrated.
 - **MCP Server Structure:** Basic server setup inherited from `filesystem-mcp`
-  should allow the server to start and list the new tools.
+  allows the server to start and list only the PDF tools. Unused filesystem
+  handlers removed.
 - **Documentation:**
   - `README.md`: Updated with PDF tool descriptions.
   - Memory Bank: Core files created/updated with initial context.
@@ -45,8 +46,5 @@ updated. Ready for build and testing.
 - **Error Handling:** Current error handling is basic; more specific error types
   or details might be needed based on testing.
 - **Performance:** Performance on very large PDF files hasn't been tested.
-- **Inherited Filesystem Tools:** The server still contains the original
-  filesystem tool handlers (`listFiles`, `editFile`, etc.). Decide if these
-  should be kept or removed. If kept, ensure they don't conflict and
-  documentation reflects their presence. (Current README focuses only on PDF
-  tools).
+- **Inherited Filesystem Tools:** Removed. The server now focuses exclusively on
+  PDF reading tools. Documentation reflects this.

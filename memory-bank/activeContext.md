@@ -22,12 +22,14 @@ implementing the core PDF reading tools based on the `filesystem-mcp` template.
 - Updated `README.md` to reflect the PDF Reader functionality and tools.
 - Updated Memory Bank files (`techContext.md`, `systemPatterns.md`,
   `projectbrief.md`, `productContext.md`) with initial PDF Reader context.
+- Removed unused filesystem handlers (e.g., listFiles, editFile) from
+  `src/handlers/index.ts` and deleted corresponding `.ts` files.
 
 ## 3. Next Steps
 
-- Update `memory-bank/progress.md`.
-- Build the project (`npm run build`) to ensure no compilation errors.
-- Consider adding basic tests for the new handlers.
+- Update `memory-bank/progress.md` to reflect handler removal.
+- Build the project (`npm run build`) again after removing handlers.
+- Consider adding basic tests for the PDF handlers.
 - Commit the initial implementation to the Git repository.
 - Potentially test the server using `@modelcontextprotocol/inspector` or by
   integrating with Cline.
@@ -38,3 +40,4 @@ implementing the core PDF reading tools based on the `filesystem-mcp` template.
 - Adopted the handler definition pattern from `filesystem-mcp`.
 - `read_pdf_page_text` uses the `pagerender` callback for potentially better
   accuracy on specific pages.
+- Removed inherited filesystem tools to focus solely on PDF functionality.
