@@ -102,18 +102,23 @@ This server provides a single, powerful tool: `read_pdf`.
     (1-based) or ranges (e.g., `[1, 3, 5]` or `'1,3-5,7'`) for each PDF. If
     provided, output contains `page_texts` array instead of `full_text`.
 - **Output:** An object containing a `results` array. Each element corresponds
-  to a source in the input `sources` array and has the following structure:
-  - `source` (string): The original path or URL.
-  - `success` (boolean): True if processing succeeded, false otherwise.
-  - `error` (string, optional): Error message if `success` is false.
-  - `data` (object, optional): Contains the extracted data if `success` is true:
+  to a source in the input `sources` array. **Processing continues even if some
+  sources fail.** Each result object has the following structure:
+  - `source` (string): The original path or URL provided for identification.
+  - `success` (boolean): Indicates if processing _this specific source_ was
+    successful.
+  - `error` (string, optional): Provides an error message if `success` is false
+    for this source.
+  - `data` (object, optional): Contains the extracted data if `success` is true
+    for this source:
     - `full_text` (string, optional)
     - `page_texts` (array, optional): Array of `{ page: number, text: string }`.
     - `missing_pages` (array, optional)
     - `info` (object, optional)
     - `metadata` (object, optional)
     - `num_pages` (number, optional)
-    - `warnings` (array, optional) **Example Usage:**
+    - `warnings` (array, optional): Non-critical warnings for this source (e.g.,
+      requested page out of bounds).
 
 1. **Get metadata and page count for multiple files:**
    ```json
