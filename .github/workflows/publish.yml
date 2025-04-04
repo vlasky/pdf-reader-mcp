@@ -2,8 +2,8 @@ name: Build and Publish
 
 on:
   push:
-    branches:
-      - main # Or your default branch
+    tags:
+      - 'v*.*.*' # Trigger on version tags like v0.1.0, v1.2.3
 
 jobs:
   build:
@@ -44,7 +44,7 @@ jobs:
   publish-npm:
     needs: build # Depends on the build job
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' # Only run on push to main
+    # Removed if condition, now triggered by tag push
     steps:
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -69,7 +69,7 @@ jobs:
   publish-docker:
     needs: build # Depends on the build job
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' # Only run on push to main
+    # Removed if condition, now triggered by tag push
     steps:
       - name: Checkout repository (needed for git sha tag)
         uses: actions/checkout@v4
