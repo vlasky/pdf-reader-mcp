@@ -91,16 +91,18 @@ This server provides a single, powerful tool: `read_pdf`.
 - **Input:** An object containing:
   - `sources` (array): **Required.** An array of source objects. Each object
     must contain _either_ `path` (string, relative path to local PDF) _or_ `url`
-    (string, URL of PDF).
+    (string, URL of PDF). Each source object can _optionally_ include:
+    - `pages` (string | number[], optional): Extract text only from specific
+      pages (1-based) or ranges (e.g., `[1, 3, 5]` or `'1,3-5,7'`) for _this
+      specific source_. If provided, the global `include_full_text` flag is
+      ignored for this source.
   - `include_full_text` (boolean, optional, default `false`): Include the full
     text content for each PDF. Ignored if `pages` is provided.
   - `include_metadata` (boolean, optional, default `true`): Include metadata
     (`info` and `metadata` objects) for each PDF.
   - `include_page_count` (boolean, optional, default `true`): Include the total
     number of pages (`num_pages`) for each PDF.
-  - `pages` (string | number[], optional): Extract text only from specific pages
-    (1-based) or ranges (e.g., `[1, 3, 5]` or `'1,3-5,7'`) for each PDF. If
-    provided, output contains `page_texts` array instead of `full_text`.
+  <!-- Removed deprecated top-level pages parameter description -->
 - **Output:** An object containing a `results` array. Each element corresponds
   to a source in the input `sources` array. **Processing continues even if some
   sources fail.** Each result object has the following structure:
@@ -145,17 +147,19 @@ This server provides a single, powerful tool: `read_pdf`.
    _(Example Output:
    `{ "results": [ { "source": "http://example.com/document.pdf", "success": true, "data": { "full_text": "..." } } ] }`)_
 
-3. **Get text from pages 1 and 3-5 for one file (excluding defaults):**
+3. **Get text from different pages for different files:**
    ```json
    {
-     "sources": [{ "path": "manual.pdf" }],
-     "pages": "1,3-5",
-     "include_metadata": false,
-     "include_page_count": false
+     "sources": [
+       { "path": "manual.pdf", "pages": "1-2" },
+       { "url": "http://example.com/report.pdf", "pages": [5] }
+     ],
+     "include_metadata": false, /* Default is true, explicitly set false */
+     "include_page_count": false /* Default is true, explicitly set false */
    }
    ```
    _(Example Output:
-   `{ "results": [ { "source": "manual.pdf", "success": true, "data": { "page_texts": [ { "page": 1, "text": "..." }, { "page": 3, "text": "..." }, ... ] } } ] }`)_
+   `{ "results": [ { "source": "manual.pdf", "success": true, "data": { "page_texts": [...] } }, { "source": "http://example.com/report.pdf", "success": true, "data": { "page_texts": [...] } } ] }`)_
 
 ---
 

@@ -4,9 +4,11 @@
 
 - **Project Setup:** Cloned from `filesystem-mcp`, dependencies installed
   (`pdf-parse` added).
-- **Core Tool Handler (Consolidated, using `pdfjs-dist`, multi-source):**
-  - `read_pdf`: Implemented with parameters, supports an array of local
-    paths/URLs (`sources`), integrated. Returns an array of results.
+- **Core Tool Handler (Consolidated, using `pdfjs-dist`, multi-source,
+  per-source pages):**
+  - `read_pdf`: Implemented with parameters, supports an array of `sources`
+    (each optionally specifying `pages`), integrated. Returns an array of
+    results.
 - **MCP Server Structure:** Basic server setup allows the server to start and
   list the single `read_pdf` tool. All unused handlers removed.
 - **Documentation:**
@@ -15,12 +17,12 @@
 
 ## 2. What's Left to Build/Verify
 
-- **Compilation:** Need to run `npm run build` again after adding multi-source
-  support.
+- **Compilation:** Need to run `npm run build` again after moving `pages`
+  parameter.
 - **Runtime Testing:**
   - Verify the server starts correctly.
-  - Test the consolidated `read_pdf` tool with various parameter combinations
-    and multiple sources (paths and URLs mixed) via
+  - Test the consolidated `read_pdf` tool with various parameter combinations,
+    multiple sources, and per-source `pages` specifications via
     `@modelcontextprotocol/inspector` or a live agent. Verify the `results`
     array structure and error handling per source.
   - Specifically test `read_pdf` with the `pages` parameter for different page
@@ -36,8 +38,8 @@
 
 ## 3. Current Status
 
-Added multi-source support to `read_pdf` handler. Documentation updated. Ready
-for final build and testing.
+Moved `pages` parameter to be per-source in `read_pdf` handler. Documentation
+updated. Ready for final build and testing.
 
 ## 4. Known Issues/Risks
 
@@ -48,6 +50,6 @@ for final build and testing.
   implemented. More specific PDF parsing errors might need refinement based on
   testing.
 - **Performance:** Performance on very large PDF files hasn't been tested.
-- **Multi-Source Handling:** The handler now loops through sources. Error
-  handling for individual sources within the loop needs careful testing. Output
-  structure is now an array of results.
+- **Per-Source Pages:** Logic now handles `pages` parameter within the source
+  loop. Testing different combinations of sources with and without `pages` is
+  important.
