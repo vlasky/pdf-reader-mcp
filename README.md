@@ -6,29 +6,33 @@
 <!-- Add other badges like License, Build Status if applicable -->
 
 **Empower your AI agents (like Cline/Claude) with the ability to read and
-extract information from PDF files within your project.**
+extract information from PDF files within your project, using a single, flexible
+tool.**
 
 This Node.js server implements the
 [Model Context Protocol (MCP)](https://docs.modelcontextprotocol.com/) to
-provide tools for interacting with PDF documents located within a defined
-project root directory.
+provide a consolidated `read_pdf` tool for interacting with PDF documents (local
+or URL) located within a defined project root directory.
 
 ---
 
 ## ⭐ Why Use This Server?
 
 - **🛡️ Secure Project Root Focus:**
-  - All operations are **strictly confined to the project root directory**
-    (determined by the server's launch context), preventing unauthorized access
-    to other parts of the filesystem.
-  - Uses **relative paths** from the project root. **Important:** The server
+  - All local file operations are **strictly confined to the project root
+    directory** (determined by the server's launch context), preventing
+    unauthorized access.
+  - Uses **relative paths** for local files. **Important:** The server
     determines its project root from its own Current Working Directory (`cwd`)
     at launch. The process starting the server (e.g., your MCP host) **must**
     set the `cwd` to your intended project directory.
+- **🌐 URL Support:** Can directly process PDFs from public URLs.
 - **⚡ Efficient PDF Processing:**
   - Leverages the `pdf-parse` library for extracting text, metadata, and page
     information.
-  - Provides specific tools for common PDF reading tasks.
+- **🔧 Flexible & Consolidated Tool:**
+  - A single `read_pdf` tool handles various extraction needs via parameters,
+    simplifying agent interaction.
 - **🚀 Easy Integration:** Get started quickly using `npx` with minimal
   configuration.
 - **🐳 Containerized Option:** Also available as a Docker image for consistent
@@ -40,15 +44,8 @@ project root directory.
 
 ## 🚀 Quick Start: Usage with MCP Host (Recommended: `npx`)
 
-The simplest and recommended way to use this server is via `npx`, configured
-directly in your MCP host environment (e.g., Roo/Cline's `mcp_settings.json`).
-This ensures you always use the latest version from npm without needing local
-installation or Docker.
-
-**Configure your MCP Host:**
-
-Modify your MCP host's settings (e.g., `mcp_settings.json`) to run the server
-using `npx`.
+The simplest way is via `npx`, configured in your MCP host (e.g.,
+`mcp_settings.json`).
 
 ```json
 {
@@ -66,8 +63,6 @@ using `npx`.
 
 **(Alternative) Using `bunx`:**
 
-If you prefer using Bun, you can use `bunx` instead:
-
 ```json
 {
   "mcpServers": {
@@ -82,63 +77,74 @@ If you prefer using Bun, you can use `bunx` instead:
 }
 ```
 
-**That's it!** Restart your MCP Host environment (if necessary) for the settings
-to take effect. Your AI agent can now use the PDF reader tools. **Important:**
-The server uses its own Current Working Directory (`cwd`) as the project root.
-Ensure your MCP Host (e.g., Cline/VSCode) is configured to launch the `npx` or
-`bunx` command with the `cwd` set to your active project's root directory.
+**Important:** Ensure your MCP Host launches the command with the `cwd` set to
+your project's root directory for local file access.
 
 ---
 
-## ✨ PDF Reading Tools
+## ✨ The `read_pdf` Tool
 
-This server equips your AI agent with the following tools for PDF interaction:
+This server provides a single, powerful tool: `read_pdf`.
 
-- 📄 **`read_pdf_all_text`:**
-  - **Description:** Reads all text content and basic information (metadata,
-    page count) from a specified PDF file, either local or via URL.
-  - **Input:** `{ "path": "string" }` OR `{ "url": "string" }` (Provide either
-    relative path OR URL)
-  - **Output:** An object containing `text`, `numPages`, `numRenderedPages`,
-    `info`, `metadata`, and `version` from the PDF.
+- **Description:** Reads content, metadata, or page count from a PDF file (local
+  or URL), controlled by parameters.
+- **Input:** An object containing:
+  - `path` (string, optional): Relative path to the local PDF file.
+  - `url` (string, optional): URL of the PDF file.
+  - **Note:** Exactly one of `path` or `url` must be provided.
+  - `include_full_text` (boolean, optional, default `false`): Include the full
+    text content. Ignored if `pages` is provided.
+  - `include_metadata` (boolean, optional, default `true`): Include metadata
+    (`info` and `metadata` objects).
+  - `include_page_count` (boolean, optional, default `true`): Include the total
+    number of pages (`num_pages`).
+  - `pages` (string | number[], optional): Extract text only from specific pages
+    (1-based) or ranges (e.g., `[1, 3, 5]` or `'1,3-5,7'`). If provided, output
+    contains `page_texts` array instead of `full_text`.
+- **Output:** An object containing the requested information, e.g.:
+  - `full_text` (string, if `include_full_text` is true and `pages` is not
+    provided)
+  - `page_texts` (array of `{ page: number, text: string }`, if `pages` is
+    provided)
+  - `missing_pages` (array of numbers, if `pages` was provided and some were not
+    found/rendered)
+  - `info` (object, if `include_metadata` is true)
+  - `metadata` (object, if `include_metadata` is true)
+  - `num_pages` (number, if `include_page_count` is true)
+  - `message` (string, if no information was requested)
 
-- 📑 **`read_pdf_page_text`:**
-  - **Description:** Reads text content from specific pages of a PDF file,
-    either local or via URL.
-  - **Input:** `{ "path": "string", "pages": "..." }` OR
-    `{ "url": "string", "pages": "..." }` (Provide path OR URL, plus page
-    numbers/ranges)
-  - **Output:** An object containing an array `pages` (each element has `page`
-    number and extracted `text`) and optionally `missingPages` if some requested
-    pages couldn't be processed.
+**Example Usage:**
 
-- ℹ️ **`get_pdf_metadata`:**
-  - **Description:** Reads metadata and general info from a PDF file, either
-    local or via URL.
-  - **Input:** `{ "path": "string" }` OR `{ "url": "string" }` (Provide either
-    relative path OR URL)
-  - **Output:** An object containing `info`, `metadata`, `numPages`, and
-    `version`.
+1. **Get metadata and page count (default):**
+   ```json
+   { "path": "report.pdf" }
+   ```
+   _(Output: `{ "info": {...}, "metadata": {...}, "num_pages": 10 }`)_
 
-- #️⃣ **`get_pdf_page_count`:**
-  - **Description:** Quickly gets the total number of pages in a PDF file,
-    either local or via URL.
-  - **Input:** `{ "path": "string" }` OR `{ "url": "string" }` (Provide either
-    relative path OR URL)
-  - **Output:** An object containing `numPages`.
+2. **Get full text:**
+   ```json
+   {
+     "url": "http://example.com/document.pdf",
+     "include_full_text": true,
+     "include_metadata": false,
+     "include_page_count": false
+   }
+   ```
+   _(Output: `{ "full_text": "..." }`)_
+
+3. **Get text from pages 1 and 3-5:**
+   ```json
+   { "path": "manual.pdf", "pages": "1,3-5" }
+   ```
+   _(Output:
+   `{ "page_texts": [ { "page": 1, "text": "..." }, { "page": 3, "text": "..." }, ... ], "info": {...}, "metadata": {...}, "num_pages": 50 }`)_
 
 ---
 
 ## 🐳 Alternative Usage: Docker
 
-For users who prefer containerization or need a specific environment.
-
-**1. Ensure Docker is running.**
-
-**2. Configure your MCP Host:**
-
-Modify your MCP host's settings to run the Docker container. **Crucially, you
-must mount your project directory to `/app` inside the container.**
+Configure your MCP Host to run the Docker container, mounting your project
+directory to `/app`.
 
 ```json
 {
@@ -150,7 +156,7 @@ must mount your project directory to `/app` inside the container.**
         "-i",
         "--rm",
         "-v",
-        "/path/to/your/project:/app", // IMPORTANT: Replace with your project path
+        "/path/to/your/project:/app", // Replace with your project path
         "shtse8/pdf-reader-mcp:latest"
       ],
       "name": "PDF Reader (Docker)"
@@ -158,17 +164,6 @@ must mount your project directory to `/app` inside the container.**
   }
 }
 ```
-
-**Explanation:**
-
-- `-v "/path/to/your/project:/app"`: Mounts your local project directory into
-  the container at `/app`. The server inside the container will treat `/app` as
-  its root. **Remember to replace `/path/to/your/project` with the correct
-  absolute path for your system.**
-- `shtse8/pdf-reader-mcp:latest`: Specifies the Docker image. Docker will pull
-  it if needed.
-
-**3. Restart your MCP Host environment.**
 
 ---
 
@@ -180,48 +175,36 @@ must mount your project directory to `/app` inside the container.**
 2. Install: `cd pdf-reader-mcp && npm install`
 3. Build: `npm run build`
 4. Configure MCP Host:
-
-```json
-{
-  "mcpServers": {
-    "pdf-reader-mcp": {
-      "command": "node",
-      "args": ["/path/to/cloned/repo/pdf-reader-mcp/build/index.js"],
-      "name": "PDF Reader (Local Build)"
-    }
-    // Note: Ensure the command is launched from your intended project root directory.
-  }
-}
-```
+   ```json
+   {
+     "mcpServers": {
+       "pdf-reader-mcp": {
+         "command": "node",
+         "args": ["/path/to/cloned/repo/pdf-reader-mcp/build/index.js"],
+         "name": "PDF Reader (Local Build)"
+       }
+       // Note: Ensure command launched from project root.
+     }
+   }
+   ```
 
 ---
 
 ## 💻 Development
 
-1. Clone the repository.
-2. Install dependencies: `npm install`
-3. Build: `npm run build` (compiles TypeScript to `build/`)
-4. Watch for changes: `npm run watch` (optional, recompiles on save)
+1. Clone, `npm install`, `npm run build`.
+2. `npm run watch` for auto-recompile.
 
 ---
 
 ## 🚢 Publishing (via GitHub Actions)
 
-This repository uses GitHub Actions (`.github/workflows/publish.yml`) to
-automatically:
-
-1. Publish the package to
-   [npm](https://www.npmjs.com/package/@shtse8/pdf-reader-mcp) on pushes to
-   `main`.
-2. Build and push a Docker image to
-   [Docker Hub](https://hub.docker.com/r/shtse8/pdf-reader-mcp) on pushes to
-   `main`.
-
-Requires `NPM_TOKEN`, `DOCKERHUB_USERNAME`, and `DOCKERHUB_TOKEN` secrets
-configured in the GitHub repository settings.
+Uses GitHub Actions (`.github/workflows/publish.yml`) to publish to npm and
+Docker Hub on pushes to `main`. Requires `NPM_TOKEN`, `DOCKERHUB_USERNAME`,
+`DOCKERHUB_TOKEN` secrets.
 
 ---
 
 ## 🙌 Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request.
+Contributions welcome! Open an issue or PR.

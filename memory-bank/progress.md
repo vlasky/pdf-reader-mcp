@@ -4,11 +4,10 @@
 
 - **Project Setup:** Cloned from `filesystem-mcp`, dependencies installed
   (`pdf-parse` added).
-- **Core Tool Handlers (Support both local path and URL):**
-  - `read_pdf_all_text`: Implemented, integrated.
-  - `read_pdf_page_text`: Implemented (using `pagerender`), integrated.
-  - `get_pdf_metadata`: Implemented, integrated.
-  - `get_pdf_page_count`: Implemented, integrated.
+- **Core Tool Handler (Consolidated):**
+  - `read_pdf`: Implemented with parameters (`include_full_text`,
+    `include_metadata`, `include_page_count`, `pages`), supports local path and
+    URL, integrated.
 - **MCP Server Structure:** Basic server setup inherited from `filesystem-mcp`
   allows the server to start and list only the PDF tools. Unused filesystem
   handlers removed.
@@ -18,11 +17,12 @@
 
 ## 2. What's Left to Build/Verify
 
-- **Compilation:** Need to run `npm run build` again after adding URL support.
+- **Compilation:** Need to run `npm run build` again after tool consolidation.
 - **Runtime Testing:**
   - Verify the server starts correctly.
-  - Test each PDF tool with both local paths and URLs using
-    `@modelcontextprotocol/inspector` or a live agent.
+  - Test the consolidated `read_pdf` tool with various parameter combinations,
+    using both local paths and URLs via `@modelcontextprotocol/inspector` or a
+    live agent.
   - Specifically test `read_pdf_page_text` with different page ranges and edge
     cases.
   - Verify error handling (e.g., file not found, URL fetch errors, corrupted
@@ -36,8 +36,8 @@
 
 ## 3. Current Status
 
-Implementation of core PDF reading tools (with URL support) is complete.
-Documentation updated. Ready for final build and testing.
+Consolidation of PDF tools into `read_pdf` is complete. Documentation updated.
+Ready for final build and testing.
 
 ## 4. Known Issues/Risks
 
@@ -48,5 +48,6 @@ Documentation updated. Ready for final build and testing.
   implemented. More specific PDF parsing errors might need refinement based on
   testing.
 - **Performance:** Performance on very large PDF files hasn't been tested.
-- **Inherited Filesystem Tools:** Removed. The server now focuses exclusively on
-  PDF reading tools. Documentation reflects this.
+- **Tool Consolidation:** While simpler for the agent, the single `read_pdf`
+  handler is now more complex internally. Thorough testing of parameter
+  interactions is crucial.

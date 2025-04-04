@@ -5,35 +5,29 @@
 The primary focus has been setting up the initial project structure and
 implementing the core PDF reading tools based on the `filesystem-mcp` template.
 
-## 2. Recent Changes (as of 2025-04-04 ~17:24 GMT+1)
+## 2. Recent Changes (Chronological Summary)
 
 - Cloned `filesystem-mcp` as a base.
-- Updated `package.json` with new project name (`@shtse8/pdf-reader-mcp`),
-  version, description, and added `pdf-parse` dependency.
+- Updated `package.json` (name, version, description, added `pdf-parse`).
 - Ran `npm install`.
-- Created handler files for the four PDF tools (initially local path only):
-  - `src/handlers/readPdfAllText.ts`
-  - `src/handlers/readPdfPageText.ts`
-  - `src/handlers/getPdfMetadata.ts`
-  - `src/handlers/getPdfPageCount.ts`
-- Refactored handlers to follow the `ToolDefinition` export pattern found in
-  `filesystem-mcp` (instead of using `defineHandler`).
-- Integrated the new tool definitions into `src/handlers/index.ts`.
-- Updated `README.md` to reflect the PDF Reader functionality and tools
-  (initially local path only).
-- Removed unused filesystem handlers (e.g., listFiles, editFile) from
-  `src/handlers/index.ts` and deleted corresponding `.ts` files.
-- **Added URL support:** Modified all PDF handlers and Zod schemas to accept
-  either a local `path` or a remote `url`. Updated `README.md` again.
-- Updated Memory Bank files (`techContext.md`, `systemPatterns.md`,
-  `projectbrief.md`, `productContext.md`) with initial PDF Reader context.
-- Removed unused filesystem handlers (e.g., listFiles, editFile) from
-  `src/handlers/index.ts` and deleted corresponding `.ts` files.
+- Implemented four separate PDF handlers (`readPdfAllText`, `readPdfPageText`,
+  `getPdfMetadata`, `getPdfPageCount`) using the `ToolDefinition` pattern.
+- Integrated these handlers into `src/handlers/index.ts`.
+- Updated `README.md` and Memory Bank files for initial PDF functionality.
+- Removed unused filesystem handlers and their imports/files.
+- Added URL support (`fetch`) to the four separate PDF handlers.
+- **Consolidated Tools:** Merged the four PDF tools into a single `read_pdf`
+  handler (`src/handlers/readPdf.ts`) with parameters (`include_full_text`,
+  `include_metadata`, `include_page_count`, `pages`).
+- Updated `src/handlers/index.ts` to only use `readPdfToolDefinition`.
+- Deleted the four previous separate PDF handler files.
+- Updated `README.md` and Memory Bank files again to reflect the consolidated
+  `read_pdf` tool.
 
 ## 3. Next Steps
 
-- Update `memory-bank/progress.md` to reflect URL support.
-- Build the project (`npm run build`) again after adding URL support.
+- Update `memory-bank/progress.md` to reflect tool consolidation.
+- Build the project (`npm run build`) again after consolidation.
 - Consider adding basic tests for the PDF handlers.
 - Commit the initial implementation to the Git repository.
 - Potentially test the server using `@modelcontextprotocol/inspector` or by
@@ -43,7 +37,8 @@ implementing the core PDF reading tools based on the `filesystem-mcp` template.
 
 - Using `pdf-parse` as the core PDF library.
 - Adopted the handler definition pattern from `filesystem-mcp`.
-- `read_pdf_page_text` uses the `pagerender` callback for potentially better
-  accuracy on specific pages.
-- Removed inherited filesystem tools to focus solely on PDF functionality.
-- Added support for fetching PDFs via URL using `fetch`.
+- The consolidated `read_pdf` tool uses `pagerender` internally when the `pages`
+  parameter is provided.
+- Removed inherited filesystem tools.
+- Added URL support using `fetch`.
+- Consolidated tools into a single `read_pdf` handler for simplicity.
