@@ -29,8 +29,8 @@
 - **`detect-indent`:** Library for detecting the dominant indentation in code.
   Used by `edit_file`.
 - **`@types/diff`:** TypeScript type definitions for the `diff` library.
-- **`pdf-parse`:** Library for parsing PDF files to extract text and metadata.
-- **`@types/pdf-parse`:** TypeScript type definitions for `pdf-parse`.
+- **`pdfjs-dist`:** Mozilla's PDF rendering and parsing library. Used for all
+  PDF operations (text extraction, metadata, page count).
 
 ## 3. Development Setup
 
@@ -41,10 +41,10 @@
     version, module system, output directory, etc.). Set to output JavaScript
     files to the `build` directory.
   - `package.json`: Defines project metadata, dependencies, and npm scripts.
-    - `dependencies`: `@modelcontextprotocol/sdk`, `glob`, `pdf-parse`, etc.
+    - `dependencies`: `@modelcontextprotocol/sdk`, `glob`, `pdfjs-dist`, etc.
       (See package.json for full list)
-    - `devDependencies`: `typescript`, `@types/node`, `@types/glob`,
-      `@types/pdf-parse`, etc.
+    - `devDependencies`: `typescript`, `@types/node`, `@types/glob`, etc.
+      (`pdfjs-dist` includes its own types).
     - `scripts`:
       - `build`: Compiles TypeScript code using `tsc` and potentially sets
         execute permissions on the output script.

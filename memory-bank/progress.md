@@ -4,10 +4,9 @@
 
 - **Project Setup:** Cloned from `filesystem-mcp`, dependencies installed
   (`pdf-parse` added).
-- **Core Tool Handler (Consolidated):**
-  - `read_pdf`: Implemented with parameters (`include_full_text`,
-    `include_metadata`, `include_page_count`, `pages`), supports local path and
-    URL, integrated.
+- **Core Tool Handler (Consolidated, using `pdfjs-dist`):**
+  - `read_pdf`: Implemented with parameters, supports local path and URL,
+    integrated. Logic rewritten to use `pdfjs-dist`.
 - **MCP Server Structure:** Basic server setup inherited from `filesystem-mcp`
   allows the server to start and list only the PDF tools. Unused filesystem
   handlers removed.
@@ -17,7 +16,8 @@
 
 ## 2. What's Left to Build/Verify
 
-- **Compilation:** Need to run `npm run build` again after tool consolidation.
+- **Compilation:** Need to run `npm run build` again after switching to
+  `pdfjs-dist`.
 - **Runtime Testing:**
   - Verify the server starts correctly.
   - Test the consolidated `read_pdf` tool with various parameter combinations,
@@ -36,18 +36,18 @@
 
 ## 3. Current Status
 
-Consolidation of PDF tools into `read_pdf` is complete. Documentation updated.
-Ready for final build and testing.
+Switch to `pdfjs-dist` and rewrite of `read_pdf` handler is complete.
+Documentation updated. Ready for final build and testing. Ready for final build
+and testing.
 
 ## 4. Known Issues/Risks
 
-- **`pdf-parse` Limitations:** The accuracy of text extraction, especially for
-  complex layouts or scanned PDFs, depends heavily on `pdf-parse`. Page number
-  detection in `pagerender` might need verification (1-based vs 0-based).
+- **`pdfjs-dist` Complexity:** While more maintained, its API is more complex
+  than `pdf-parse`. Text extraction accuracy still depends on the PDF structure.
+  Potential compatibility nuances in Node.js environment exist.
 - **Error Handling:** Basic error handling for file access and URL fetching
   implemented. More specific PDF parsing errors might need refinement based on
   testing.
 - **Performance:** Performance on very large PDF files hasn't been tested.
-- **Tool Consolidation:** While simpler for the agent, the single `read_pdf`
-  handler is now more complex internally. Thorough testing of parameter
-  interactions is crucial.
+- **Tool Consolidation:** The single `read_pdf` handler is complex due to
+  library switch and parameter handling. Thorough testing is crucial.

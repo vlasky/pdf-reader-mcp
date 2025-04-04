@@ -21,14 +21,13 @@
     "detect-indent": "^7.0.1",
     "diff": "^7.0.0",
     "glob": "^11.0.1",
-    "pdf-parse": "^1.1.1",
+    "pdfjs-dist": "^5.1.91",
     "zod": "^3.24.2",
     "zod-to-json-schema": "^3.24.5"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
     "@types/node": "^20.11.24",
-    "@types/pdf-parse": "^1.1.5",
     "typescript": "^5.3.3"
   }
 }

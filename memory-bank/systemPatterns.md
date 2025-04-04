@@ -10,7 +10,7 @@ Model Context Protocol (MCP) to provide PDF reading capabilities.
 ```mermaid
 graph LR
     A[Agent Host Environment] -- MCP over Stdio --> B(PDF Reader MCP Server);
-    B -- Node.js fs/path/pdf-parse --> C[User Filesystem (Project Root)];
+    B -- Node.js fs/path/pdfjs-dist --> C[User Filesystem (Project Root)];
     C -- Results/Data --> B;
     B -- MCP over Stdio --> A;
 ```
@@ -64,9 +64,9 @@ graph LR
 - **TypeScript:** Provides static typing for better code maintainability, early
   error detection, and improved developer experience. Uses ES module syntax
   (`import`/`export`).
-- **PDF Parsing:** Uses the `pdf-parse` library to extract text content,
-  metadata, and page information from PDF files. Handlers are designed to
-  leverage this library for the specific PDF tools.
+- **PDF Parsing:** Uses Mozilla's `pdfjs-dist` library to load PDF documents and
+  extract text content, metadata, and page information. The `read_pdf` handler
+  uses its API.
 
 ## 3. Component Relationships
 
@@ -75,10 +75,10 @@ graph LR
 - **`Server` (from SDK):** Core MCP server class handling protocol logic.
 - **`StdioServerTransport` (from SDK):** Handles reading/writing MCP messages
   via stdio.
-- **Tool Handler Functions (`handleReadPdfAllText`, `handleReadPdfPageText`,
-  `handleGetPdfMetadata`, `handleGetPdfPageCount`, etc.):** Contain the specific
-  logic for each tool, including Zod argument validation, path resolution,
-  filesystem interaction, and result formatting.
+- **Tool Handler Function (`handleReadPdfFunc`):** Contains the logic for the
+  consolidated `read_pdf` tool, including Zod argument validation, path
+  resolution, PDF loading/parsing via `pdfjs-dist`, and result formatting based
+  on input parameters.
 - **`resolvePath` Helper:** Centralized security function for path validation.
 - **`formatStats` Helper:** Utility to create a consistent stats object
   structure.
@@ -90,4 +90,5 @@ graph LR
   `edit_file`.
 - **`detect-indent` Library:** (Inherited, but not used by PDF tools) Used by
   `edit_file`.
-- **`pdf-parse` Library:** Used by all PDF handlers to read and parse PDF files.
+- **`pdfjs-dist` Library:** Used by the `read_pdf` handler to load and process
+  PDF documents.

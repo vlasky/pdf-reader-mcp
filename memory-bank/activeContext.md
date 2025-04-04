@@ -8,26 +8,21 @@ implementing the core PDF reading tools based on the `filesystem-mcp` template.
 ## 2. Recent Changes (Chronological Summary)
 
 - Cloned `filesystem-mcp` as a base.
-- Updated `package.json` (name, version, description, added `pdf-parse`).
-- Ran `npm install`.
-- Implemented four separate PDF handlers (`readPdfAllText`, `readPdfPageText`,
-  `getPdfMetadata`, `getPdfPageCount`) using the `ToolDefinition` pattern.
-- Integrated these handlers into `src/handlers/index.ts`.
-- Updated `README.md` and Memory Bank files for initial PDF functionality.
-- Removed unused filesystem handlers and their imports/files.
-- Added URL support (`fetch`) to the four separate PDF handlers.
-- **Consolidated Tools:** Merged the four PDF tools into a single `read_pdf`
-  handler (`src/handlers/readPdf.ts`) with parameters (`include_full_text`,
-  `include_metadata`, `include_page_count`, `pages`).
-- Updated `src/handlers/index.ts` to only use `readPdfToolDefinition`.
-- Deleted the four previous separate PDF handler files.
-- Updated `README.md` and Memory Bank files again to reflect the consolidated
-  `read_pdf` tool.
+- Updated `package.json` (name, version, description).
+- Implemented initial PDF tools using `pdf-parse`.
+- Removed unused filesystem handlers.
+- Added URL support to `pdf-parse` based tools.
+- Consolidated tools into a single `read_pdf` handler.
+- **Switched PDF Library:** Uninstalled `pdf-parse`, installed `pdfjs-dist`.
+- Rewrote the `read_pdf` handler (`src/handlers/readPdf.ts`) to use
+  `pdfjs-dist`.
+- Updated `README.md` and Memory Bank files to reflect the switch to
+  `pdfjs-dist` and the consolidated tool.
 
 ## 3. Next Steps
 
 - Update `memory-bank/progress.md` to reflect tool consolidation.
-- Build the project (`npm run build`) again after consolidation.
+- Build the project (`npm run build`) again after switching to `pdfjs-dist`.
 - Consider adding basic tests for the PDF handlers.
 - Commit the initial implementation to the Git repository.
 - Potentially test the server using `@modelcontextprotocol/inspector` or by
@@ -35,10 +30,9 @@ implementing the core PDF reading tools based on the `filesystem-mcp` template.
 
 ## 4. Active Decisions & Considerations
 
-- Using `pdf-parse` as the core PDF library.
+- **Using `pdfjs-dist` as the core PDF library.**
 - Adopted the handler definition pattern from `filesystem-mcp`.
-- The consolidated `read_pdf` tool uses `pagerender` internally when the `pages`
-  parameter is provided.
+- The consolidated `read_pdf` tool uses `pdfjs-dist` API (including `getPage`
+  and `getTextContent`) to handle specific page requests internally.
 - Removed inherited filesystem tools.
-- Added URL support using `fetch`.
-- Consolidated tools into a single `read_pdf` handler for simplicity.
+- Consolidated tools into a single `read_pdf` handler.
