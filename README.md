@@ -193,7 +193,6 @@ directory:
          "args": ["/path/to/cloned/repo/pdf-reader-mcp/build/index.js"],
          "name": "PDF Reader (Local Build)"
        }
-       /* Note: Ensure command launched from project root. */
      }
    }
    ```
