@@ -4,7 +4,7 @@
 
 - **Project Setup:** Cloned from `filesystem-mcp`, dependencies installed
   (`pdf-parse` added).
-- **Core Tool Handlers:**
+- **Core Tool Handlers (Support both local path and URL):**
   - `read_pdf_all_text`: Implemented, integrated.
   - `read_pdf_page_text`: Implemented (using `pagerender`), integrated.
   - `get_pdf_metadata`: Implemented, integrated.
@@ -18,14 +18,15 @@
 
 ## 2. What's Left to Build/Verify
 
-- **Compilation:** Need to run `npm run build` to check for TypeScript errors.
+- **Compilation:** Need to run `npm run build` again after adding URL support.
 - **Runtime Testing:**
   - Verify the server starts correctly.
-  - Test each PDF tool with actual PDF files (various types if possible) using
+  - Test each PDF tool with both local paths and URLs using
     `@modelcontextprotocol/inspector` or a live agent.
   - Specifically test `read_pdf_page_text` with different page ranges and edge
     cases.
-  - Verify error handling (e.g., file not found, corrupted PDF).
+  - Verify error handling (e.g., file not found, URL fetch errors, corrupted
+    PDF).
 - **Testing Framework:** Consider adding automated tests (e.g., using Jest or
   Vitest) for handlers.
 - **Refinement:** Review code for potential improvements or edge cases missed.
@@ -35,16 +36,17 @@
 
 ## 3. Current Status
 
-Initial implementation of the core PDF reading tools is complete. Documentation
-updated. Ready for build and testing.
+Implementation of core PDF reading tools (with URL support) is complete.
+Documentation updated. Ready for final build and testing.
 
 ## 4. Known Issues/Risks
 
 - **`pdf-parse` Limitations:** The accuracy of text extraction, especially for
   complex layouts or scanned PDFs, depends heavily on `pdf-parse`. Page number
   detection in `pagerender` might need verification (1-based vs 0-based).
-- **Error Handling:** Current error handling is basic; more specific error types
-  or details might be needed based on testing.
+- **Error Handling:** Basic error handling for file access and URL fetching
+  implemented. More specific PDF parsing errors might need refinement based on
+  testing.
 - **Performance:** Performance on very large PDF files hasn't been tested.
 - **Inherited Filesystem Tools:** Removed. The server now focuses exclusively on
   PDF reading tools. Documentation reflects this.

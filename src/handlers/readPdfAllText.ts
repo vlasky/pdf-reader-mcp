@@ -7,8 +7,12 @@ import type { ToolDefinition } from './index.js'; // Import the internal interfa
 
 // 1. Define the Zod schema for input arguments
 const ReadPdfAllTextArgsSchema = z.object({
-  path: z.string().min(1, 'Path cannot be empty.'),
-}).strict(); // Use strict to prevent unexpected arguments
+  path: z.string().min(1).optional().describe("Relative path to the local PDF file."),
+  url: z.string().url().optional().describe("URL of the PDF file."),
+}).strict().refine(
+    (data) => (data.path && !data.url) || (!data.path && data.url), // Ensure either path or url is provided, but not both
+    { message: "Either 'path' or 'url' must be provided, but not both." }
+);
 
 // Infer TypeScript type for arguments
 type ReadPdfAllTextArgs = z.infer<typeof ReadPdfAllTextArgsSchema>;
@@ -26,10 +30,29 @@ const handleReadPdfAllTextFunc = async (args: unknown) => {
     throw new McpError(ErrorCode.InvalidParams, 'Argument validation failed');
   }
 
-  const safePath = resolvePath(parsedArgs.path);
-
+  const { path: relativePath, url } = parsedArgs;
+  let dataBuffer: Buffer;
+  let sourceDescription: string = 'unknown source'; // Initialize here
   try {
-    const dataBuffer = await fs.readFile(safePath);
+    if (relativePath) {
+      sourceDescription = `'${relativePath}'`;
+      const safePath = resolvePath(relativePath);
+      dataBuffer = await fs.readFile(safePath);
+    } else if (url) {
+      sourceDescription = `'${url}'`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        // Use InternalError or a more generic code if NetworkError doesn't exist
+        throw new McpError(ErrorCode.InternalError, `Failed to fetch PDF from ${url}. Status: ${response.status} ${response.statusText}`);
+      }
+      const arrayBuffer = await response.arrayBuffer();
+      dataBuffer = Buffer.from(arrayBuffer);
+    } else {
+      // This should be caught by Zod refine, but as a safeguard:
+      throw new McpError(ErrorCode.InvalidParams, "Missing 'path' or 'url'.");
+    }
+
+    // Now parse the buffer
     const data = await pdf(dataBuffer);
 
     // pdf-parse returns numpages, numrender, info, metadata, text, version
@@ -45,12 +68,15 @@ const handleReadPdfAllTextFunc = async (args: unknown) => {
         version: data.version,
     };
   } catch (error: any) {
-    // Provide a more specific error message if possible
-    let errorMessage = `Failed to read or parse PDF at '${parsedArgs.path}'.`;
-    if (error.code === 'ENOENT') {
-      errorMessage = `File not found at '${parsedArgs.path}'. Resolved to: ${safePath}`;
+    if (error instanceof McpError) throw error; // Re-throw known MCP errors
+
+    let errorMessage = `Failed to read or parse PDF from ${sourceDescription}.`; // Remove default value here, already initialized
+    // Keep ENOENT check for local files
+    if (relativePath && error.code === 'ENOENT') {
+      const safePath = resolvePath(relativePath); // Resolve again for error message
+      errorMessage = `File not found at '${relativePath}'. Resolved to: ${safePath}`;
     } else if (error instanceof Error) {
-      errorMessage += ` Reason: ${error.message}`;
+       errorMessage += ` Reason: ${error.message}`;
     } else {
        errorMessage += ` Unknown error: ${String(error)}`;
     }

@@ -35,14 +35,17 @@ const parsePageRanges = (ranges: string): number[] => {
 
 // Define the Zod schema for input arguments
 const ReadPdfPageTextArgsSchema = z.object({
-  path: z.string().min(1, 'Path cannot be empty.'),
+  path: z.string().min(1).optional().describe("Relative path to the local PDF file."),
+  url: z.string().url().optional().describe("URL of the PDF file."),
   // Allow pages as an array of numbers or a string range
   pages: z.union([
     z.array(z.number().int().positive()).min(1),
     z.string().min(1).refine(val => /^[0-9,\-]+$/.test(val), { message: "Page string must contain only numbers, commas, and hyphens." })
   ]).describe("Page numbers (1-based) or ranges (e.g., [1, 3, 5] or '1,3-5,7') to extract text from."),
-}).strict();
-
+}).strict().refine(
+    (data) => (data.path && !data.url) || (!data.path && data.url), // Ensure either path or url is provided, but not both
+    { message: "Either 'path' or 'url' must be provided, but not both." }
+);
 // Infer TypeScript type for arguments
 type ReadPdfPageTextArgs = z.infer<typeof ReadPdfPageTextArgsSchema>;
 
@@ -72,12 +75,30 @@ const handleReadPdfPageTextFunc = async (args: unknown) => {
       throw new McpError(ErrorCode.InvalidParams, `Invalid page specification: ${error.message}`);
   }
 
-
-  const safePath = resolvePath(parsedArgs.path);
+  // Remove the redundant declaration and logic for targetPages here
+  // It's already handled correctly starting at line 67
+  const { path: relativePath, url } = parsedArgs; // Keep path and url extraction
+  let dataBuffer: Buffer;
+  let sourceDescription: string = 'unknown source'; // Initialize
   const extractedTexts: { page: number; text: string }[] = [];
 
   try {
-    const dataBuffer = await fs.readFile(safePath);
+    // Fetch or read the PDF buffer
+    if (relativePath) {
+      sourceDescription = `'${relativePath}'`;
+      const safePath = resolvePath(relativePath);
+      dataBuffer = await fs.readFile(safePath);
+    } else if (url) {
+      sourceDescription = `'${url}'`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new McpError(ErrorCode.InternalError, `Failed to fetch PDF from ${url}. Status: ${response.status} ${response.statusText}`);
+      }
+      const arrayBuffer = await response.arrayBuffer();
+      dataBuffer = Buffer.from(arrayBuffer);
+    } else {
+      throw new McpError(ErrorCode.InvalidParams, "Missing 'path' or 'url'.");
+    }
 
     // Use the pagerender callback to capture text page by page
     const options = {
@@ -136,11 +157,13 @@ const handleReadPdfPageTextFunc = async (args: unknown) => {
   } catch (error: any) {
     if (error instanceof McpError) throw error; // Re-throw McpErrors
 
-    let errorMessage = `Failed to read or parse PDF for page text at '${parsedArgs.path}'.`;
-    if (error.code === 'ENOENT') {
-      errorMessage = `File not found at '${parsedArgs.path}'. Resolved to: ${safePath}`;
+    let errorMessage = `Failed to read or parse PDF for page text from ${sourceDescription}.`;
+    // Keep ENOENT check for local files
+    if (relativePath && error.code === 'ENOENT') {
+      const safePath = resolvePath(relativePath); // Resolve again for error message
+      errorMessage = `File not found at '${relativePath}'. Resolved to: ${safePath}`;
     } else if (error instanceof Error) {
-      errorMessage += ` Reason: ${error.message}`;
+       errorMessage += ` Reason: ${error.message}`;
     } else {
        errorMessage += ` Unknown error: ${String(error)}`;
     }

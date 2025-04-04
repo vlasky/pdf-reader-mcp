@@ -96,31 +96,35 @@ This server equips your AI agent with the following tools for PDF interaction:
 
 - 📄 **`read_pdf_all_text`:**
   - **Description:** Reads all text content and basic information (metadata,
-    page count) from a specified PDF file.
-  - **Input:** `{ "path": "string" }` (Relative path to the PDF file)
+    page count) from a specified PDF file, either local or via URL.
+  - **Input:** `{ "path": "string" }` OR `{ "url": "string" }` (Provide either
+    relative path OR URL)
   - **Output:** An object containing `text`, `numPages`, `numRenderedPages`,
     `info`, `metadata`, and `version` from the PDF.
 
 - 📑 **`read_pdf_page_text`:**
-  - **Description:** Reads text content from specific pages of a PDF file.
-  - **Input:** `{ "path": "string", "pages": "number[] | string" }` (Relative
-    path and an array of 1-based page numbers like `[1, 3, 5]` or a string range
-    like `'1,3-5,7'`)
+  - **Description:** Reads text content from specific pages of a PDF file,
+    either local or via URL.
+  - **Input:** `{ "path": "string", "pages": "..." }` OR
+    `{ "url": "string", "pages": "..." }` (Provide path OR URL, plus page
+    numbers/ranges)
   - **Output:** An object containing an array `pages` (each element has `page`
     number and extracted `text`) and optionally `missingPages` if some requested
     pages couldn't be processed.
 
 - ℹ️ **`get_pdf_metadata`:**
-  - **Description:** Reads metadata (like author, title, creator, producer,
-    dates) and general info from a PDF file without extracting all text content
-    explicitly in the output (though it's parsed internally).
-  - **Input:** `{ "path": "string" }` (Relative path to the PDF file)
+  - **Description:** Reads metadata and general info from a PDF file, either
+    local or via URL.
+  - **Input:** `{ "path": "string" }` OR `{ "url": "string" }` (Provide either
+    relative path OR URL)
   - **Output:** An object containing `info`, `metadata`, `numPages`, and
     `version`.
 
 - #️⃣ **`get_pdf_page_count`:**
-  - **Description:** Quickly gets the total number of pages in a PDF file.
-  - **Input:** `{ "path": "string" }` (Relative path to the PDF file)
+  - **Description:** Quickly gets the total number of pages in a PDF file,
+    either local or via URL.
+  - **Input:** `{ "path": "string" }` OR `{ "url": "string" }` (Provide either
+    relative path OR URL)
   - **Output:** An object containing `numPages`.
 
 ---

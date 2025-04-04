@@ -11,7 +11,7 @@ implementing the core PDF reading tools based on the `filesystem-mcp` template.
 - Updated `package.json` with new project name (`@shtse8/pdf-reader-mcp`),
   version, description, and added `pdf-parse` dependency.
 - Ran `npm install`.
-- Created handler files for the four PDF tools:
+- Created handler files for the four PDF tools (initially local path only):
   - `src/handlers/readPdfAllText.ts`
   - `src/handlers/readPdfPageText.ts`
   - `src/handlers/getPdfMetadata.ts`
@@ -19,7 +19,12 @@ implementing the core PDF reading tools based on the `filesystem-mcp` template.
 - Refactored handlers to follow the `ToolDefinition` export pattern found in
   `filesystem-mcp` (instead of using `defineHandler`).
 - Integrated the new tool definitions into `src/handlers/index.ts`.
-- Updated `README.md` to reflect the PDF Reader functionality and tools.
+- Updated `README.md` to reflect the PDF Reader functionality and tools
+  (initially local path only).
+- Removed unused filesystem handlers (e.g., listFiles, editFile) from
+  `src/handlers/index.ts` and deleted corresponding `.ts` files.
+- **Added URL support:** Modified all PDF handlers and Zod schemas to accept
+  either a local `path` or a remote `url`. Updated `README.md` again.
 - Updated Memory Bank files (`techContext.md`, `systemPatterns.md`,
   `projectbrief.md`, `productContext.md`) with initial PDF Reader context.
 - Removed unused filesystem handlers (e.g., listFiles, editFile) from
@@ -27,8 +32,8 @@ implementing the core PDF reading tools based on the `filesystem-mcp` template.
 
 ## 3. Next Steps
 
-- Update `memory-bank/progress.md` to reflect handler removal.
-- Build the project (`npm run build`) again after removing handlers.
+- Update `memory-bank/progress.md` to reflect URL support.
+- Build the project (`npm run build`) again after adding URL support.
 - Consider adding basic tests for the PDF handlers.
 - Commit the initial implementation to the Git repository.
 - Potentially test the server using `@modelcontextprotocol/inspector` or by
@@ -41,3 +46,4 @@ implementing the core PDF reading tools based on the `filesystem-mcp` template.
 - `read_pdf_page_text` uses the `pagerender` callback for potentially better
   accuracy on specific pages.
 - Removed inherited filesystem tools to focus solely on PDF functionality.
+- Added support for fetching PDFs via URL using `fetch`.
