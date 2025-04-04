@@ -191,11 +191,18 @@ const handleReadPdfFunc = async (args: unknown) => {
 
 
     // 6. Final checks and return
+    let resultObject = output;
     if (Object.keys(output).length === 0) {
-        return { message: "No information requested. Set include_full_text, include_metadata, include_page_count to true or provide specific pages." };
+        resultObject = { message: "No information requested. Set include_full_text, include_metadata, include_page_count to true or provide specific pages." };
     }
 
-    return output;
+    // Format the result according to MCP CallToolResponse structure
+    return {
+        content: [{
+            type: "text",
+            text: JSON.stringify(resultObject, null, 2) // Pretty print JSON
+        }]
+    };
 
   } catch (error: any) {
     if (error instanceof McpError) throw error;
