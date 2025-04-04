@@ -1,9 +1,8 @@
 import { z } from 'zod';
 // Import pdfjs-dist. Need to figure out the correct import path/style for Node.js
-// CommonJS style might be needed, or specific imports. Let's try the standard import first.
-// It often requires setting a worker source, but for text extraction in Node, we might bypass it or use a fake worker.
-import * as pdfjsLib from 'pdfjs-dist';
-// Set up a minimal worker source for Node.js environment compatibility
+// Use the legacy build and try the .mjs extension, which seems more likely based on the top-level build directory.
+import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
+// Setting workerSrc might still be relevant depending on the exact operations, but let's see if the legacy build alone fixes DOMMatrix.
 // pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdfjs-dist/build/pdf.worker.js'; // This might not be strictly needed for text extraction in Node, but often included in examples. Let's try without first.
 import fs from 'node:fs/promises';
 import { resolvePath } from '../utils/pathUtils.js';
