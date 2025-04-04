@@ -11,7 +11,10 @@ import { copyItemsToolDefinition } from './copyItems.js';
 import { searchFilesToolDefinition } from './searchFiles.js';
 import { replaceContentToolDefinition } from './replaceContent.js';
 import { editFileDefinition } from './editFile.js';
-
+import { readPdfAllTextToolDefinition } from './readPdfAllText.js';
+import { readPdfPageTextToolDefinition } from './readPdfPageText.js';
+import { getPdfMetadataToolDefinition } from './getPdfMetadata.js';
+import { getPdfPageCountToolDefinition } from './getPdfPageCount.js'; // Import the page count tool definition
 // Define the structure for a tool definition (used internally and for index.ts)
 // We need Zod here to define the schema type correctly
 import { z } from 'zod';
@@ -37,4 +40,8 @@ export const allToolDefinitions: ToolDefinition[] = [
     searchFilesToolDefinition,
     replaceContentToolDefinition,
     editFileDefinition,
+    readPdfAllTextToolDefinition,
+    readPdfPageTextToolDefinition,
+    getPdfMetadataToolDefinition,
+    getPdfPageCountToolDefinition, // Add the page count definition
 ];

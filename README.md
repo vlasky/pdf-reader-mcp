@@ -1,45 +1,38 @@
-# Filesystem MCP Server (@shtse8/filesystem-mcp)
+# PDF Reader MCP Server (@shtse8/pdf-reader-mcp)
 
-[![npm version](https://badge.fury.io/js/%40shtse8%2Ffilesystem-mcp.svg)](https://badge.fury.io/js/%40shtse8%2Ffilesystem-mcp)
-[![Docker Pulls](https://img.shields.io/docker/pulls/shtse8/filesystem-mcp.svg)](https://hub.docker.com/r/shtse8/filesystem-mcp)
+[![npm version](https://badge.fury.io/js/%40shtse8%2Fpdf-reader-mcp.svg)](https://badge.fury.io/js/%40shtse8%2Fpdf-reader-mcp)
+[![Docker Pulls](https://img.shields.io/docker/pulls/shtse8/pdf-reader-mcp.svg)](https://hub.docker.com/r/shtse8/pdf-reader-mcp)
 
 <!-- Add other badges like License, Build Status if applicable -->
 
-**Empower your AI agents (like Cline/Claude) with secure, efficient, and
-token-saving access to your project files.**
+**Empower your AI agents (like Cline/Claude) with the ability to read and
+extract information from PDF files within your project.**
 
 This Node.js server implements the
 [Model Context Protocol (MCP)](https://docs.modelcontextprotocol.com/) to
-provide a robust set of filesystem tools, operating safely within a defined
+provide tools for interacting with PDF documents located within a defined
 project root directory.
 
 ---
 
 ## ⭐ Why Use This Server?
 
-- **🛡️ Secure & Convenient Project Root Focus:**
+- **🛡️ Secure Project Root Focus:**
   - All operations are **strictly confined to the project root directory**
-    (determined by the server's launch context), preventing unauthorized access.
+    (determined by the server's launch context), preventing unauthorized access
+    to other parts of the filesystem.
   - Uses **relative paths** from the project root. **Important:** The server
     determines its project root from its own Current Working Directory (`cwd`)
     at launch. The process starting the server (e.g., your MCP host) **must**
     set the `cwd` to your intended project directory.
-- **⚡ Optimized & Consolidated Tools:**
-  - Most tools support **batch operations** (e.g., reading multiple files,
-    deleting multiple items) in a single request.
-  - Designed to **reduce AI-server round trips**, minimizing token usage and
-    latency compared to executing individual commands for each file operation.
-  - **Reliable Batch Processing:** All tools supporting multiple items (e.g.,
-    `read_content`, `delete_items`, `edit_file`) attempt every operation and
-    return a detailed result for each, indicating success or failure with
-    specific error messages. This allows for robust error handling and follow-up
-    actions.
+- **⚡ Efficient PDF Processing:**
+  - Leverages the `pdf-parse` library for extracting text, metadata, and page
+    information.
+  - Provides specific tools for common PDF reading tasks.
 - **🚀 Easy Integration:** Get started quickly using `npx` with minimal
   configuration.
 - **🐳 Containerized Option:** Also available as a Docker image for consistent
   deployment environments.
-- **🔧 Comprehensive Functionality:** Covers a wide range of common filesystem
-  tasks (see Features below).
 - **✅ Robust Validation:** Uses Zod schemas to validate all incoming tool
   arguments.
 
@@ -60,12 +53,12 @@ using `npx`.
 ```json
 {
   "mcpServers": {
-    "filesystem-mcp": {
+    "pdf-reader-mcp": {
       "command": "npx",
       "args": [
-        "@shtse8/filesystem-mcp"
+        "@shtse8/pdf-reader-mcp"
       ],
-      "name": "Filesystem (npx)"
+      "name": "PDF Reader (npx)"
     }
   }
 }
@@ -78,81 +71,57 @@ If you prefer using Bun, you can use `bunx` instead:
 ```json
 {
   "mcpServers": {
-    "filesystem-mcp": {
+    "pdf-reader-mcp": {
       "command": "bunx",
       "args": [
-        "@shtse8/filesystem-mcp"
+        "@shtse8/pdf-reader-mcp"
       ],
-      "name": "Filesystem (bunx)"
+      "name": "PDF Reader (bunx)"
     }
   }
 }
 ```
 
 **That's it!** Restart your MCP Host environment (if necessary) for the settings
-to take effect. Your AI agent can now use the filesystem tools. **Important:**
+to take effect. Your AI agent can now use the PDF reader tools. **Important:**
 The server uses its own Current Working Directory (`cwd`) as the project root.
 Ensure your MCP Host (e.g., Cline/VSCode) is configured to launch the `npx` or
 `bunx` command with the `cwd` set to your active project's root directory.
 
 ---
 
-## ✨ Amazing Features & Tools
+## ✨ PDF Reading Tools
 
-This server equips your AI agent with a powerful and efficient filesystem
-toolkit:
+This server equips your AI agent with the following tools for PDF interaction:
 
-- 📁 **Explore & Inspect (`list_files`, `stat_items`):**
-  - `list_files`: Effortlessly list files and directories. Go deep with
-    **recursive listing** or get detailed **file statistics** (size, type,
-    timestamps) included directly in the results. Perfect for understanding
-    project structure.
-  - `stat_items`: Get detailed status information (size, type, permissions,
-    timestamps) for **multiple files or directories** in a single call.
+- 📄 **`read_pdf_all_text`:**
+  - **Description:** Reads all text content and basic information (metadata,
+    page count) from a specified PDF file.
+  - **Input:** `{ "path": "string" }` (Relative path to the PDF file)
+  - **Output:** An object containing `text`, `numPages`, `numRenderedPages`,
+    `info`, `metadata`, and `version` from the PDF.
 
-- 📄 **Read & Write Content (`read_content`, `write_content`):**
-  - `read_content`: Read the full content of **multiple files** simultaneously.
-    Ideal for fetching source code or configuration files efficiently.
-  - `write_content`: Write content to **multiple files**, automatically creating
-    necessary parent directories. Supports both **overwriting** and
-    **appending** modes per file.
+- 📑 **`read_pdf_page_text`:**
+  - **Description:** Reads text content from specific pages of a PDF file.
+  - **Input:** `{ "path": "string", "pages": "number[] | string" }` (Relative
+    path and an array of 1-based page numbers like `[1, 3, 5]` or a string range
+    like `'1,3-5,7'`)
+  - **Output:** An object containing an array `pages` (each element has `page`
+    number and extracted `text`) and optionally `missingPages` if some requested
+    pages couldn't be processed.
 
-- ✏️ **Precision Editing & Searching (`edit_file`, `search_files`,
-  `replace_content`):**
-  - `edit_file`: Perform **surgical edits** across **multiple files**. Supports
-    precise **insertion**, pattern-based **replacement**, and **deletion** of
-    text blocks. Intelligently **preserves indentation** and provides **diff
-    output** for review. _The ultimate tool for targeted code modifications!_
-  - `search_files`: Unleash the power of **regex search** across entire
-    directories. Find specific code patterns, comments, or any text, complete
-    with surrounding context lines for each match. Filter by file patterns
-    (e.g., `*.ts`).
-  - `replace_content`: Perform **search-and-replace** operations (text or regex)
-    across **multiple files** at once.
+- ℹ️ **`get_pdf_metadata`:**
+  - **Description:** Reads metadata (like author, title, creator, producer,
+    dates) and general info from a PDF file without extracting all text content
+    explicitly in the output (though it's parsed internally).
+  - **Input:** `{ "path": "string" }` (Relative path to the PDF file)
+  - **Output:** An object containing `info`, `metadata`, `numPages`, and
+    `version`.
 
-- 🏗️ **Manage Directories (`create_directories`):**
-  - Create **multiple directories** in one go, including any necessary
-    intermediate parent directories (`mkdir -p` style).
-
-- 🗑️ **Delete Safely (`delete_items`):**
-  - Remove **multiple files or directories recursively** with a single command.
-    Handles non-existent paths gracefully.
-
-- ↔️ **Move & Copy (`move_items`, `copy_items`):**
-  - `move_items`: Rename or move **multiple files and directories**.
-    Automatically creates destination parent directories if needed.
-  - `copy_items`: Copy **multiple files and directories recursively**. Ensures
-    destination directories exist.
-
-- 🔒 **Control Permissions (`chmod_items`, `chown_items`):**
-  - `chmod_items`: Change POSIX-style permissions (e.g., '755') for **multiple
-    files/directories**.
-  - `chown_items`: Change owner (UID) and group (GID) for **multiple
-    files/directories** (effectiveness depends on OS and user privileges).
-
-**Key Benefit:** All tools accepting multiple paths/operations process each item
-individually and return a detailed status report, ensuring you know exactly what
-succeeded and what failed, even within a single batch request!
+- #️⃣ **`get_pdf_page_count`:**
+  - **Description:** Quickly gets the total number of pages in a PDF file.
+  - **Input:** `{ "path": "string" }` (Relative path to the PDF file)
+  - **Output:** An object containing `numPages`.
 
 ---
 
@@ -170,17 +139,17 @@ must mount your project directory to `/app` inside the container.**
 ```json
 {
   "mcpServers": {
-    "filesystem-mcp": {
+    "pdf-reader-mcp": {
       "command": "docker",
       "args": [
         "run",
         "-i",
         "--rm",
         "-v",
-        "/path/to/your/project:/app",
-        "shtse8/filesystem-mcp:latest"
+        "/path/to/your/project:/app", // IMPORTANT: Replace with your project path
+        "shtse8/pdf-reader-mcp:latest"
       ],
-      "name": "Filesystem (Docker)"
+      "name": "PDF Reader (Docker)"
     }
   }
 }
@@ -191,11 +160,8 @@ must mount your project directory to `/app` inside the container.**
 - `-v "/path/to/your/project:/app"`: Mounts your local project directory into
   the container at `/app`. The server inside the container will treat `/app` as
   its root. **Remember to replace `/path/to/your/project` with the correct
-  absolute path for your system.** (Note: Depending on your MCP host environment
-  and shell, you _might_ be able to use variables like `$PWD` (Linux/macOS),
-  `%CD%` (Windows Cmd), or `${workspaceFolder}` (if supported by the host)
-  instead of the explicit path, but this is not guaranteed to work universally.)
-- `shtse8/filesystem-mcp:latest`: Specifies the Docker image. Docker will pull
+  absolute path for your system.**
+- `shtse8/pdf-reader-mcp:latest`: Specifies the Docker image. Docker will pull
   it if needed.
 
 **3. Restart your MCP Host environment.**
@@ -206,21 +172,20 @@ must mount your project directory to `/app` inside the container.**
 
 ### Local Build (For Development)
 
-1. Clone: `git clone https://github.com/shtse8/filesystem-mcp.git`
-2. Install: `cd filesystem-mcp && npm install`
+1. Clone: `git clone https://github.com/shtse8/pdf-reader-mcp.git`
+2. Install: `cd pdf-reader-mcp && npm install`
 3. Build: `npm run build`
 4. Configure MCP Host:
 
 ```json
 {
   "mcpServers": {
-    "filesystem-mcp": {
+    "pdf-reader-mcp": {
       "command": "node",
-      "args": ["/path/to/cloned/repo/filesystem-mcp/build/index.js"],
-      "name": "Filesystem (Local Build)"
+      "args": ["/path/to/cloned/repo/pdf-reader-mcp/build/index.js"],
+      "name": "PDF Reader (Local Build)"
     }
-    
-    **Note:** When running a local build directly with `node`, ensure you launch the command from the directory you intend to be the project root, as the server will use `process.cwd()` to determine its operational scope.
+    // Note: Ensure the command is launched from your intended project root directory.
   }
 }
 ```
@@ -242,10 +207,10 @@ This repository uses GitHub Actions (`.github/workflows/publish.yml`) to
 automatically:
 
 1. Publish the package to
-   [npm](https://www.npmjs.com/package/@shtse8/filesystem-mcp) on pushes to
+   [npm](https://www.npmjs.com/package/@shtse8/pdf-reader-mcp) on pushes to
    `main`.
 2. Build and push a Docker image to
-   [Docker Hub](https://hub.docker.com/r/shtse8/filesystem-mcp) on pushes to
+   [Docker Hub](https://hub.docker.com/r/shtse8/pdf-reader-mcp) on pushes to
    `main`.
 
 Requires `NPM_TOKEN`, `DOCKERHUB_USERNAME`, and `DOCKERHUB_TOKEN` secrets

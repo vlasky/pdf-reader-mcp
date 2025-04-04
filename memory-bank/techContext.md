@@ -1,4 +1,4 @@
-# Tech Context: Filesystem MCP Server
+# Tech Context: PDF Reader MCP Server
 
 ## 1. Core Technologies
 
@@ -29,25 +29,29 @@
 - **`detect-indent`:** Library for detecting the dominant indentation in code.
   Used by `edit_file`.
 - **`@types/diff`:** TypeScript type definitions for the `diff` library.
+- **`pdf-parse`:** Library for parsing PDF files to extract text and metadata.
+- **`@types/pdf-parse`:** TypeScript type definitions for `pdf-parse`.
 
 ## 3. Development Setup
 
-- **Source Code:** Located in the `src` directory (`filesystem-mcp/src`).
+- **Source Code:** Located in the `src` directory (`pdf-reader-mcp/src`).
 - **Main File:** `src/index.ts`.
 - **Configuration:**
   - `tsconfig.json`: Configures the TypeScript compiler options (target ES
     version, module system, output directory, etc.). Set to output JavaScript
     files to the `build` directory.
   - `package.json`: Defines project metadata, dependencies, and npm scripts.
-    - `dependencies`: `@modelcontextprotocol/sdk`, `glob`.
-    - `devDependencies`: `typescript`, `@types/node`, `@types/glob`.
+    - `dependencies`: `@modelcontextprotocol/sdk`, `glob`, `pdf-parse`, etc.
+      (See package.json for full list)
+    - `devDependencies`: `typescript`, `@types/node`, `@types/glob`,
+      `@types/pdf-parse`, etc.
     - `scripts`:
       - `build`: Compiles TypeScript code using `tsc` and potentially sets
         execute permissions on the output script.
       - `start`: (Optional, for direct testing) Runs the compiled JavaScript
         server using `node build/index.js`.
 - **Build Output:** Compiled JavaScript code is placed in the `build` directory
-  (`filesystem-mcp/build`).
+  (`pdf-reader-mcp/build`).
 - **Execution:** The server is intended to be run via `node build/index.js`.
 
 ## 4. Technical Constraints & Considerations

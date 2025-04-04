@@ -1,62 +1,40 @@
-# Product Context: Filesystem MCP Server
+# Product Context: PDF Reader MCP Server
 
 ## 1. Problem Solved
 
-AI agents like Cline often need to interact with a user's project files to
-perform tasks such as reading code, writing new code, modifying configurations,
-or searching for specific information. Directly granting unrestricted filesystem
-access poses significant security risks. Furthermore, requiring the user to
-manually perform every filesystem action requested by the agent is inefficient
-and hinders the agent's autonomy.
+AI agents often need to access information contained within PDF documents as
+part of user tasks (e.g., summarizing reports, extracting data from invoices,
+referencing documentation). Directly providing PDF file content to the agent is
+inefficient (large token count) and often impossible due to binary format.
+Executing external CLI tools for each PDF interaction can be slow, insecure, and
+lack structured output.
 
-This Filesystem MCP server acts as a secure and controlled bridge, solving the
-following problems:
-
-- **Security:** It confines the agent's filesystem operations strictly within
-  the boundaries of the project root directory (determined by the server's
-  launch context), preventing accidental or malicious access to sensitive system
-  files outside the project scope.
-- **Efficiency:** It provides the agent with a dedicated set of tools
-  (`list_files`, `read_content`, `write_content`, `move_items`, `copy_items`,
-  etc.) to perform common filesystem tasks directly, reducing the need for
-  constant user intervention for basic operations.
-- **Control:** Operations are performed relative to the project root (determined
-  by the server's current working directory at launch), ensuring predictability
-  and consistency within that specific project context. **Note:** For
-  multi-project support, the system launching the server must set the correct
-  working directory for each project instance.
-- **Standardization:** It uses the Model Context Protocol (MCP), providing a
-  standardized way for the agent and the server to communicate about filesystem
-  capabilities and operations.
+This MCP server provides a secure, efficient, and structured way for agents to
+interact with PDF files within the user's project context.
 
 ## 2. How It Should Work
 
-- The server runs as a background process, typically managed by the agent's host
-  environment (e.g., Cline's VSCode extension).
-- It listens for incoming MCP requests over a defined transport (initially
-  stdio).
-- Upon receiving a `call_tool` request for a filesystem operation:
-  1. It validates the request parameters against the tool's schema.
-  2. It resolves all provided relative paths against the `PROJECT_ROOT` (which
-     is the server process's current working directory, `process.cwd()`).
-  3. It performs security checks to ensure paths do not attempt to escape the
-     `PROJECT_ROOT` (the server's `cwd`).
-  4. It executes the corresponding Node.js filesystem function (`fs.readFile`,
-     `fs.writeFile`, `fs.rename`, `glob`, etc.).
-  5. It formats the result (or error) according to MCP specifications and sends
-     it back to the agent.
-- It responds to `list_tools` requests by providing a list of all available
-  filesystem tools and their input schemas.
+- The server runs as a background process, managed by the agent's host
+  environment.
+- The host environment ensures the server is launched with its working directory
+  set to the user's current project root.
+- The agent uses MCP calls to invoke specific PDF reading tools provided by the
+  server.
+- The agent provides the relative path to the target PDF file within the project
+  root.
+- The server uses the `pdf-parse` library to process the PDF.
+- The server returns structured data (text, metadata, page count) back to the
+  agent via MCP.
+- All file access is strictly limited to the project root directory.
 
 ## 3. User Experience Goals
 
-- **Seamless Integration:** The server should operate transparently in the
-  background. The user primarily interacts with the agent, and the agent
-  utilizes the server's tools as needed.
-- **Security Assurance:** The user should feel confident that the agent's
-  filesystem access is restricted to the intended project directory.
-- **Reliability:** The tools should perform filesystem operations reliably and
-  predictably. Errors should be reported clearly back to the agent (and
-  potentially surfaced to the user by the agent if necessary).
-- **Performance:** Filesystem operations should be reasonably fast, not
-  introducing significant delays into the agent's workflow.
+- **Seamless Integration:** The agent should be able to use the PDF tools
+  naturally as part of its workflow without complex setup for the end-user.
+- **Reliability:** Tools should reliably parse standard PDF files and return
+  accurate information or clear error messages.
+- **Security:** Users should trust that the server only accesses files within
+  the intended project scope.
+- **Efficiency:** Reading PDF data should be reasonably fast and avoid excessive
+  token usage compared to sending raw file content (which isn't feasible
+  anyway).

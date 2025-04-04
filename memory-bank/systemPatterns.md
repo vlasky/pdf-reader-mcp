@@ -1,15 +1,16 @@
-# System Patterns: Filesystem MCP Server
+# System Patterns: PDF Reader MCP Server
 
 ## 1. Architecture Overview
 
-The Filesystem MCP server is a standalone Node.js application designed to run as
-a child process, communicating with its parent (the AI agent host) via standard
-input/output (stdio) using the Model Context Protocol (MCP).
+The PDF Reader MCP server is a standalone Node.js application based on the
+original Filesystem MCP. It's designed to run as a child process, communicating
+with its parent (the AI agent host) via standard input/output (stdio) using the
+Model Context Protocol (MCP) to provide PDF reading capabilities.
 
 ```mermaid
 graph LR
-    A[Agent Host Environment] -- MCP over Stdio --> B(Filesystem MCP Server);
-    B -- Node.js fs/path/glob --> C[User Filesystem (Project Root)];
+    A[Agent Host Environment] -- MCP over Stdio --> B(PDF Reader MCP Server);
+    B -- Node.js fs/path/pdf-parse --> C[User Filesystem (Project Root)];
     C -- Results/Data --> B;
     B -- MCP over Stdio --> A;
 ```
@@ -63,6 +64,9 @@ graph LR
 - **TypeScript:** Provides static typing for better code maintainability, early
   error detection, and improved developer experience. Uses ES module syntax
   (`import`/`export`).
+- **PDF Parsing:** Uses the `pdf-parse` library to extract text content,
+  metadata, and page information from PDF files. Handlers are designed to
+  leverage this library for the specific PDF tools.
 
 ## 3. Component Relationships
 
@@ -71,9 +75,10 @@ graph LR
 - **`Server` (from SDK):** Core MCP server class handling protocol logic.
 - **`StdioServerTransport` (from SDK):** Handles reading/writing MCP messages
   via stdio.
-- **Tool Handler Functions (`handleListFiles`, `handleEditFile`, etc.):**
-  Contain the specific logic for each tool, including Zod argument validation,
-  path resolution, filesystem interaction, and result formatting.
+- **Tool Handler Functions (`handleReadPdfAllText`, `handleReadPdfPageText`,
+  `handleGetPdfMetadata`, `handleGetPdfPageCount`, etc.):** Contain the specific
+  logic for each tool, including Zod argument validation, path resolution,
+  filesystem interaction, and result formatting.
 - **`resolvePath` Helper:** Centralized security function for path validation.
 - **`formatStats` Helper:** Utility to create a consistent stats object
   structure.
@@ -81,5 +86,8 @@ graph LR
   path manipulation.
 - **`glob` Library:** Used for pattern-based file searching and listing.
 - **`zod` Library:** Used for defining and validating tool input schemas.
-- **`diff` Library:** Used by `edit_file` to generate diff output.
-- **`detect-indent` Library:** Used by `edit_file` for indentation handling.
+- **`diff` Library:** (Inherited, but not used by PDF tools) Used by
+  `edit_file`.
+- **`detect-indent` Library:** (Inherited, but not used by PDF tools) Used by
+  `edit_file`.
+- **`pdf-parse` Library:** Used by all PDF handlers to read and parse PDF files.
