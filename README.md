@@ -156,7 +156,7 @@ directory to `/app`.
         "-i",
         "--rm",
         "-v",
-        "/path/to/your/project:/app", // Replace with your project path
+        "/path/to/your/project:/app",
         "shtse8/pdf-reader-mcp:latest"
       ],
       "name": "PDF Reader (Docker)"
@@ -164,6 +164,16 @@ directory to `/app`.
   }
 }
 ```
+
+**Note on Volume Mount Path:** Instead of hardcoding `/path/to/your/project`,
+you can often use shell variables to automatically use the current working
+directory:
+
+- **Linux/macOS:** `-v "$PWD:/app"`
+- **Windows Cmd:** `-v "%CD%:/app"`
+- **Windows PowerShell:** `-v "${PWD}:/app"`
+- **VS Code Tasks/Launch:** You might be able to use `${workspaceFolder}` if
+  supported by your MCP host integration.
 
 ---
 
@@ -183,7 +193,7 @@ directory to `/app`.
          "args": ["/path/to/cloned/repo/pdf-reader-mcp/build/index.js"],
          "name": "PDF Reader (Local Build)"
        }
-       // Note: Ensure command launched from project root.
+       /* Note: Ensure command launched from project root. */
      }
    }
    ```
