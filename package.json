@@ -1,6 +1,6 @@
 {
   "name": "@shtse8/pdf-reader-mcp",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "An MCP server providing tools to read PDF files.",
   "type": "module",
   "files": [
