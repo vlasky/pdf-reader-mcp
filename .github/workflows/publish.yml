@@ -124,8 +124,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: . # Explicitly set build context
-        with:
-          context: . # Context is the directory with extracted artifacts
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

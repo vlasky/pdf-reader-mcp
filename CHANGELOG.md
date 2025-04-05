@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Nothing yet.
 
+## [0.3.8] - 2025-04-05
+
+### Fixed
+- Removed duplicate `context: .` entry in `docker/build-push-action` step in `.github/workflows/publish.yml`.
+
 ## [0.3.7] - 2025-04-05
 
 ### Fixed
