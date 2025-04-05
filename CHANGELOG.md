@@ -4,15 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
 ## [Unreleased]
 
 ### Added
-- Initial project setup based on filesystem-mcp.
-- Core `read_pdf` tool using `pdfjs-dist` library.
-- Support for reading text, metadata, and page count.
-- Support for local file paths and URLs.
-- Support for processing multiple sources in one call with per-source page selection.
-- Basic README and Memory Bank documentation.
-- Dockerfile and .dockerignore.
-- GitHub Actions workflow for publishing (initial version).
+- Nothing yet.
+
+## [0.3.0] - 2025-04-05
+
+### Added
+- `CHANGELOG.md` file based on Keep a Changelog format.
+- `LICENSE` file (MIT License).
+- Improved GitHub Actions workflow (`.github/workflows/publish.yml`):
+  - Triggers on push to `main` branch and version tags (`v*.*.*`).
+  - Conditionally archives build artifacts only on tag pushes.
+  - Conditionally runs `publish-npm` and `publish-docker` jobs only on tag pushes.
+  - Added `create-release` job to automatically create GitHub Releases from tags, using `CHANGELOG.md` for the body.
+- Added version headers to Memory Bank files (`activeContext.md`, `progress.md`).
+
+### Changed
+- Bumped version from 0.2.2 to 0.3.0.
