@@ -13,7 +13,7 @@ jobs:
     outputs:
       version: ${{ steps.get_version.outputs.version }}
       artifact_name: build-artifacts-archive # Consistent name for upload/download
-      archive_filename: ${{ steps.archive_build.outputs.archive_name }} # Actual .tar.gz filename
+      # archive_filename: ${{ steps.archive_build.outputs.archive_name }} # Removed output, use fixed name
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -48,14 +48,14 @@ jobs:
         id: archive_build
         run: |
           tar -czf build-artifacts.tar.gz build package.json package-lock.json README.md CHANGELOG.md LICENSE Dockerfile .dockerignore
-          echo "archive_name=build-artifacts.tar.gz" >> $GITHUB_OUTPUT
+          # Removed setting output, use fixed name
 
       - name: Upload build artifacts (only on tag push)
         if: startsWith(github.ref, 'refs/tags/v') # Condition: Only run for tags
-        uses: actions/upload-artifact@v3 # Downgrade to v3
+        uses: actions/upload-artifact@v4 # Back to v4
         with:
-          name: build-artifacts-archive # Use consistent name (no quotes)
-          path: ${{ steps.archive_build.outputs.archive_name }}
+          name: build-artifacts-archive
+          path: build-artifacts.tar.gz # Use fixed archive name directly
 
   publish-npm:
     needs: build
@@ -69,7 +69,7 @@ jobs:
           path: .
 
       - name: Extract build artifacts
-        run: tar -xzf ${{ needs.build.outputs.archive_filename }} # Use the correct archive filename from build job
+        run: tar -xzf build-artifacts.tar.gz # Use fixed archive name
 
       - name: Set up Node.js for npm publish
         uses: actions/setup-node@v4
@@ -94,7 +94,7 @@ jobs:
           path: .
 
       - name: Extract build artifacts
-        run: tar -xzf ${{ needs.build.outputs.archive_filename }} # Use the correct archive filename from build job
+        run: tar -xzf build-artifacts.tar.gz # Use fixed archive name
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -144,7 +144,7 @@ jobs:
           path: .
 
       - name: Extract build artifacts
-        run: tar -xzf ${{ needs.build.outputs.archive_filename }} # Use the correct archive filename from build job
+        run: tar -xzf build-artifacts.tar.gz # Use fixed archive name
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
