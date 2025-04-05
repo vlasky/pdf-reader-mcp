@@ -14,6 +14,7 @@ RUN npm ci
 COPY . .
 
 # Build the TypeScript project
+RUN ls -la
 RUN ./node_modules/.bin/tsc -p tsconfig.json
 # The build script already includes chmod +x for the output
 
