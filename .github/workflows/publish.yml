@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.get_version.outputs.version }}
-      artifact_name: build-artifacts-archive # Consistent name for upload/download
+      # artifact_name: build-artifacts-archive # Removed this output
       archive_filename: ${{ steps.archive_build.outputs.archive_name }} # Actual .tar.gz filename
     steps:
       - name: Checkout repository
@@ -54,8 +54,8 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v') # Condition: Only run for tags
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts-archive # Use the actual name directly here
-          path: ${{ steps.archive_build.outputs.archive_name }}
+          name: "build-artifacts-archive"
+          path: ${{ steps.archive_build.outputs.archive_name }} # Revert path to use step output
 
   publish-npm:
     needs: build
@@ -65,7 +65,7 @@ jobs:
       - name: Download build artifacts archive
         uses: actions/download-artifact@v4
         with:
-          name: ${{ needs.build.outputs.artifact_name }} # Use consistent artifact name
+          name: build-artifacts-archive # Use hardcoded name
           path: .
 
       - name: Extract build artifacts
@@ -90,7 +90,7 @@ jobs:
       - name: Download build artifacts archive
         uses: actions/download-artifact@v4
         with:
-          name: ${{ needs.build.outputs.artifact_name }} # Use consistent artifact name
+          name: build-artifacts-archive # Use hardcoded name
           path: .
 
       - name: Extract build artifacts
@@ -140,7 +140,7 @@ jobs:
       - name: Download build artifacts archive
         uses: actions/download-artifact@v4
         with:
-          name: ${{ needs.build.outputs.artifact_name }} # Use consistent artifact name
+          name: build-artifacts-archive # Use hardcoded name
           path: .
 
       - name: Extract build artifacts
