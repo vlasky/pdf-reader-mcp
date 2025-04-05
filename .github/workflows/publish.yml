@@ -55,7 +55,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: "build-artifacts-archive"
-          path: ${{ steps.archive_build.outputs.archive_name }} # Revert path to use step output
+          path: README.md # Try uploading a simple, known file instead
 
   publish-npm:
     needs: build
