@@ -1,3 +1,5 @@
+<!-- Version: 1.0 | Last Updated: 2025-04-05 | Updated By: Cline -->
+
 # Progress: PDF Reader MCP Server (Initial Implementation)
 
 ## 1. What Works
@@ -14,32 +16,24 @@
 - **Documentation:**
   - `README.md`: Updated with PDF tool descriptions.
   - Memory Bank: Core files created/updated with initial context.
+- **Changelog:** `CHANGELOG.md` created with initial structure.
+- **License:** `LICENSE` file created (MIT).
+- **GitHub Actions:** `.github/workflows/publish.yml` updated to trigger on main/tags, conditionally publish, and create releases using `CHANGELOG.md`.
 
 ## 2. What's Left to Build/Verify
 
-- **Compilation:** Need to run `npm run build` again after moving `pages`
-  parameter.
+- **Compilation:** Need to run `npm run build`.
 - **Runtime Testing:**
   - Verify the server starts correctly.
-  - Test the consolidated `read_pdf` tool with various parameter combinations,
-    multiple sources, and per-source `pages` specifications via
-    `@modelcontextprotocol/inspector` or a live agent. Verify the `results`
-    array structure and error handling per source.
-  - Specifically test `read_pdf` with the `pages` parameter for different page
-    ranges and edge cases across multiple sources.
-  - Verify error handling (e.g., file not found, URL fetch errors, corrupted
-    PDF).
-- **Testing Framework:** Consider adding automated tests (e.g., using Jest or
-  Vitest) for handlers.
+  - Test the consolidated `read_pdf` tool via `@modelcontextprotocol/inspector` or a live agent.
+  - Verify error handling (e.g., file not found, URL fetch errors, corrupted PDF).
+- **Testing Framework:** Consider adding automated tests (e.g., using Jest or Vitest) for handlers.
 - **Refinement:** Review code for potential improvements or edge cases missed.
-- **Publishing Setup:** Ensure GitHub Actions workflow in
-  `.github/workflows/publish.yml` is correctly configured for the new package
-  name and Docker image name (if not already done).
+- **Publishing Workflow Test:** Test the updated GitHub Actions workflow by pushing a version tag (e.g., `v0.3.0`) and verifying npm/Docker publish and GitHub Release creation.
 
 ## 3. Current Status
 
-Moved `pages` parameter to be per-source in `read_pdf` handler. Documentation
-updated. Ready for final build and testing.
+Added `CHANGELOG.md`, `LICENSE`. Updated GitHub Actions workflow for improved release process. Ready for build and testing, including workflow verification.
 
 ## 4. Known Issues/Risks
 

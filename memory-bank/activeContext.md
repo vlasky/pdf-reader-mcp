@@ -1,3 +1,5 @@
+<!-- Version: 1.0 | Last Updated: 2025-04-05 | Updated By: Cline -->
+
 # Active Context: PDF Reader MCP Server (Initial Setup)
 
 ## 1. Current Focus
@@ -23,15 +25,18 @@ implementing the core PDF reading tools based on the `filesystem-mcp` template.
   parameter into each source object, allowing different page selections for
   different files in the same request. Updated `README.md` and Memory Bank files
   again.
+- Created `CHANGELOG.md` with initial structure.
+- Created `LICENSE` file (MIT License).
+- Updated `.github/workflows/publish.yml` to include main branch trigger, conditional artifact creation/upload, conditional job execution based on tags, and a `create-release` job using `CHANGELOG.md`.
 
 ## 3. Next Steps
 
-- Update `memory-bank/progress.md` to reflect tool consolidation.
-- Build the project (`npm run build`) again after adding multi-source support.
+- Update `memory-bank/progress.md` to reflect recent changes (Changelog, License, Workflow).
+- Build the project (`npm run build`).
+- Test the updated GitHub Actions workflow by pushing a tag (e.g., `v0.3.0`).
 - Consider adding basic tests for the PDF handlers.
-- Commit the initial implementation to the Git repository.
-- Potentially test the server using `@modelcontextprotocol/inspector` or by
-  integrating with Cline.
+- Commit changes to the Git repository.
+- Potentially test the server using `@modelcontextprotocol/inspector` or by integrating with Cline.
 
 ## 4. Active Decisions & Considerations
 
