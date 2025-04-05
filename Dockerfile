@@ -14,7 +14,7 @@ RUN npm ci
 COPY . .
 
 # Build the TypeScript project
-RUN npm run build
+RUN ./node_modules/.bin/tsc
 # The build script already includes chmod +x for the output
 
 # Remove development dependencies after build
