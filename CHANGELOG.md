@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Nothing yet.
 
+## [0.3.9] - 2025-04-05
+
+### Fixed
+- Removed artifact download/extract steps from `publish-docker` job in workflow, as Docker build needs the full source context provided by checkout.
+
 ## [0.3.8] - 2025-04-05
 
 ### Fixed
