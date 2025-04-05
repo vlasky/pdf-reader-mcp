@@ -11,7 +11,6 @@ RUN npm ci
 
 # Copy the rest of the application source code
 # This includes tsconfig.json and the src directory
-COPY tsconfig.json ./
 COPY . .
 
 # Build the TypeScript project

@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Nothing yet.
 
+## [0.3.7] - 2025-04-05
+
+### Fixed
+- Removed explicit `COPY tsconfig.json ./` from Dockerfile (rely on `COPY . .`).
+- Explicitly set `context: .` in docker build-push action.
+
 ## [0.3.6] - 2025-04-05
 
 ### Fixed
