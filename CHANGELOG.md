@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Nothing yet.
 
+## [0.3.6] - 2025-04-05
+
+### Fixed
+- Explicitly added `COPY tsconfig.json ./` before `COPY . .` in Dockerfile to ensure it exists before build step.
+
 ## [0.3.5] - 2025-04-05
 
 ### Fixed
