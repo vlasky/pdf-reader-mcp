@@ -52,7 +52,7 @@ jobs:
 
       - name: Upload build artifacts (only on tag push)
         if: startsWith(github.ref, 'refs/tags/v') # Condition: Only run for tags
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3 # Downgrade to v3
         with:
           name: build-artifacts-archive # Use consistent name (no quotes)
           path: ${{ steps.archive_build.outputs.archive_name }}
