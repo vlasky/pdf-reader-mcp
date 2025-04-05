@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # Install ALL dependencies (including dev for build), ignore scripts for now
-RUN npm ci --ignore-scripts
+RUN npm ci
 
 # Copy the rest of the application source code
 # This includes tsconfig.json and the src directory
