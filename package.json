@@ -1,6 +1,6 @@
 {
   "name": "@shtse8/pdf-reader-mcp",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "An MCP server providing tools to read PDF files.",
   "type": "module",
   "bin": {
@@ -14,7 +14,7 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
+    "build": "tsc",
     "watch": "tsc --watch",
     "inspector": "npx @modelcontextprotocol/inspector build/index.js"
   },
