@@ -54,7 +54,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v') # Condition: Only run for tags
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ job.outputs.artifact_name }} # Use consistent name from job outputs
+          name: build-artifacts-archive # Use the actual name directly here
           path: ${{ steps.archive_build.outputs.archive_name }}
 
   publish-npm:
