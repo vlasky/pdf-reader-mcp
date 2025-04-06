@@ -254,7 +254,8 @@ describe('handleReadPdfFunc Integration Tests', () => {
       include_page_count: true,
     };
     // Setup mocks for the second source (URL)
-    const secondMockGetPage = vi.fn().mockImplementation((pageNum: number) => { // Removed unnecessary async
+    const secondMockGetPage = vi.fn().mockImplementation((pageNum: number) => {
+      // Removed unnecessary async
       if (pageNum === 1)
         return {
           getTextContent: vi.fn().mockResolvedValue({ items: [{ str: 'URL Mock page text 1' }] }),
