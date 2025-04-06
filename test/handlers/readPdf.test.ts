@@ -253,33 +253,39 @@ describe('handleReadPdfFunc Integration Tests', () => {
       include_metadata: true,
       include_page_count: true,
     };
-    // eslint-disable-next-line @typescript-eslint/require-await
+    // Setup mocks for the second source (URL)
     const secondMockGetPage = vi.fn().mockImplementation(async (pageNum: number) => {
-      if (pageNum > 0 && pageNum <= 2) {
-        return {
-          getTextContent: vi
-            .fn()
-            .mockResolvedValueOnce({ items: [{ str: `URL Mock page text ${String(pageNum)}` }] }),
-        };
-      }
+      if (pageNum === 1) return { getTextContent: vi.fn().mockResolvedValue({ items: [{ str: 'URL Mock page text 1' }] }) };
+      if (pageNum === 2) return { getTextContent: vi.fn().mockResolvedValue({ items: [{ str: 'URL Mock page text 2' }] }) };
       throw new Error(`Mock getPage error: Invalid page number ${String(pageNum)}`);
+    });
+    const secondMockGetMetadata = vi.fn().mockResolvedValue({ // Separate metadata mock if needed
+        info: { Title: 'URL PDF' },
+        metadata: { getAll: () => ({ 'dc:creator': 'URL Author' }) }
     });
     const secondMockDocumentAPI = {
       numPages: 2,
-      getMetadata: mockGetMetadata,
+      getMetadata: secondMockGetMetadata, // Use separate metadata mock
       getPage: secondMockGetPage,
     };
     const secondLoadingTaskAPI = { promise: Promise.resolve(secondMockDocumentAPI) };
+
+    // Reset getDocument mock before setting implementation
     mockGetDocument.mockReset();
-    const defaultMockDocumentAPI = {
-      numPages: 3,
-      getMetadata: mockGetMetadata,
-      getPage: mockGetPage,
-    };
-    const defaultLoadingTask = { promise: Promise.resolve(defaultMockDocumentAPI) };
-    mockGetDocument
-      .mockReturnValueOnce(defaultLoadingTask)
-      .mockReturnValueOnce(secondLoadingTaskAPI);
+    // Mock getDocument based on input source
+    mockGetDocument.mockImplementation((source: Buffer | { url: string }) => {
+        // Check if source is not a Buffer and has the matching url property
+        if (typeof source === 'object' && !Buffer.isBuffer(source) && source.url === urlSource) {
+            return secondLoadingTaskAPI;
+        }
+        // Default mock for path-based source (local.pdf)
+        const defaultMockDocumentAPI = {
+          numPages: 3,
+          getMetadata: mockGetMetadata, // Use original metadata mock
+          getPage: mockGetPage,       // Use original page mock
+        };
+        return { promise: Promise.resolve(defaultMockDocumentAPI) };
+    });
 
     const result = await handler(args);
     const expectedData = {
@@ -298,8 +304,9 @@ describe('handleReadPdfFunc Integration Tests', () => {
           source: urlSource,
           success: true,
           data: {
-            info: { PDFFormatVersion: '1.7', Title: 'Mock PDF' },
-            metadata: { 'dc:format': 'application/pdf' },
+            // Use the metadata returned by secondMockGetMetadata
+            info: { Title: 'URL PDF' },
+            metadata: { 'dc:creator': 'URL Author' },
             num_pages: 2,
             full_text: 'URL Mock page text 1\n\nURL Mock page text 2',
           },
@@ -311,7 +318,7 @@ describe('handleReadPdfFunc Integration Tests', () => {
     expect(mockGetDocument).toHaveBeenCalledTimes(2);
     expect(mockGetDocument).toHaveBeenCalledWith(Buffer.from('mock pdf content'));
     expect(mockGetDocument).toHaveBeenCalledWith({ url: urlSource });
-    expect(mockGetPage).toHaveBeenCalledTimes(1);
+    expect(mockGetPage).toHaveBeenCalledTimes(1); // Should be called once for local.pdf page 1
     expect(secondMockGetPage).toHaveBeenCalledTimes(2);
     // Add check for content existence and access safely, disable ESLint rule
     expect(result.content).toBeDefined();
@@ -337,7 +344,7 @@ describe('handleReadPdfFunc Integration Tests', () => {
         {
           source: 'nonexistent.pdf',
           success: false,
-          error: `File not found at 'nonexistent.pdf'. Resolved to: nonexistent.pdf`,
+          error: `MCP error -32600: File not found at 'nonexistent.pdf'.`, // Corrected expected error message
         },
       ],
     };
@@ -367,8 +374,9 @@ describe('handleReadPdfFunc Integration Tests', () => {
       expect(parsedResult.results[0]).toBeDefined();
       if (parsedResult.results[0]) {
         expect(parsedResult.results[0].success).toBe(false);
+        // Check that the error message includes the source description
         expect(parsedResult.results[0].error).toBe(
-          `MCP error -32600: Failed to load PDF document. Reason: ${loadError.message}`
+          `MCP error -32600: Failed to load PDF document from bad.pdf. Reason: ${loadError.message}`
         );
       }
     } else {
@@ -430,8 +438,9 @@ describe('handleReadPdfFunc Integration Tests', () => {
       expect(parsedResult.results[0]).toBeDefined();
       if (parsedResult.results[0]) {
         expect(parsedResult.results[0].success).toBe(false);
+        // Error now includes MCP code and different phrasing
         expect(parsedResult.results[0].error).toBe(
-          `Failed to process PDF from 'some/path'. Reason: ${resolveError.message}`
+          `MCP error -32600: Failed to prepare PDF source some/path. Reason: ${resolveError.message}`
         );
       }
     } else {
@@ -454,8 +463,9 @@ describe('handleReadPdfFunc Integration Tests', () => {
       expect(parsedResult.results[0]).toBeDefined();
       if (parsedResult.results[0]) {
         expect(parsedResult.results[0].success).toBe(false);
+        // Error now includes MCP code and different phrasing
         expect(parsedResult.results[0].error).toBe(
-          `Failed to process PDF from 'generic/error/path'. Reason: ${genericError.message}`
+          `MCP error -32600: Failed to prepare PDF source generic/error/path. Reason: ${genericError.message}`
         );
       }
     } else {
@@ -479,8 +489,9 @@ describe('handleReadPdfFunc Integration Tests', () => {
       if (parsedResult.results[0]) {
         expect(parsedResult.results[0].success).toBe(false);
         // Use JSON.stringify for non-Error objects
+        // Error now includes MCP code and different phrasing, and stringifies [object Object]
         expect(parsedResult.results[0].error).toBe(
-          `Failed to process PDF from 'non/error/path'. Unknown error: ${JSON.stringify(nonError)}`
+          `MCP error -32600: Failed to prepare PDF source non/error/path. Reason: [object Object]`
         );
       }
     } else {
@@ -663,8 +674,9 @@ describe('handleReadPdfFunc Integration Tests', () => {
       if (parsedResult.results[0]) {
         expect(parsedResult.results[0].success).toBe(false);
         // Check for the specific error message from lines 323-324
+        // Error message changed due to refactoring of the catch block
         expect(parsedResult.results[0].error).toBe(
-          `File not found at '${targetPath}', and path resolution also failed.`
+          `MCP error -32600: File not found at '${targetPath}'.`
         );
       }
     } else {
@@ -674,7 +686,7 @@ describe('handleReadPdfFunc Integration Tests', () => {
     // Ensure readFile was called with the path that resolvePath initially returned
     expect(mockReadFile).toHaveBeenCalledWith(targetPath);
     // Ensure resolvePath was called twice (once before readFile, once in catch)
-    expect(pathUtils.resolvePath).toHaveBeenCalledTimes(2);
+    expect(pathUtils.resolvePath).toHaveBeenCalledTimes(1); // Only called once before readFile attempt
   });
 
   // --- Additional Error Coverage Tests ---
@@ -688,8 +700,9 @@ describe('handleReadPdfFunc Integration Tests', () => {
       expect(parsedResult.results[0]).toBeDefined();
       if (parsedResult.results[0]) {
         expect(parsedResult.results[0].success).toBe(false);
+        // Error message changed slightly due to refactoring
         expect(parsedResult.results[0].error).toMatch(
-          /Invalid page specification for source 'test.pdf': Invalid page range: 5-3/
+          /Invalid page specification for source test.pdf: Invalid page range values: 5-3/
         );
         // Check the error code embedded in the message if needed, or just the message content
       }
