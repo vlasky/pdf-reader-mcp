@@ -1,4 +1,4 @@
-<!-- Version: 1.1 | Last Updated: 2025-04-06 | Updated By: Roo -->
+<!-- Version: 1.2 | Last Updated: 2025-04-06 | Updated By: Sylph -->
 
 # Active Context: PDF Reader MCP Server (Guidelines Alignment)
 
@@ -27,6 +27,7 @@ Aligning the project configuration, structure, and CI/CD processes with the prov
   - Updated `.gitignore` to include `dist/` and `coverage/`.
   - Renamed and refactored GitHub Actions workflow to `.github/workflows/ci.yml` to better align with Guideline #8 (separate validate/publish/release jobs, PR trigger, auto release notes).
   - Added tests to improve coverage for `readPdf.ts`, reaching ~95%. Accepted this level due to difficulty covering Zod-protected/edge-case error paths.
+  - **Updated Project Identity:** Changed GitHub repository URL to `sylphlab/pdf-reader-mcp` and NPM package name to `@sylphlab/pdf-reader-mcp` across relevant project files (`package.json`, `README.md`, `ci.yml`, `LICENSE`).
 
 ## 3. Next Steps
 

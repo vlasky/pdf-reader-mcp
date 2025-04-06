@@ -1,4 +1,4 @@
-<!-- Version: 1.8 | Last Updated: 2025-04-06 | Updated By: Roo -->
+<!-- Version: 1.9 | Last Updated: 2025-04-06 | Updated By: Sylph -->
 
 # Progress: PDF Reader MCP Server (Guidelines Applied)
 
@@ -29,6 +29,7 @@
 - **Package Configuration:** `package.json` scripts updated, **unused dependencies removed**.
 - **Git Ignore:** `.gitignore` updated.
 - **Sponsorship:** **Removed** (`.github/FUNDING.yml` deleted, README updated).
+- **Project Identity:** **Updated** GitHub URL and NPM package name to `sylphlab` scope across relevant files.
 
 ## 2. What's Left to Build/Verify
 

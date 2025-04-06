@@ -109,7 +109,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: shtse8/pdf-reader-mcp
+          images: sylphlab/pdf-reader-mcp
           tags: |
             type=semver,pattern={{version}},value=${{ steps.get_version.outputs.version }}
             type=semver,pattern={{major}}.{{minor}},value=${{ steps.get_version.outputs.version }}

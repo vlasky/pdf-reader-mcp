@@ -1,7 +1,7 @@
-# PDF Reader MCP Server (@shtse8/pdf-reader-mcp)
+# PDF Reader MCP Server (@sylphlab/pdf-reader-mcp)
 
 [![npm version](https://badge.fury.io/js/%40shtse8%2Fpdf-reader-mcp.svg)](https://badge.fury.io/js/%40shtse8%2Fpdf-reader-mcp)
-[![Docker Pulls](https://img.shields.io/docker/pulls/shtse8/pdf-reader-mcp.svg)](https://hub.docker.com/r/shtse8/pdf-reader-mcp)
+[![Docker Pulls](https://img.shields.io/docker/pulls/sylphlab/pdf-reader-mcp.svg)](https://hub.docker.com/r/sylphlab/pdf-reader-mcp)
 
 <!-- Add other badges like License, Build Status if applicable -->
 
@@ -52,7 +52,7 @@ The simplest way is via `npx`, configured in your MCP host (e.g.,
   "mcpServers": {
     "pdf-reader-mcp": {
       "command": "npx",
-      "args": ["@shtse8/pdf-reader-mcp"],
+      "args": ["@sylphlab/pdf-reader-mcp"],
       "name": "PDF Reader (npx)"
     }
   }
@@ -66,7 +66,7 @@ The simplest way is via `npx`, configured in your MCP host (e.g.,
   "mcpServers": {
     "pdf-reader-mcp": {
       "command": "bunx",
-      "args": ["@shtse8/pdf-reader-mcp"],
+      "args": ["@sylphlab/pdf-reader-mcp"],
       "name": "PDF Reader (bunx)"
     }
   }
@@ -179,7 +179,7 @@ directory to `/app`.
         "--rm",
         "-v",
         "/path/to/your/project:/app",
-        "shtse8/pdf-reader-mcp:latest"
+        "sylphlab/pdf-reader-mcp:latest"
       ],
       "name": "PDF Reader (Docker)"
     }
@@ -203,7 +203,7 @@ directory:
 
 ### Local Build (For Development)
 
-1. Clone: `git clone https://github.com/shtse8/pdf-reader-mcp.git`
+1. Clone: `git clone https://github.com/sylphlab/pdf-reader-mcp.git`
 2. Install: `cd pdf-reader-mcp && npm install`
 3. Build: `npm run build`
 4. Configure MCP Host:
