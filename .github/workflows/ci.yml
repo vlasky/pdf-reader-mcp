@@ -32,9 +32,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Format Code # Add step to force format in CI
-        run: pnpm run format
-
       - name: Check Formatting
         run: pnpm run check-format # Fails job if check fails
 
