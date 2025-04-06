@@ -26,6 +26,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run ESLint
+        run: npm run lint # Run lint check after installing dependencies
+ 
       - name: Build project
         run: npm run build
 
