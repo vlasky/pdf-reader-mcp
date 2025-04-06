@@ -37,7 +37,7 @@ const generateInputSchema = (schema: z.ZodType<unknown>): object => {
   return zodToJsonSchema(schema, { target: 'openApi3' }) as unknown as object;
 };
 
-server.setRequestHandler(ListToolsRequestSchema, async () => {
+server.setRequestHandler(ListToolsRequestSchema, () => { // Removed unnecessary async
   // Removed log
   // Map the aggregated definitions to the format expected by the SDK
   const availableTools = allToolDefinitions.map((def) => ({

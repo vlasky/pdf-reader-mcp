@@ -49,7 +49,7 @@ describe('resolvePath Utility', () => {
   it('should throw McpError for path traversal attempts even if seemingly valid', () => {
     // Construct a path that uses '..' many times to try and escape
     const levelsUp = PROJECT_ROOT.split(path.sep).filter(Boolean).length + 2; // Go up more levels than the root has
-    const userPath = path.join(...Array(levelsUp).fill('..'), 'secret.txt'); // Correctly construct the path
+    const userPath = path.join(...(Array(levelsUp).fill('..') as string[]), 'secret.txt'); // Cast array to string[]
     expect(() => resolvePath(userPath)).toThrow(McpError);
     expect(() => resolvePath(userPath)).toThrow('Path traversal detected. Access denied.');
     try {

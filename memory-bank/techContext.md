@@ -1,4 +1,4 @@
-<!-- Version: 1.3 | Last Updated: 2025-04-06 | Updated By: Roo -->
+<!-- Version: 1.4 | Last Updated: 2025-04-06 | Updated By: Roo -->
 
 # Tech Context: PDF Reader MCP Server
 
@@ -7,7 +7,7 @@
 - **Runtime:** Node.js (Version should be compatible with used libraries, likely >= 18)
 - **Language:** TypeScript (Compiled to JavaScript for execution)
 - **Package Manager:** npm (Node Package Manager)
-- **Linter:** ESLint (with TypeScript support)
+- **Linter:** ESLint (with TypeScript support, including type-aware rules)
 - **Formatter:** Prettier
 
 ## 2. Key Libraries/Dependencies
@@ -40,7 +40,7 @@
 - **Configuration:**
   - `tsconfig.json`: TypeScript compiler options.
   - `vitest.config.ts`: Vitest test runner configuration.
-  - `eslint.config.js`: ESLint flat configuration (integrates Prettier rules).
+  - `eslint.config.js`: ESLint flat configuration (integrates Prettier rules, enables type-aware linting for TS files).
   - `.prettierrc.cjs`: Prettier formatting rules (using CommonJS).
   - `package.json`: Project metadata, dependencies, and npm scripts.
     - `dependencies`: (See package.json for full list)
@@ -50,7 +50,7 @@
       - `watch`: Compiles TypeScript in watch mode.
       - `test`: Runs tests.
       - `test:coverage`: Runs tests with coverage.
-      - `lint`: Runs ESLint check.
+      - `lint`: Runs ESLint check (including type-aware rules).
       - `lint:fix`: Runs ESLint check and fixes issues.
       - `format`: Formats code using Prettier.
       - `check-format`: Checks if code formatting matches Prettier rules.

@@ -5,6 +5,10 @@ import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 // Removed unused import: import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { resolvePath } from '../../src/utils/pathUtils.js'; // Removed PROJECT_ROOT
 
+// Define a type for the expected structure after JSON.parse
+type ExpectedResultType = { results: { source: string; success: boolean; data?: object; error?: string }[] };
+
+
 // --- Mocking pdfjs-dist ---
 // Define mocks that can be accessed and reset
 // Removed unused variable: const mockGetTextContent = vi.fn();
@@ -85,6 +89,7 @@ describe('read_pdf Tool Handler', () => {
       },
     });
     // Set default implementation for getPage in beforeEach
+    // eslint-disable-next-line @typescript-eslint/require-await
     mockGetPage.mockImplementation(async (pageNum: number) => {
       // Use the numPages from the mockDocumentAPI defined *within this beforeEach scope*
       // DO NOT call mockGetDocument() again here.
@@ -132,7 +137,7 @@ describe('read_pdf Tool Handler', () => {
     expect(mockGetMetadata).toHaveBeenCalled();
     expect(mockGetPage).toHaveBeenCalledTimes(3); // Called for pages 1, 2, 3
     expect(result.content[0].type).toBe('text');
-    expect(JSON.parse(result.content[0].text)).toEqual(expectedData);
+    expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
   });
 
   it('should successfully read specific pages for a local file', async () => {
@@ -171,7 +176,7 @@ describe('read_pdf Tool Handler', () => {
     expect(mockGetPage).toHaveBeenCalledWith(1);
     expect(mockGetPage).toHaveBeenCalledWith(3);
     expect(result.content[0].type).toBe('text');
-    expect(JSON.parse(result.content[0].text)).toEqual(expectedData);
+    expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
   });
 
   it('should successfully read specific pages using string range', async () => {
@@ -200,7 +205,7 @@ describe('read_pdf Tool Handler', () => {
         },
       ],
     };
-    expect(JSON.parse(result.content[0].text)).toEqual(expectedData);
+    expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
   });
 
   it('should successfully read metadata only for a URL', async () => {
@@ -232,7 +237,7 @@ describe('read_pdf Tool Handler', () => {
     expect(mockGetMetadata).toHaveBeenCalled();
     expect(mockGetPage).not.toHaveBeenCalled();
     expect(result.content[0].type).toBe('text');
-    expect(JSON.parse(result.content[0].text)).toEqual(expectedData);
+    expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
   });
 
   it('should handle multiple sources with different options', async () => {
@@ -248,6 +253,7 @@ describe('read_pdf Tool Handler', () => {
     };
 
     // Mock different page count and getPage for the second PDF
+    // eslint-disable-next-line @typescript-eslint/require-await
     const secondMockGetPage = vi.fn().mockImplementation(async (pageNum: number) => {
       if (pageNum > 0 && pageNum <= 2) {
         // Hardcoded numPages for second mock
@@ -317,7 +323,7 @@ describe('read_pdf Tool Handler', () => {
     // Check calls for the *correct* mock instances
     expect(mockGetPage).toHaveBeenCalledTimes(1); // Called once for the first source (local.pdf)
     expect(secondMockGetPage).toHaveBeenCalledTimes(2); // Called twice for the second source (urlSource)
-    expect(JSON.parse(result.content[0].text)).toEqual(expectedData);
+    expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
   });
 
   // --- Error Handling Tests ---
@@ -339,7 +345,7 @@ describe('read_pdf Tool Handler', () => {
         },
       ],
     };
-    expect(JSON.parse(result.content[0].text)).toEqual(expectedData);
+    expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
   });
 
   it('should return error if pdfjs fails to load document', async () => {
@@ -352,7 +358,8 @@ describe('read_pdf Tool Handler', () => {
 
     // Handler is now available via closure from beforeAll
     const result = await handler(args);
-    const parsedResult = JSON.parse(result.content[0].text);
+    // Cast the parsed result to avoid unsafe access errors
+    const parsedResult = JSON.parse(result.content[0].text) as ExpectedResultType;
     expect(parsedResult.results[0].success).toBe(false);
     // Match the actual error format returned by the handler (includes McpError code/prefix)
     expect(parsedResult.results[0].error).toBe(
@@ -421,11 +428,12 @@ describe('read_pdf Tool Handler', () => {
     };
     expect(mockGetPage).toHaveBeenCalledTimes(1); // Only called for page 1
     expect(mockGetPage).toHaveBeenCalledWith(1);
-    expect(JSON.parse(result.content[0].text)).toEqual(expectedData);
+    expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
   });
 
   it('should handle errors during page processing gracefully when specific pages are requested', async () => {
     // Make mockGetPage for page 2 throw an error
+    // eslint-disable-next-line @typescript-eslint/require-await
     mockGetPage.mockImplementation(async (pageNum: number) => {
       if (pageNum === 1)
         return {
@@ -466,6 +474,6 @@ describe('read_pdf Tool Handler', () => {
       ],
     };
     expect(mockGetPage).toHaveBeenCalledTimes(3);
-    expect(JSON.parse(result.content[0].text)).toEqual(expectedData);
+    expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
   });
 });

@@ -1,6 +1,6 @@
-<!-- Version: 1.4 | Last Updated: 2025-04-06 | Updated By: Roo -->
+<!-- Version: 1.5 | Last Updated: 2025-04-06 | Updated By: Roo -->
 
-# Progress: PDF Reader MCP Server (ESLint + Prettier Setup)
+# Progress: PDF Reader MCP Server (Type-Aware Linting Enabled)
 
 ## 1. What Works
 
@@ -14,13 +14,14 @@
 - **License:** `LICENSE` file created (MIT).
 - **GitHub Actions:** `.github/workflows/publish.yml` updated for CI/CD, including ESLint check.
 - **Testing Framework (Vitest):** Integrated, configured, basic tests passing.
-- **Linter (ESLint):** Integrated, configured (`eslint.config.js`), scripts added, codebase passes checks.
+- **Linter (ESLint):**
+  - Integrated, configured (`eslint.config.js`) including Prettier compatibility and **type-aware rules** (`recommendedTypeChecked`).
+  - Scripts (`lint`, `lint:fix`) added to `package.json`.
+  - Codebase passes all current ESLint checks.
 - **Formatter (Prettier):**
-  - Installed `prettier` and `eslint-config-prettier`.
-  - Configured via `.prettierrc.cjs`.
-  - Integrated with ESLint via `eslint-config-prettier` in `eslint.config.js`.
-  - Added `format` and `check-format` scripts to `package.json`.
-  - Codebase formatted using Prettier.
+  - Integrated, configured (`.prettierrc.cjs`), integrated with ESLint.
+  - Scripts (`format`, `check-format`) added to `package.json`.
+  - Codebase formatted.
 
 ## 2. What's Left to Build/Verify
 
@@ -30,14 +31,14 @@
   - Test the consolidated `read_pdf` tool via `@modelcontextprotocol/inspector` or a live agent.
   - Verify error handling.
 - **Testing:** Core handlers have tests. Consider edge cases.
-- **Refinement:** Review code for improvements.
+- **Refinement:** Review code for potential improvements.
 - **Publishing Workflow Test:** Test the full workflow with a version tag.
-- **(Optional) Stricter ESLint Rules:** Consider enabling type-aware linting rules.
+- **(Optional) Stricter ESLint Rules:** Consider `strictTypeChecked` rules if needed.
 - **(Optional) Pre-commit Hooks:** Consider adding Husky + lint-staged.
 
 ## 3. Current Status
 
-ESLint and Prettier integrated and configured for code linting and formatting. Existing code passes checks and is formatted. Vitest testing framework integrated with basic tests passing. GitHub Actions workflow includes lint check. Ready for build and workflow verification.
+ESLint (with type-aware rules) and Prettier integrated and configured for code linting and formatting. Existing code passes linting checks and is formatted. Vitest testing framework integrated with basic tests passing. GitHub Actions workflow includes lint check. Ready for build and workflow verification.
 
 ## 4. Known Issues/Risks
 
