@@ -61,7 +61,7 @@
     "docs:api": "node scripts/generate-api-docs.mjs",
     "prepublishOnly": "npm run clean && npm run build",
     "release": "standard-version",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "0.6.0",
