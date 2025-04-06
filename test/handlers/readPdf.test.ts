@@ -255,13 +255,20 @@ describe('handleReadPdfFunc Integration Tests', () => {
     };
     // Setup mocks for the second source (URL)
     const secondMockGetPage = vi.fn().mockImplementation(async (pageNum: number) => {
-      if (pageNum === 1) return { getTextContent: vi.fn().mockResolvedValue({ items: [{ str: 'URL Mock page text 1' }] }) };
-      if (pageNum === 2) return { getTextContent: vi.fn().mockResolvedValue({ items: [{ str: 'URL Mock page text 2' }] }) };
+      if (pageNum === 1)
+        return {
+          getTextContent: vi.fn().mockResolvedValue({ items: [{ str: 'URL Mock page text 1' }] }),
+        };
+      if (pageNum === 2)
+        return {
+          getTextContent: vi.fn().mockResolvedValue({ items: [{ str: 'URL Mock page text 2' }] }),
+        };
       throw new Error(`Mock getPage error: Invalid page number ${String(pageNum)}`);
     });
-    const secondMockGetMetadata = vi.fn().mockResolvedValue({ // Separate metadata mock if needed
-        info: { Title: 'URL PDF' },
-        metadata: { getAll: () => ({ 'dc:creator': 'URL Author' }) }
+    const secondMockGetMetadata = vi.fn().mockResolvedValue({
+      // Separate metadata mock if needed
+      info: { Title: 'URL PDF' },
+      metadata: { getAll: () => ({ 'dc:creator': 'URL Author' }) },
     });
     const secondMockDocumentAPI = {
       numPages: 2,
@@ -274,17 +281,17 @@ describe('handleReadPdfFunc Integration Tests', () => {
     mockGetDocument.mockReset();
     // Mock getDocument based on input source
     mockGetDocument.mockImplementation((source: Buffer | { url: string }) => {
-        // Check if source is not a Buffer and has the matching url property
-        if (typeof source === 'object' && !Buffer.isBuffer(source) && source.url === urlSource) {
-            return secondLoadingTaskAPI;
-        }
-        // Default mock for path-based source (local.pdf)
-        const defaultMockDocumentAPI = {
-          numPages: 3,
-          getMetadata: mockGetMetadata, // Use original metadata mock
-          getPage: mockGetPage,       // Use original page mock
-        };
-        return { promise: Promise.resolve(defaultMockDocumentAPI) };
+      // Check if source is not a Buffer and has the matching url property
+      if (typeof source === 'object' && !Buffer.isBuffer(source) && source.url === urlSource) {
+        return secondLoadingTaskAPI;
+      }
+      // Default mock for path-based source (local.pdf)
+      const defaultMockDocumentAPI = {
+        numPages: 3,
+        getMetadata: mockGetMetadata, // Use original metadata mock
+        getPage: mockGetPage, // Use original page mock
+      };
+      return { promise: Promise.resolve(defaultMockDocumentAPI) };
     });
 
     const result = await handler(args);
