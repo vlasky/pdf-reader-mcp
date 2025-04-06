@@ -3,7 +3,7 @@ import { readPdfToolDefinition } from './readPdf.js';
 
 // Define the structure for a tool definition (used internally and for index.ts)
 // We need Zod here to define the schema type correctly
-import { z } from 'zod';
+import type { z } from 'zod';
 export interface ToolDefinition {
   name: string;
   description: string;

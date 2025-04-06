@@ -4,9 +4,9 @@ import { resolvePath } from '../../src/utils/pathUtils.js';
 import * as pathUtils from '../../src/utils/pathUtils.js'; // Import the module itself for spying
 
 // Define a type for the expected structure after JSON.parse
-type ExpectedResultType = {
+interface ExpectedResultType {
   results: { source: string; success: boolean; data?: object; error?: string }[];
-};
+}
 
 // --- Mocking pdfjs-dist ---
 const mockGetMetadata = vi.fn();
@@ -31,7 +31,10 @@ vi.doMock('node:fs/promises', () => {
 
 // Dynamically import the handler *once* after mocks are defined
 // Define a more specific type for the handler's return value content
-type HandlerResultContent = { type: string; text: string };
+interface HandlerResultContent {
+  type: string;
+  text: string;
+}
 let handler: (args: unknown) => Promise<{ content: HandlerResultContent[] }>;
 
 beforeAll(async () => {

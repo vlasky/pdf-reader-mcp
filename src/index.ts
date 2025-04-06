@@ -2,7 +2,7 @@
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { z } from 'zod'; // Import Zod
+import type { z } from 'zod'; // Import Zod
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import {
   CallToolRequestSchema,
@@ -65,7 +65,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 // --- Server Start ---
 
-async function main() {
+async function main(): Promise<void> {
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error('[Filesystem MCP] Server running on stdio');

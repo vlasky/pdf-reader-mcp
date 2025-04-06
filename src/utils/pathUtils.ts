@@ -6,7 +6,7 @@ import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 // This relies on the process launching the server to set the CWD correctly.
 export const PROJECT_ROOT = process.cwd();
 
-console.log(`[Filesystem MCP - pathUtils] Project Root determined from CWD: ${PROJECT_ROOT}`);
+console.info(`[Filesystem MCP - pathUtils] Project Root determined from CWD: ${PROJECT_ROOT}`); // Use info instead of log
 
 /**
  * Resolves a user-provided relative path against the project root,

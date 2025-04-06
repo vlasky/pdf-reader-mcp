@@ -1,4 +1,4 @@
-import { describe, bench, vi } from 'vitest';
+import { describe, bench, vi as _vi } from 'vitest'; // Prefix unused import
 import { handleReadPdfFunc } from '../../src/handlers/readPdf'; // Adjust path as needed
 import path from 'node:path';
 import fs from 'node:fs/promises';
@@ -12,7 +12,8 @@ let pdfExists = false;
 try {
   await fs.access(path.resolve(PROJECT_ROOT, SAMPLE_PDF_PATH));
   pdfExists = true;
-} catch (error) {
+} catch {
+  // Remove unused variable binding entirely
   console.warn(
     `Warning: Sample PDF not found at ${SAMPLE_PDF_PATH}. Benchmarks requiring it will be skipped.`
   );
