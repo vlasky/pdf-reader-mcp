@@ -1,15 +1,33 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "Node16",
-    "moduleResolution": "Node16",
+    "module": "NodeNext", // Recommended for Node.js ES Modules
+    "moduleResolution": "NodeNext", // Align with module setting
     "outDir": "./build",
-    "rootDir": "./src",
+    // "rootDir": "./src", // Removed rootDir to allow including files outside src (like tests)
+    // Strictest settings (some might be implied by strict: true)
     "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true, // Might require constructor initialization or definite assignment assertion (!)
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true, // Can be noisy, but safer
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true, // Good for preventing errors with index signatures
+    // Other settings
     "esModuleInterop": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true, // Keep skipping lib check for faster builds
     "forceConsistentCasingInFileNames": true,
-    "types": ["node", "vitest/globals"] // Add vitest/globals here
+    "types": ["node", "vitest/globals"]
   },
   "include": ["src/**/*", "test/**/*", "vitest.config.ts"], // Include test files and config
   "exclude": ["node_modules"]

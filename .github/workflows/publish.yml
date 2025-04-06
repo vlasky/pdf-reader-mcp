@@ -26,8 +26,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run ESLint
-        run: npm run lint # Run lint check after installing dependencies
+      - name: Validate Code Quality (Format, Lint, Test, Coverage)
+        run: npm run validate # This runs check-format, lint, and test:cov (with 100% threshold)
 
       - name: Build project
         run: npm run build

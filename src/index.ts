@@ -70,7 +70,7 @@ async function main() {
   console.error('[Filesystem MCP] Server running on stdio');
 }
 
-main().catch((error) => {
+main().catch((error: unknown) => { // Specify 'unknown' type for catch variable
   console.error('[Filesystem MCP] Server error:', error);
   process.exit(1);
 });

@@ -12,6 +12,10 @@ const parsePageRanges = (ranges: string): number[] => {
   for (const part of parts) {
     if (part.includes('-')) {
       const [startStr, endStr] = part.split('-');
+      // Add checks for undefined before parseInt, although split should guarantee elements if includes('-') is true
+      if (startStr === undefined || endStr === undefined) {
+        throw new Error(`Invalid page range format after split: ${part}`);
+      }
       const start = parseInt(startStr, 10);
       const end = parseInt(endStr, 10);
       if (!isNaN(start) && !isNaN(end) && start <= end) {
@@ -223,8 +227,19 @@ const handleReadPdfFunc = async (args: unknown) => {
       if (include_metadata) {
         const metadata = await pdfDocument.getMetadata();
         // Cast to expected types
-        output.info = metadata?.info as PdfInfo | undefined;
-        output.metadata = metadata?.metadata?.getAll() as PdfMetadata | undefined;
+        // Assign only if the value exists to comply with exactOptionalPropertyTypes
+        // Remove unnecessary optional chain as metadata is checked by include_metadata guard
+        const infoData = metadata.info as PdfInfo | undefined;
+        if (infoData !== undefined) {
+            output.info = infoData;
+        }
+        // Remove unnecessary optional chains as metadata is checked by include_metadata guard
+        // Remove unnecessary optional chain for metadata.metadata as getMetadata() should return object with metadata property if it exists
+        const metadataObj = metadata.metadata;
+        const metadataData = metadataObj.getAll() as PdfMetadata | undefined; // Remove optional chain here
+        if (metadataData !== undefined) {
+            output.metadata = metadataData;
+        }
       }
       if (include_page_count) {
         output.num_pages = totalPages;
@@ -239,7 +254,7 @@ const handleReadPdfFunc = async (args: unknown) => {
         if (invalidPages.length > 0) {
           output.warnings = output.warnings || [];
           output.warnings.push(
-            `Requested page numbers ${invalidPages.join(', ')} exceed total pages (${totalPages}).`
+            `Requested page numbers ${invalidPages.join(', ')} exceed total pages (${String(totalPages)}).` // Explicitly convert number to string
           );
         }
       } else if (include_full_text) {
@@ -264,7 +279,7 @@ const handleReadPdfFunc = async (args: unknown) => {
             // Add type guard for error message
             const message = pageError instanceof Error ? pageError.message : String(pageError);
             console.warn(
-              `[PDF Reader MCP] Error getting text content for page ${pageNum} in ${sourceDescription}: ${message}`
+              `[PDF Reader MCP] Error getting text content for page ${String(pageNum)} in ${sourceDescription}: ${message}` // Explicitly convert number to string
             );
             if (targetPages) {
               extractedPageTexts.push({ page: pageNum, text: `Error processing page: ${message}` });

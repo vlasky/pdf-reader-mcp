@@ -13,7 +13,7 @@ export default tseslint.config(
   ...tseslint.config({
     files: ['**/*.ts'],
     extends: [
-      ...tseslint.configs.recommendedTypeChecked, // Apply type-aware rules ONLY to TS files
+      ...tseslint.configs.strictTypeChecked, // Apply strictest type-aware rules ONLY to TS files
       // Consider adding tseslint.configs.stylisticTypeChecked for style rules that need types
     ],
     languageOptions: {

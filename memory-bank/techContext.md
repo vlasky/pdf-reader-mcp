@@ -1,4 +1,4 @@
-<!-- Version: 1.4 | Last Updated: 2025-04-06 | Updated By: Roo -->
+<!-- Version: 1.5 | Last Updated: 2025-04-06 | Updated By: Roo -->
 
 # Tech Context: PDF Reader MCP Server
 
@@ -7,8 +7,9 @@
 - **Runtime:** Node.js (Version should be compatible with used libraries, likely >= 18)
 - **Language:** TypeScript (Compiled to JavaScript for execution)
 - **Package Manager:** npm (Node Package Manager)
-- **Linter:** ESLint (with TypeScript support, including type-aware rules)
+- **Linter:** ESLint (with TypeScript support, including **strict type-aware rules**)
 - **Formatter:** Prettier
+- **Testing:** Vitest (with **100% coverage requirement**)
 
 ## 2. Key Libraries/Dependencies
 
@@ -38,10 +39,11 @@
 - **Testing Code:** Located in the `test` directory.
 - **Main File:** `src/index.ts`.
 - **Configuration:**
-  - `tsconfig.json`: TypeScript compiler options.
-  - `vitest.config.ts`: Vitest test runner configuration.
-  - `eslint.config.js`: ESLint flat configuration (integrates Prettier rules, enables type-aware linting for TS files).
+  - `tsconfig.json`: TypeScript compiler options (**strictest settings enabled**, `rootDir` removed).
+  - `vitest.config.ts`: Vitest test runner configuration (**100% coverage thresholds set**).
+  - `eslint.config.js`: ESLint flat configuration (integrates Prettier, enables **strict type-aware linting** for TS files).
   - `.prettierrc.cjs`: Prettier formatting rules (using CommonJS).
+  - `.github/FUNDING.yml`: GitHub Sponsors and Buy Me a Coffee configuration.
   - `package.json`: Project metadata, dependencies, and npm scripts.
     - `dependencies`: (See package.json for full list)
     - `devDependencies`: (Includes TypeScript, Vitest, ESLint, Prettier related packages - See package.json for full list)
@@ -49,11 +51,12 @@
       - `build`: Compiles TypeScript.
       - `watch`: Compiles TypeScript in watch mode.
       - `test`: Runs tests.
-      - `test:coverage`: Runs tests with coverage.
-      - `lint`: Runs ESLint check (including type-aware rules).
+      - `test:coverage` / `test:cov`: Runs tests with coverage.
+      - `lint`: Runs ESLint check (including strict type-aware rules).
       - `lint:fix`: Runs ESLint check and fixes issues.
       - `format`: Formats code using Prettier.
       - `check-format`: Checks if code formatting matches Prettier rules.
+      - `validate`: Runs `check-format`, `lint`, and `test:cov` sequentially.
       - `inspector`: Runs the MCP inspector.
       - `start`: Runs the compiled server.
 - **Build Output:** Compiled JavaScript in the `build` directory.
