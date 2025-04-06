@@ -103,7 +103,7 @@ const ReadPdfArgsSchema = z
 type ReadPdfArgs = z.infer<typeof ReadPdfArgsSchema>;
 
 // Define the handler function
-const handleReadPdfFunc = async (args: unknown) => {
+export const handleReadPdfFunc = async (args: unknown) => {
   let parsedArgs: ReadPdfArgs;
   try {
     parsedArgs = ReadPdfArgsSchema.parse(args);

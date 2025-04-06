@@ -23,10 +23,10 @@
     "noUncheckedIndexedAccess": true, // Can be noisy, but safer
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true, // Good for preventing errors with index signatures
-      "allowJs": false,
-      "resolveJsonModule": true,
-      "moduleDetection": "force",
-      "isolatedModules": true,
+    "allowJs": false,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
     // Other settings
     "esModuleInterop": true,
     "skipLibCheck": true, // Keep skipping lib check for faster builds
@@ -34,8 +34,8 @@
     "types": ["node", "vitest/globals"]
   },
   "include": ["src/**/*", "test/**/*", "vitest.config.ts"], // Include test files and config
-      "declaration": true,
-      "sourceMap": true,
-      "removeComments": false,
+  "declaration": true,
+  "sourceMap": true,
+  "removeComments": false,
   "exclude": ["node_modules", "build", "**/*.test.ts", "**/*.spec.ts", "**/*.bench.ts"]
 }

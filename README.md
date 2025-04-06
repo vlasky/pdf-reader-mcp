@@ -1,51 +1,24 @@
 # PDF Reader MCP Server (@sylphlab/pdf-reader-mcp)
 
-[![npm version](https://badge.fury.io/js/%40shtse8%2Fpdf-reader-mcp.svg)](https://badge.fury.io/js/%40shtse8%2Fpdf-reader-mcp)
+[![CI/CD Pipeline](https://github.com/sylphlab/pdf-reader-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/sylphlab/pdf-reader-mcp/actions/workflows/ci.yml)
+[![Coverage Status](https://coveralls.io/repos/github/sylphlab/pdf-reader-mcp/badge.svg?branch=main)](https://coveralls.io/github/sylphlab/pdf-reader-mcp?branch=main)
+[![npm version](https://badge.fury.io/js/%40sylphlab%2Fpdf-reader-mcp.svg)](https://badge.fury.io/js/%40sylphlab%2Fpdf-reader-mcp)
 [![Docker Pulls](https://img.shields.io/docker/pulls/sylphlab/pdf-reader-mcp.svg)](https://hub.docker.com/r/sylphlab/pdf-reader-mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-<!-- Add other badges like License, Build Status if applicable -->
+Empower your AI agents (like Cline) with the ability to securely read and extract information (text, metadata, page count) from PDF files within your project context using a single, flexible tool.
 
-**Empower your AI agents (like Cline/Claude) with the ability to read and
-extract information from PDF files within your project, using a single, flexible
-tool.**
+## Installation
 
-This Node.js server implements the
-[Model Context Protocol (MCP)](https://docs.modelcontextprotocol.com/) to
-provide a consolidated `read_pdf` tool for interacting with PDF documents (local
-or URL) located within a defined project root directory.
+### Using npm (Recommended)
 
----
+Install as a dependency in your MCP host environment or project:
 
-## ⭐ Why Use This Server?
+```bash
+npm install @sylphlab/pdf-reader-mcp
+```
 
-- **🛡️ Secure Project Root Focus:**
-  - All local file operations are **strictly confined to the project root
-    directory** (determined by the server's launch context), preventing
-    unauthorized access.
-  - Uses **relative paths** for local files. **Important:** The server
-    determines its project root from its own Current Working Directory (`cwd`)
-    at launch. The process starting the server (e.g., your MCP host) **must**
-    set the `cwd` to your intended project directory.
-- **🌐 URL Support:** Can directly process PDFs from public URLs.
-- **⚡ Efficient PDF Processing:**
-  - Leverages the `pdf-parse` library for extracting text, metadata, and page
-    information.
-- **🔧 Flexible & Consolidated Tool:**
-  - A single `read_pdf` tool handles various extraction needs via parameters,
-    simplifying agent interaction.
-- **🚀 Easy Integration:** Get started quickly using `npx` with minimal
-  configuration.
-- **🐳 Containerized Option:** Also available as a Docker image for consistent
-  deployment environments.
-- **✅ Robust Validation:** Uses Zod schemas to validate all incoming tool
-  arguments.
-
----
-
-## 🚀 Quick Start: Usage with MCP Host (Recommended: `npx`)
-
-The simplest way is via `npx`, configured in your MCP host (e.g.,
-`mcp_settings.json`).
+Configure your MCP host (e.g., `mcp_settings.json`) to use `npx`:
 
 ```json
 {
@@ -59,114 +32,17 @@ The simplest way is via `npx`, configured in your MCP host (e.g.,
 }
 ```
 
-**(Alternative) Using `bunx`:**
+_(Ensure the host sets the correct `cwd` for the target project)_
 
-```json
-{
-  "mcpServers": {
-    "pdf-reader-mcp": {
-      "command": "bunx",
-      "args": ["@sylphlab/pdf-reader-mcp"],
-      "name": "PDF Reader (bunx)"
-    }
-  }
-}
+### Using Docker
+
+Pull the image:
+
+```bash
+docker pull sylphlab/pdf-reader-mcp:latest
 ```
 
-**Important:** Ensure your MCP Host launches the command with the `cwd` set to
-your project's root directory for local file access.
-
----
-
-## ✨ The `read_pdf` Tool
-
-This server provides a single, powerful tool: `read_pdf`.
-
-- **Description:** Reads content, metadata, or page count from a PDF file (local
-  or URL), controlled by parameters.
-- **Input:** An object containing:
-  - `sources` (array): **Required.** An array of source objects. Each object
-    must contain _either_ `path` (string, relative path to local PDF) _or_ `url`
-    (string, URL of PDF). Each source object can _optionally_ include:
-    - `pages` (string | number[], optional): Extract text only from specific
-      pages (1-based) or ranges (e.g., `[1, 3, 5]` or `'1,3-5,7'`) for _this
-      specific source_. If provided, the global `include_full_text` flag is
-      ignored for this source.
-  - `include_full_text` (boolean, optional, default `false`): Include the full
-    text content for each PDF. Ignored if `pages` is provided.
-  - `include_metadata` (boolean, optional, default `true`): Include metadata
-    (`info` and `metadata` objects) for each PDF.
-  - `include_page_count` (boolean, optional, default `true`): Include the total
-  number of pages (`num_pages`) for each PDF.
-  <!-- Removed deprecated top-level pages parameter description -->
-- **Output:** An object containing a `results` array. Each element corresponds
-  to a source in the input `sources` array. **Processing continues even if some
-  sources fail.** Each result object has the following structure:
-  - `source` (string): The original path or URL provided for identification.
-  - `success` (boolean): Indicates if processing _this specific source_ was
-    successful.
-  - `error` (string, optional): Provides an error message if `success` is false
-    for this source.
-  - `data` (object, optional): Contains the extracted data if `success` is true
-    for this source:
-    - `full_text` (string, optional)
-    - `page_texts` (array, optional): Array of `{ page: number, text: string }`.
-    - `missing_pages` (array, optional)
-    - `info` (object, optional)
-    - `metadata` (object, optional)
-    - `num_pages` (number, optional)
-    - `warnings` (array, optional): Non-critical warnings for this source (e.g.,
-      requested page out of bounds).
-
-1. **Get metadata and page count for multiple files:**
-
-   ```json
-   {
-     "sources": [
-       { "path": "report.pdf" },
-       { "url": "http://example.com/another.pdf" },
-       { "path": "nonexistent.pdf" }
-     ]
-   }
-   ```
-
-   _(Example Output:
-   `{ "results": [ { "source": "report.pdf", "success": true, "data": { "info": {...}, "metadata": {...}, "num_pages": 10 } }, { "source": "http://example.com/another.pdf", "success": true, "data": { "info": {...}, "metadata": {...}, "num_pages": 5 } }, { "source": "nonexistent.pdf", "success": false, "error": "File not found..." } ] }`)_
-
-2. **Get full text for one file:**
-
-   ```json
-   {
-     "sources": [{ "url": "http://example.com/document.pdf" }],
-     "include_full_text": true,
-     "include_metadata": false,
-     "include_page_count": false
-   }
-   ```
-
-   _(Example Output:
-   `{ "results": [ { "source": "http://example.com/document.pdf", "success": true, "data": { "full_text": "..." } } ] }`)_
-
-3. **Get text from different pages for different files:**
-   ```json
-   {
-     "sources": [
-       { "path": "manual.pdf", "pages": "1-2" },
-       { "url": "http://example.com/report.pdf", "pages": [5] }
-     ],
-     "include_metadata": false /* Default is true, explicitly set false */,
-     "include_page_count": false /* Default is true, explicitly set false */
-   }
-   ```
-   _(Example Output:
-   `{ "results": [ { "source": "manual.pdf", "success": true, "data": { "page_texts": [...] } }, { "source": "http://example.com/report.pdf", "success": true, "data": { "page_texts": [...] } } ] }`)_
-
----
-
-## 🐳 Alternative Usage: Docker
-
-Configure your MCP Host to run the Docker container, mounting your project
-directory to `/app`.
+Configure your MCP host to run the container, mounting your project directory to `/app`:
 
 ```json
 {
@@ -178,7 +54,7 @@ directory to `/app`.
         "-i",
         "--rm",
         "-v",
-        "/path/to/your/project:/app",
+        "/path/to/your/project:/app", // Or use "$PWD:/app", "%CD%:/app", etc.
         "sylphlab/pdf-reader-mcp:latest"
       ],
       "name": "PDF Reader (Docker)"
@@ -186,20 +62,6 @@ directory to `/app`.
   }
 }
 ```
-
-**Note on Volume Mount Path:** Instead of hardcoding `/path/to/your/project`,
-you can often use shell variables to automatically use the current working
-directory:
-
-- **Linux/macOS:** `-v "$PWD:/app"`
-- **Windows Cmd:** `-v "%CD%:/app"`
-- **Windows PowerShell:** `-v "${PWD}:/app"`
-- **VS Code Tasks/Launch:** You might be able to use `${workspaceFolder}` if
-  supported by your MCP host integration.
-
----
-
-## 🛠️ Other Usage Options
 
 ### Local Build (For Development)
 
@@ -218,24 +80,102 @@ directory:
      }
    }
    ```
+   _(Ensure the host sets the correct `cwd` for the target project)_
 
----
+## Quick Start
 
-## 💻 Development
+Assuming the server is running and configured in your MCP host:
 
-1. Clone, `npm install`, `npm run build`.
-2. `npm run watch` for auto-recompile.
+**MCP Request (Get metadata and page 2 text from a local PDF):**
 
----
+```json
+{
+  "tool_name": "read_pdf",
+  "arguments": {
+    "sources": [
+      {
+        "path": "./documents/my_report.pdf",
+        "pages": [2]
+      }
+    ],
+    "include_metadata": true,
+    "include_page_count": false, // Default is true, explicitly false here
+    "include_full_text": false // Ignored because 'pages' is specified
+  }
+}
+```
 
-## 🚢 Publishing (via GitHub Actions)
+**Expected Response Snippet:**
 
-Uses GitHub Actions (`.github/workflows/publish.yml`) to publish to npm and
-Docker Hub on pushes to `main`. Requires `NPM_TOKEN`, `DOCKERHUB_USERNAME`,
-`DOCKERHUB_TOKEN` secrets.
+```json
+{
+  "results": [
+    {
+      "source": "./documents/my_report.pdf",
+      "success": true,
+      "data": {
+        "page_texts": [
+          { "page": 2, "text": "Text content from page 2..." }
+        ],
+        "info": { ... },
+        "metadata": { ... }
+        // num_pages not included as requested
+      }
+    }
+  ]
+}
+```
 
----
+## Why Choose This Project?
 
-## 🙌 Contributing
+- **🛡️ Secure:** Confines file access strictly to the project root directory.
+- **🌐 Flexible:** Handles both local relative paths and public URLs.
+- **🧩 Consolidated:** A single `read_pdf` tool serves multiple extraction needs (full text, specific pages, metadata, page count).
+- **⚙️ Structured Output:** Returns data in a predictable JSON format, easy for agents to parse.
+- **🚀 Easy Integration:** Designed for seamless use within MCP environments via `npx` or Docker.
+- **✅ Robust:** Uses `pdfjs-dist` for reliable parsing and Zod for input validation.
 
-Contributions welcome! Open an issue or PR.
+## Performance Advantages
+
+_(Performance benchmarks are planned and will be added to the documentation.)_
+
+## Features
+
+- Read full text content from PDF files.
+- Read text content from specific pages or page ranges.
+- Read PDF metadata (author, title, creation date, etc.).
+- Get the total page count of a PDF.
+- Process multiple PDF sources (local paths or URLs) in a single request.
+- Securely operates within the defined project root.
+- Provides structured JSON output via MCP.
+- Available via npm and Docker Hub.
+
+## Design Philosophy
+
+The server prioritizes security through context confinement, efficiency via structured data transfer, and simplicity for easy integration into AI agent workflows. It aims for minimal dependencies, relying on the robust `pdfjs-dist` library.
+
+See the full [Design Philosophy](./docs/design/index.md) documentation.
+
+## Comparison with Other Solutions
+
+Compared to direct file access (often infeasible) or generic filesystem tools, this server offers PDF-specific parsing capabilities. Unlike external CLI tools (e.g., `pdftotext`), it provides a secure, integrated MCP interface with structured output, enhancing reliability and ease of use for AI agents.
+
+See the full [Comparison](./docs/comparison/index.md) documentation.
+
+## Future Plans
+
+- Implement comprehensive benchmark tests.
+- Enhance documentation with more examples and advanced use cases.
+- Explore potential optimizations for very large PDF files.
+
+## Documentation
+
+For detailed usage, API reference, and guides, please visit the **[Full Documentation Website](https://sylphlab.github.io/pdf-reader-mcp/)** (Link to be updated once deployed).
+
+## Contributing
+
+Contributions are welcome! Please read the [CONTRIBUTING.md](./CONTRIBUTING.md) guidelines and open an issue or pull request on GitHub.
+
+## License
+
+This project is licensed under the [MIT License](./LICENSE).

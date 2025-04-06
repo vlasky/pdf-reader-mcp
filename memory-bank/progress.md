@@ -1,4 +1,4 @@
-<!-- Version: 1.10 | Last Updated: 2025-04-06 | Updated By: Sylph -->
+<!-- Version: 1.19 | Last Updated: 2025-04-06 | Updated By: Sylph -->
 
 # Progress: PDF Reader MCP Server (Guidelines Applied)
 
@@ -35,18 +35,23 @@
 
 ## 2. What's Left to Build/Verify
 
-- **Compilation:** Need to run `npm run build`.
-- **Runtime Testing:**
+- **Compilation:** Completed successfully.
+- **Runtime Testing (Blocked):** Requires user interaction. Skipping for now.
   - Verify the server starts correctly.
   - Test the consolidated `read_pdf` tool via `@modelcontextprotocol/inspector` or a live agent.
   - Verify error handling.
-- **Publishing Workflow Test:** Test the full workflow with a version tag.
-- **Documentation (Major):**
-  - Rewrite `README.md` per Guideline #9.
-  - Set up VitePress (`docs` folder) per Guideline #6.
-  - Create Hero Page and detailed documentation content (Guide, Principles, Performance, Testing, Contributing, Changelog) per Guideline #6.
-  - **Ensure no sponsorship info** is included.
-- **Benchmarking:** Implement and run benchmark tests for core functions per Guideline #5.
+- **Publishing Workflow Test:** Triggered by pushing existing tag `v0.4.0`.
+- **Documentation (In Progress):**
+  - Initial VitePress structure and config created.
+  - `vitepress` and `vue` dependencies installed.
+  - `docs:*` scripts confirmed/added to `package.json`.
+    - `README.md` rewritten per Guideline #9.
+  - VitePress setup initiated. - Initial content populated for Guide, API, Design, Performance, Comparison sections. - Fixed Markdown parsing errors in API docs. - Documentation successfully built (`npm run docs:build`). - `CONTRIBUTING.md` created. - `CHANGELOG.md` updated with initial dev entry.
+  - **Ensure no sponsorship info** is included (Verified for initial setup).
+- **Benchmarking:**
+  - Created initial benchmark file `test/benchmark/readPdf.bench.ts`.
+    - Fixed associated TypeScript errors.
+    - Successfully ran initial benchmarks (`npm run benchmark`).
 
 ## 3. Current Status
 

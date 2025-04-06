@@ -1,4 +1,4 @@
-<!-- Version: 1.3 | Last Updated: 2025-04-06 | Updated By: Sylph -->
+<!-- Version: 1.12 | Last Updated: 2025-04-06 | Updated By: Sylph -->
 
 # Active Context: PDF Reader MCP Server (Guidelines Alignment)
 
@@ -38,11 +38,11 @@ Aligning the project configuration, structure, and CI/CD processes with the prov
 
 ## 3. Next Steps
 
-- Build the project (`npm run build`).
-- Test the updated GitHub Actions workflow (`ci.yml`) by pushing a tag (e.g., `v0.4.0`).
-- Perform runtime testing using `@modelcontextprotocol/inspector` or a live agent.
-- **Documentation (Major):** Rewrite `README.md`, set up VitePress, create detailed content per Guideline #6.
-- **Benchmarking:** Implement and run benchmark tests per Guideline #5.
+- **Build Completed:** Project successfully built (`npm run build`).
+- **GitHub Actions Triggered:** Pushed existing tag `v0.4.0` to trigger `ci.yml` workflow (tag was already remote).
+- **Runtime Testing (Blocked):** Requires user interaction with `@modelcontextprotocol/inspector` or a live agent. Skipping for now.
+- **Documentation (In Progress):** Set up initial VitePress structure, config, placeholders, installed dependencies, confirmed scripts. Populated initial content for README, API, Design, Performance, Comparison sections. Updated VitePress config. Fixed Markdown parsing issues. Successfully built docs. Created `CONTRIBUTING.md` and added initial `CHANGELOG.md` entry. Next: Implement Benchmarking.
+- **Benchmarking:** Created initial benchmark file, fixed TS errors, and successfully ran benchmarks (`npm run benchmark`) after user provided `test/fixtures/sample.pdf`.
 
 ## 4. Active Decisions & Considerations
 

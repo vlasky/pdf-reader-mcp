@@ -26,16 +26,19 @@ export default tseslint.config(
       // General JS/TS Rules (applied within TS context)
       'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
       'prefer-const': 'error',
-      'eqeqeq': ['error', 'always'],
+      eqeqeq: ['error', 'always'],
       'no-unused-vars': 'off', // Use TS version
-      'complexity': ['error', { 'max': 10 }],
-      'max-lines': ['warn', { 'max': 300, 'skipBlankLines': true, 'skipComments': true }],
-      'max-lines-per-function': ['warn', { 'max': 50, 'skipBlankLines': true, 'skipComments': true }],
+      complexity: ['error', { max: 10 }],
+      'max-lines': ['warn', { max: 300, skipBlankLines: true, skipComments: true }],
+      'max-lines-per-function': ['warn', { max: 50, skipBlankLines: true, skipComments: true }],
       'max-depth': ['warn', 3],
       'max-params': ['warn', 4],
 
       // TypeScript Specific Rules (override/add)
-      '@typescript-eslint/no-unused-vars': ['error', { 'argsIgnorePattern': '^_', 'varsIgnorePattern': '^_' }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/explicit-function-return-type': 'error',
       '@typescript-eslint/no-non-null-assertion': 'error',

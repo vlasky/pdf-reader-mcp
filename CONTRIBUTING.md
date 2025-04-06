@@ -1,37 +1,53 @@
 # Contributing to PDF Reader MCP Server
 
-Thank you for your interest in contributing!
+Thank you for considering contributing! We welcome contributions from the community.
 
 ## How to Contribute
 
-We welcome contributions in various forms:
+1.  **Reporting Issues:** If you find a bug or have a feature request, please open an issue on GitHub.
 
-- **Reporting Bugs:** If you find a bug, please open an issue on GitHub detailing the problem, steps to reproduce, and your environment.
-- **Suggesting Enhancements:** Have an idea for a new feature or improvement? Open an issue to discuss it.
-- **Pull Requests:** If you'd like to contribute code:
-  1.  Fork the repository.
-  2.  Create a new branch for your feature or bug fix (`git checkout -b feature/your-feature-name` or `bugfix/issue-number`).
-  3.  Make your changes, ensuring they adhere to the project's coding style and principles (see `docs/principles.md`).
-  4.  Add tests for any new functionality and ensure all tests pass (`npm test`).
-  5.  Ensure code coverage remains high (`npm run test:cov`).
-  6.  Make sure your code lints correctly (`npm run lint`).
-  7.  Commit your changes using the [Conventional Commits](https://www.conventionalcommits.org/) standard (e.g., `feat: Add support for encrypted PDFs`, `fix: Correct page range parsing`).
-  8.  Push your branch to your fork (`git push origin feature/your-feature-name`).
-  9.  Open a Pull Request against the `main` branch of the original repository.
+    - Provide a clear description of the issue.
+    - Include steps to reproduce (for bugs).
+    - Explain the motivation for the feature request.
+
+2.  **Submitting Pull Requests:**
+    - Fork the repository.
+    - Create a new branch for your feature or bugfix (e.g., `feature/new-pdf-feature` or `bugfix/parsing-error`).
+    - Make your changes, adhering to the project's coding style and guidelines (ESLint, Prettier).
+    - Add tests for your changes and ensure all tests pass (`npm test`).
+    - Ensure your commit messages follow the Conventional Commits standard.
+    - Push your branch to your fork.
+    - Open a Pull Request against the `main` branch of the `sylphlab/pdf-reader-mcp` repository.
+    - Provide a clear description of your changes in the PR.
 
 ## Development Setup
 
-1.  Clone your fork.
-2.  Install dependencies: `npm install`
-3.  Build the project: `npm run build`
-4.  Run in watch mode during development: `npm run watch`
-5.  Run tests: `npm test` or `npm run test:watch`
+1.  Clone the repository: `git clone https://github.com/sylphlab/pdf-reader-mcp.git`
+2.  Navigate into the directory: `cd pdf-reader-mcp`
+3.  Install dependencies: `npm install`
+4.  Build the project: `npm run build`
+5.  Run tests: `npm test`
+6.  Use `npm run watch` during development for automatic recompilation.
+7.  Use `npm run validate` before committing to check formatting, linting, and tests.
 
 ## Code Style
 
-Please ensure your code adheres to the formatting and linting rules defined in the project:
+- We use Prettier for code formatting and ESLint (with strict TypeScript rules) for linting.
+- Please run `npm run format` and `npm run lint:fix` before committing your changes.
+- Git hooks are set up using Husky and lint-staged to automatically check staged files.
 
-- Run `npm run format` to format your code with Prettier.
-- Run `npm run lint` to check for ESLint issues.
+## Commit Messages
 
-Thank you for contributing!
+We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification. Commit messages are linted using `commitlint` via a Git hook.
+
+Example:
+
+```
+feat: add support for encrypted PDFs
+
+Implemented handling for password-protected PDF files using an optional password parameter.
+```
+
+## License
+
+By contributing, you agree that your contributions will be licensed under the MIT License that covers the project.
