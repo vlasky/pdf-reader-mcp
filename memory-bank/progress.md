@@ -1,11 +1,10 @@
-<!-- Version: 1.0 | Last Updated: 2025-04-05 | Updated By: Cline -->
+<!-- Version: 1.1 | Last Updated: 2025-04-06 | Updated By: Cline -->
 
-# Progress: PDF Reader MCP Server (Initial Implementation)
+# Progress: PDF Reader MCP Server (Vitest Setup)
 
 ## 1. What Works
 
-- **Project Setup:** Cloned from `filesystem-mcp`, dependencies installed
-  (`pdf-parse` added).
+- **Project Setup:** Cloned from `filesystem-mcp`, dependencies installed.
 - **Core Tool Handler (Consolidated, using `pdfjs-dist`, multi-source,
   per-source pages):**
   - `read_pdf`: Implemented with parameters, supports an array of `sources`
@@ -19,6 +18,12 @@
 - **Changelog:** `CHANGELOG.md` created with initial structure.
 - **License:** `LICENSE` file created (MIT).
 - **GitHub Actions:** `.github/workflows/publish.yml` updated to trigger on main/tags, conditionally publish, and create releases using `CHANGELOG.md`.
+- **Testing Framework (Vitest):**
+  - Installed `vitest` and `@vitest/coverage-v8`.
+  - Configured via `vitest.config.ts`.
+  - Added `test` and `test:coverage` scripts to `package.json`.
+  - Created `test` directory.
+  - First test for `src/utils/pathUtils.ts` created and passing.
 
 ## 2. What's Left to Build/Verify
 
@@ -27,13 +32,13 @@
   - Verify the server starts correctly.
   - Test the consolidated `read_pdf` tool via `@modelcontextprotocol/inspector` or a live agent.
   - Verify error handling (e.g., file not found, URL fetch errors, corrupted PDF).
-- **Testing Framework:** Consider adding automated tests (e.g., using Jest or Vitest) for handlers.
+- **Testing:** Write tests for core handlers (e.g., `read_pdf`).
 - **Refinement:** Review code for potential improvements or edge cases missed.
-- **Publishing Workflow Test:** Test the updated GitHub Actions workflow by pushing a version tag (e.g., `v0.3.0`) and verifying npm/Docker publish and GitHub Release creation.
+- **Publishing Workflow Test:** Test the updated GitHub Actions workflow by pushing a version tag (e.g., `v0.3.10` or similar) and verifying npm/Docker publish and GitHub Release creation.
 
 ## 3. Current Status
 
-Added `CHANGELOG.md`, `LICENSE`. Updated GitHub Actions workflow for improved release process. Ready for build and testing, including workflow verification.
+Vitest testing framework has been successfully integrated. Basic configuration is complete, and the first utility function test is passing. Ready for further test development, build, and workflow verification.
 
 ## 4. Known Issues/Risks
 
@@ -47,3 +52,4 @@ Added `CHANGELOG.md`, `LICENSE`. Updated GitHub Actions workflow for improved re
 - **Per-Source Pages:** Logic now handles `pages` parameter within the source
   loop. Testing different combinations of sources with and without `pages` is
   important.
+- **Test Coverage:** Current test coverage is minimal; more tests are needed for core functionality.

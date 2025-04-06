@@ -1,3 +1,5 @@
+<!-- Version: 1.1 | Last Updated: 2025-04-06 | Updated By: Cline -->
+
 # Tech Context: PDF Reader MCP Server
 
 ## 1. Core Technologies
@@ -31,23 +33,30 @@
 - **`@types/diff`:** TypeScript type definitions for the `diff` library.
 - **`pdfjs-dist`:** Mozilla's PDF rendering and parsing library. Used for all
   PDF operations (text extraction, metadata, page count).
+- **`vitest`:** Test runner framework.
+- **`@vitest/coverage-v8`:** Coverage provider for Vitest.
 
 ## 3. Development Setup
 
 - **Source Code:** Located in the `src` directory (`pdf-reader-mcp/src`).
+- **Testing Code:** Located in the `test` directory (`pdf-reader-mcp/test`).
 - **Main File:** `src/index.ts`.
 - **Configuration:**
   - `tsconfig.json`: Configures the TypeScript compiler options (target ES
     version, module system, output directory, etc.). Set to output JavaScript
     files to the `build` directory.
+  - `vitest.config.ts`: Configures the Vitest test runner (environment, coverage).
   - `package.json`: Defines project metadata, dependencies, and npm scripts.
     - `dependencies`: `@modelcontextprotocol/sdk`, `glob`, `pdfjs-dist`, etc.
       (See package.json for full list)
-    - `devDependencies`: `typescript`, `@types/node`, `@types/glob`, etc.
+    - `devDependencies`: `typescript`, `@types/node`, `@types/glob`, `vitest`, `@vitest/coverage-v8`, etc.
       (`pdfjs-dist` includes its own types).
     - `scripts`:
-      - `build`: Compiles TypeScript code using `tsc` and potentially sets
-        execute permissions on the output script.
+      - `build`: Compiles TypeScript code using `tsc`.
+      - `watch`: Runs `tsc` in watch mode.
+      - `test`: Runs tests using `vitest run`.
+      - `test:coverage`: Runs tests with coverage using `vitest run --coverage`.
+      - `inspector`: Runs the MCP inspector against the built server.
       - `start`: (Optional, for direct testing) Runs the compiled JavaScript
         server using `node build/index.js`.
 - **Build Output:** Compiled JavaScript code is placed in the `build` directory
