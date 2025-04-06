@@ -34,7 +34,9 @@ describe('read_pdf Handler Benchmarks', () => {
           include_full_text: false,
         });
       } catch (error) {
-        console.warn(`Benchmark 'Get Metadata & Page Count' failed: ${error instanceof Error ? error.message : String(error)}`);
+        console.warn(
+          `Benchmark 'Get Metadata & Page Count' failed: ${error instanceof Error ? error.message : String(error)}`
+        );
       }
     },
     { time: 1000 }
@@ -53,7 +55,9 @@ describe('read_pdf Handler Benchmarks', () => {
           include_full_text: true,
         });
       } catch (error) {
-        console.warn(`Benchmark 'Get Full Text' failed: ${error instanceof Error ? error.message : String(error)}`);
+        console.warn(
+          `Benchmark 'Get Full Text' failed: ${error instanceof Error ? error.message : String(error)}`
+        );
       }
     },
     { time: 1000 }
@@ -72,7 +76,9 @@ describe('read_pdf Handler Benchmarks', () => {
           include_full_text: false, // Should be ignored when pages is set
         });
       } catch (error) {
-        console.warn(`Benchmark 'Get Specific Page (Page 1)' failed: ${error instanceof Error ? error.message : String(error)}`);
+        console.warn(
+          `Benchmark 'Get Specific Page (Page 1)' failed: ${error instanceof Error ? error.message : String(error)}`
+        );
       }
     },
     { time: 1000 }
@@ -91,7 +97,9 @@ describe('read_pdf Handler Benchmarks', () => {
           include_page_count: false,
         });
       } catch (error) {
-        console.warn(`Benchmark 'Get Specific Pages (Pages 1 & 2)' failed: ${error instanceof Error ? error.message : String(error)}`);
+        console.warn(
+          `Benchmark 'Get Specific Pages (Pages 1 & 2)' failed: ${error instanceof Error ? error.message : String(error)}`
+        );
       }
     },
     { time: 1000 }
@@ -109,7 +117,9 @@ describe('read_pdf Handler Benchmarks', () => {
         });
       } catch (error) {
         // Expecting an error here, but log if something unexpected happens during the benchmark itself
-        console.warn(`Benchmark 'Handle Non-Existent File' unexpectedly failed internally: ${error instanceof Error ? error.message : String(error)}`);
+        console.warn(
+          `Benchmark 'Handle Non-Existent File' unexpectedly failed internally: ${error instanceof Error ? error.message : String(error)}`
+        );
       }
     },
     { time: 1000 }
