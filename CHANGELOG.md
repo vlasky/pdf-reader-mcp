@@ -1,15 +1,19 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+### [0.3.9](https://github.com/sylphlab/pdf-reader-mcp/compare/v0.4.2...v0.3.9) (2025-04-06)
 
-## [Unreleased]
 
-### Added
+### Features
 
-- Nothing yet.
+* setup docs and benchmarking framework\n\n- Initialize VitePress structure, config, and placeholder pages.\n- Install VitePress dependencies and add npm scripts.\n- Rewrite README.md according to guidelines.\n- Populate initial content for docs sections (API, Design, etc.).\n- Fix Markdown parsing issues and build docs successfully.\n- Create CONTRIBUTING.md and update CHANGELOG.md.\n- Add initial benchmark tests using Vitest.\n- Fix package.json structure and benchmark script.\n- Run benchmarks successfully after adding sample PDF. ([afd29df](https://github.com/sylphlab/pdf-reader-mcp/commit/afd29df444eb426bc53f71ed0cfa259145459c19))
+
+
+### Bug Fixes
+
+* add missing @eslint/js dev dependency for flat config ([dcd2681](https://github.com/sylphlab/pdf-reader-mcp/commit/dcd2681abe5c60692db0147a03d5430aa6c14878))
+* correct Node version and format lockfile for CI ([a2eb985](https://github.com/sylphlab/pdf-reader-mcp/commit/a2eb9852d0722d6bff5dafe3e60d191fe91a0ace))
 
 ## [0.3.9] - 2025-04-05
 
