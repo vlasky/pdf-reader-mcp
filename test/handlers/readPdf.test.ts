@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 import { resolvePath } from '../../src/utils/pathUtils.js';
+import * as pathUtils from '../../src/utils/pathUtils.js'; // Import the module itself for spying
 
 // Define a type for the expected structure after JSON.parse
 type ExpectedResultType = {
@@ -34,15 +35,20 @@ type HandlerResultContent = { type: string; text: string };
 let handler: (args: unknown) => Promise<{ content: HandlerResultContent[] }>;
 
 beforeAll(async () => {
+  // Only import the tool definition now
   const { readPdfToolDefinition: importedDefinition } = await import(
     '../../src/handlers/readPdf.js'
   );
   handler = importedDefinition.handler;
 });
 
-describe('read_pdf Tool Handler', () => {
+// Renamed describe block as it now only tests the handler
+describe('handleReadPdfFunc Integration Tests', () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    // Reset mocks for pathUtils if we spy on it
+    vi.spyOn(pathUtils, 'resolvePath').mockImplementation((p) => p); // Simple mock for resolvePath
+
     mockReadFile.mockResolvedValue(Buffer.from('mock pdf content'));
 
     const mockDocumentAPI = {
@@ -74,6 +80,10 @@ describe('read_pdf Tool Handler', () => {
     });
   });
 
+  // Removed unit tests for parsePageRanges
+
+  // --- Integration Tests for handleReadPdfFunc ---
+
   it('should successfully read full text, metadata, and page count for a local file', async () => {
     const args = {
       sources: [{ path: 'test.pdf' }],
@@ -101,9 +111,15 @@ describe('read_pdf Tool Handler', () => {
     expect(mockGetDocument).toHaveBeenCalledWith(Buffer.from('mock pdf content'));
     expect(mockGetMetadata).toHaveBeenCalled();
     expect(mockGetPage).toHaveBeenCalledTimes(3);
-    // Directly access content[0] as ESLint considers the condition unnecessary
-    expect(result.content[0].type).toBe('text');
-    expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
+
+    // Add check for content existence and access safely, disable ESLint rule
+    expect(result.content).toBeDefined();
+    expect(result.content.length).toBeGreaterThan(0);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (result.content && result.content.length > 0) {
+        expect(result.content[0].type).toBe('text');
+        expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
+    }
   });
 
   it('should successfully read specific pages for a local file', async () => {
@@ -134,9 +150,15 @@ describe('read_pdf Tool Handler', () => {
     expect(mockReadFile).toHaveBeenCalledWith(resolvePath('test.pdf'));
     expect(mockGetDocument).toHaveBeenCalledWith(Buffer.from('mock pdf content'));
     expect(mockGetMetadata).not.toHaveBeenCalled();
-    // Directly access content[0]
-    expect(result.content[0].type).toBe('text');
-    expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
+
+    // Add check for content existence and access safely, disable ESLint rule
+    expect(result.content).toBeDefined();
+    expect(result.content.length).toBeGreaterThan(0);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (result.content && result.content.length > 0) {
+        expect(result.content[0].type).toBe('text');
+        expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
+    }
   });
 
   it('should successfully read specific pages using string range', async () => {
@@ -162,8 +184,13 @@ describe('read_pdf Tool Handler', () => {
         },
       ],
     };
-    // Directly access content[0]
-    expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
+    // Add check for content existence and access safely, disable ESLint rule
+    expect(result.content).toBeDefined();
+    expect(result.content.length).toBeGreaterThan(0);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (result.content && result.content.length > 0) {
+        expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
+    }
   });
 
   it('should successfully read metadata only for a URL', async () => {
@@ -191,9 +218,14 @@ describe('read_pdf Tool Handler', () => {
     expect(mockGetDocument).toHaveBeenCalledWith({ url: testUrl });
     expect(mockGetMetadata).toHaveBeenCalled();
     expect(mockGetPage).not.toHaveBeenCalled();
-    // Directly access content[0]
-    expect(result.content[0].type).toBe('text');
-    expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
+    // Add check for content existence and access safely, disable ESLint rule
+    expect(result.content).toBeDefined();
+    expect(result.content.length).toBeGreaterThan(0);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (result.content && result.content.length > 0) {
+        expect(result.content[0].type).toBe('text');
+        expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
+    }
   });
 
   it('should handle multiple sources with different options', async () => {
@@ -267,8 +299,13 @@ describe('read_pdf Tool Handler', () => {
     expect(mockGetDocument).toHaveBeenCalledWith({ url: urlSource });
     expect(mockGetPage).toHaveBeenCalledTimes(1);
     expect(secondMockGetPage).toHaveBeenCalledTimes(2);
-    // Directly access content[0]
-    expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
+    // Add check for content existence and access safely, disable ESLint rule
+    expect(result.content).toBeDefined();
+    expect(result.content.length).toBeGreaterThan(0);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (result.content && result.content.length > 0) {
+        expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
+    }
   });
 
   // --- Error Handling Tests ---
@@ -284,12 +321,17 @@ describe('read_pdf Tool Handler', () => {
         {
           source: 'nonexistent.pdf',
           success: false,
-          error: `File not found at 'nonexistent.pdf'. Resolved to: ${resolvePath('nonexistent.pdf')}`,
+          error: `File not found at 'nonexistent.pdf'. Resolved to: nonexistent.pdf`,
         },
       ],
     };
-    // Directly access content[0]
-    expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
+    // Add check for content existence and access safely, disable ESLint rule
+    expect(result.content).toBeDefined();
+    expect(result.content.length).toBeGreaterThan(0);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (result.content && result.content.length > 0) {
+        expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
+    }
   });
 
   it('should return error if pdfjs fails to load document', async () => {
@@ -298,15 +340,19 @@ describe('read_pdf Tool Handler', () => {
     mockGetDocument.mockReturnValue(failingLoadingTask);
     const args = { sources: [{ path: 'bad.pdf' }] };
     const result = await handler(args);
-    // Directly access content[0]
-    const parsedResult = JSON.parse(result.content[0].text) as ExpectedResultType;
-    // Check results[0] exists before accessing properties
-    expect(parsedResult.results[0]).toBeDefined();
-    if (parsedResult.results[0]) {
-        expect(parsedResult.results[0].success).toBe(false);
-        expect(parsedResult.results[0].error).toBe(
-          `MCP error -32600: Failed to load PDF document. Reason: ${loadError.message}`
-        );
+    // Add check for content existence and access safely, disable ESLint rule
+    expect(result.content).toBeDefined();
+    expect(result.content.length).toBeGreaterThan(0);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (result.content && result.content.length > 0) {
+        const parsedResult = JSON.parse(result.content[0].text) as ExpectedResultType;
+        expect(parsedResult.results[0]).toBeDefined();
+        if (parsedResult.results[0]) {
+            expect(parsedResult.results[0].success).toBe(false);
+            expect(parsedResult.results[0].error).toBe(
+              `MCP error -32600: Failed to load PDF document. Reason: ${loadError.message}`
+            );
+        }
     }
   });
 
@@ -319,23 +365,96 @@ describe('read_pdf Tool Handler', () => {
     await expect(handler(args)).rejects.toHaveProperty('code', ErrorCode.InvalidParams);
   });
 
-  it('should throw McpError for invalid page specification string', async () => {
+  // Test case for the initial Zod parse failure
+  it('should throw McpError if top-level argument parsing fails', async () => {
+      const invalidArgs = { invalid_prop: true }; // Completely wrong structure
+      await expect(handler(invalidArgs)).rejects.toThrow(McpError);
+      await expect(handler(invalidArgs)).rejects.toThrow(/Invalid arguments: sources \(Required\)/); // Example Zod error
+      await expect(handler(invalidArgs)).rejects.toHaveProperty('code', ErrorCode.InvalidParams);
+  });
+
+
+  // Updated test: Expect Zod validation to throw McpError directly
+  it('should throw McpError for invalid page specification string (Zod)', async () => {
     const args = { sources: [{ path: 'test.pdf', pages: '1,abc,3' }] };
     await expect(handler(args)).rejects.toThrow(McpError);
     await expect(handler(args)).rejects.toThrow(
-      /Invalid arguments: sources.0.pages \(Page string must contain only numbers, commas, and hyphens.\)/
+        /Invalid arguments: sources.0.pages \(Page string must contain only numbers, commas, and hyphens.\)/
     );
-    await expect(handler(args)).rejects.toHaveProperty('code', ErrorCode.InvalidParams);
+     await expect(handler(args)).rejects.toHaveProperty('code', ErrorCode.InvalidParams);
   });
 
+  // Updated test: Expect Zod validation to throw McpError directly
   it('should throw McpError for invalid page specification array (non-positive - Zod)', async () => {
     const args = { sources: [{ path: 'test.pdf', pages: [1, 0, 3] }] };
-    await expect(handler(args)).rejects.toThrow(McpError);
+     await expect(handler(args)).rejects.toThrow(McpError);
     await expect(handler(args)).rejects.toThrow(
       /Invalid arguments: sources.0.pages.1 \(Number must be greater than 0\)/
     );
     await expect(handler(args)).rejects.toHaveProperty('code', ErrorCode.InvalidParams);
   });
+
+  // Test case for resolvePath failure within the catch block
+  it('should return error if resolvePath fails', async () => {
+      const resolveError = new Error("Mock resolvePath failed");
+      vi.spyOn(pathUtils, 'resolvePath').mockImplementation(() => { throw resolveError; });
+      const args = { sources: [{ path: 'some/path' }] };
+      const result = await handler(args);
+      // Add check for content existence and access safely, disable ESLint rule
+      expect(result.content).toBeDefined();
+      expect(result.content.length).toBeGreaterThan(0);
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (result.content && result.content.length > 0) {
+          const parsedResult = JSON.parse(result.content[0].text) as ExpectedResultType;
+          expect(parsedResult.results[0]).toBeDefined();
+          if (parsedResult.results[0]) {
+              expect(parsedResult.results[0].success).toBe(false);
+              expect(parsedResult.results[0].error).toBe(`Failed to process PDF from 'some/path'. Reason: ${resolveError.message}`);
+          }
+      }
+  });
+
+   // Test case for the final catch block with a generic error
+  it('should handle generic errors during processing', async () => {
+      const genericError = new Error("Something unexpected happened");
+      mockReadFile.mockRejectedValue(genericError); // Simulate error after path resolution
+      const args = { sources: [{ path: 'generic/error/path' }] };
+      const result = await handler(args);
+      // Add check for content existence and access safely, disable ESLint rule
+      expect(result.content).toBeDefined();
+      expect(result.content.length).toBeGreaterThan(0);
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (result.content && result.content.length > 0) {
+          const parsedResult = JSON.parse(result.content[0].text) as ExpectedResultType;
+          expect(parsedResult.results[0]).toBeDefined();
+          if (parsedResult.results[0]) {
+              expect(parsedResult.results[0].success).toBe(false);
+              expect(parsedResult.results[0].error).toBe(`Failed to process PDF from 'generic/error/path'. Reason: ${genericError.message}`);
+          }
+      }
+  });
+
+   // Test case for the final catch block with a non-Error object
+  it('should handle non-Error exceptions during processing', async () => {
+      const nonError = { message: "Just an object", code: "UNEXPECTED" };
+      mockReadFile.mockRejectedValue(nonError); // Simulate error after path resolution
+      const args = { sources: [{ path: 'non/error/path' }] };
+      const result = await handler(args);
+      // Add check for content existence and access safely, disable ESLint rule
+      expect(result.content).toBeDefined();
+      expect(result.content.length).toBeGreaterThan(0);
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (result.content && result.content.length > 0) {
+          const parsedResult = JSON.parse(result.content[0].text) as ExpectedResultType;
+          expect(parsedResult.results[0]).toBeDefined();
+          if (parsedResult.results[0]) {
+              expect(parsedResult.results[0].success).toBe(false);
+              // Use JSON.stringify for non-Error objects
+              expect(parsedResult.results[0].error).toBe(`Failed to process PDF from 'non/error/path'. Unknown error: ${JSON.stringify(nonError)}`);
+          }
+      }
+  });
+
 
   it('should include warnings for requested pages exceeding total pages', async () => {
     const args = {
@@ -360,8 +479,13 @@ describe('read_pdf Tool Handler', () => {
     };
     expect(mockGetPage).toHaveBeenCalledTimes(1);
     expect(mockGetPage).toHaveBeenCalledWith(1);
-    // Directly access content[0]
-    expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
+    // Add check for content existence and access safely, disable ESLint rule
+    expect(result.content).toBeDefined();
+    expect(result.content.length).toBeGreaterThan(0);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (result.content && result.content.length > 0) {
+        expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
+    }
   });
 
   it('should handle errors during page processing gracefully when specific pages are requested', async () => {
@@ -401,7 +525,12 @@ describe('read_pdf Tool Handler', () => {
       ],
     };
     expect(mockGetPage).toHaveBeenCalledTimes(3);
-    // Directly access content[0]
-    expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
+    // Add check for content existence and access safely, disable ESLint rule
+    expect(result.content).toBeDefined();
+    expect(result.content.length).toBeGreaterThan(0);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (result.content && result.content.length > 0) {
+        expect(JSON.parse(result.content[0].text) as ExpectedResultType).toEqual(expectedData);
+    }
   });
-});
+}); // End top-level describe

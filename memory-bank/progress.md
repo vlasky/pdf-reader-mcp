@@ -1,4 +1,4 @@
-<!-- Version: 1.6 | Last Updated: 2025-04-06 | Updated By: Roo -->
+<!-- Version: 1.7 | Last Updated: 2025-04-06 | Updated By: Roo -->
 
 # Progress: PDF Reader MCP Server (Strict Dev Standards Applied)
 
@@ -17,7 +17,7 @@
 - **GitHub Actions:** `.github/workflows/publish.yml` updated for CI/CD, including **validate step (format, lint, test w/ coverage)**.
 - **Testing Framework (Vitest):**
     - Integrated, configured (`vitest.config.ts` with **100% coverage threshold**).
-    - Basic tests passing.
+    - Basic tests passing. **Coverage goal not yet met.**
 - **Linter (ESLint):**
   - Integrated, configured (`eslint.config.js`) including Prettier compatibility and **strict type-aware rules** (`strictTypeChecked`).
   - Scripts (`lint`, `lint:fix`, `validate`) added to `package.json`.
@@ -31,7 +31,7 @@
 
 ## 2. What's Left to Build/Verify
 
-- **Test Coverage**: Need to run `npm run test:cov` to **verify 100% coverage** is actually met. May need to add more tests or adjust coverage exclusions.
+- **Test Coverage**: Need to run `npm run test:coverage` again to check coverage after deleting unused file and fixing tests. **Need to add tests to reach 100% coverage goal.**
 - **Compilation:** Need to run `npm run build`.
 - **Runtime Testing:**
   - Verify the server starts correctly.
@@ -49,12 +49,12 @@
 
 ## 3. Current Status
 
-Core development standards (Strict TypeScript, Strict ESLint, Prettier, Vitest with 100% coverage goal, CI validation) are configured. Codebase passes current checks. Sponsorship file created and README badges added. Next immediate step is to verify 100% test coverage. Major documentation and benchmarking tasks remain.
+Core development standards (Strict TypeScript, Strict ESLint, Prettier, Vitest with 100% coverage goal, CI validation) are configured. Codebase passes linting checks and is formatted. Sponsorship file created and README badges added. **Test coverage needs improvement to meet the 100% goal.** Major documentation and benchmarking tasks remain.
 
 ## 4. Known Issues/Risks
 
-- **100% Coverage Goal:** Achieving and maintaining 100% coverage can be challenging and time-consuming. Need to ensure tests are meaningful and not just chasing numbers. Exclusions in `vitest.config.ts` might need tuning.
+- **100% Coverage Goal:** Currently not met (~85%). Achieving and maintaining 100% coverage requires adding more specific tests, especially for error paths in `readPdf.ts`. Exclusions in `vitest.config.ts` might need tuning.
 - **`pdfjs-dist` Complexity:** API complexity, text extraction accuracy depends on PDF, potential Node.js compatibility nuances.
-- **Error Handling:** Basic handling implemented; specific PDF parsing errors might need refinement.
+- **Error Handling:** Basic handling implemented; specific PDF parsing errors might need refinement (partially addressed by adding tests for coverage).
 - **Performance:** Not tested on very large PDFs. Benchmarking needed.
 - **Per-Source Pages:** Logic handles per-source `pages`; testing combinations is important.

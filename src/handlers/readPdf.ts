@@ -327,7 +327,8 @@ const handleReadPdfFunc = async (args: unknown) => {
         errorMessage += ` Reason: ${error.message}`;
       } else {
         // Fallback for unknown error types
-        errorMessage += ` Unknown error: ${String(error)}`;
+        // Use JSON.stringify for non-Error objects to get a more useful representation
+        errorMessage += ` Unknown error: ${JSON.stringify(error)}`;
       }
       individualResult.error = errorMessage;
       individualResult.success = false;

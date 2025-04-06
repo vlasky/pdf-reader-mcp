@@ -1,4 +1,4 @@
-<!-- Version: 1.5 | Last Updated: 2025-04-06 | Updated By: Roo -->
+<!-- Version: 1.6 | Last Updated: 2025-04-06 | Updated By: Roo -->
 
 # Tech Context: PDF Reader MCP Server
 
