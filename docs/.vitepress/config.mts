@@ -37,23 +37,21 @@ export default defineConfig({
       // Add sidebar for other sections if needed, or keep it simple
       // Example: Link top-level pages directly if sidebar isn't complex
       '/': [
-         { text: 'Guide', link: '/guide/' },
-         { text: 'Principles', link: '/principles' },
-         { text: 'Testing', link: '/testing' },
-         { text: 'Performance', link: '/performance' },
-         { text: 'Contributing', link: '/contributing' },
-         { text: 'Changelog', link: '/changelog' },
-         { text: 'License', link: '/license' },
-      ]
+        { text: 'Guide', link: '/guide/' },
+        { text: 'Principles', link: '/principles' },
+        { text: 'Testing', link: '/testing' },
+        { text: 'Performance', link: '/performance' },
+        { text: 'Contributing', link: '/contributing' },
+        { text: 'Changelog', link: '/changelog' },
+        { text: 'License', link: '/license' },
+      ],
     },
 
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/shtse8/pdf-reader-mcp' },
-    ],
+    socialLinks: [{ icon: 'github', link: 'https://github.com/shtse8/pdf-reader-mcp' }],
 
     footer: {
       message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2024-present shtse8'
+      copyright: 'Copyright © 2024-present shtse8',
     },
 
     // Optional: Add search, edit links etc.
@@ -76,6 +74,6 @@ export default defineConfig({
     // toc: { level: [1, 2] },
 
     // Enable line numbers
-    lineNumbers: true
-  }
+    lineNumbers: true,
+  },
 });

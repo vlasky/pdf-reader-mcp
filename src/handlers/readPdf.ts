@@ -231,14 +231,14 @@ const handleReadPdfFunc = async (args: unknown) => {
         // Remove unnecessary optional chain as metadata is checked by include_metadata guard
         const infoData = metadata.info as PdfInfo | undefined;
         if (infoData !== undefined) {
-            output.info = infoData;
+          output.info = infoData;
         }
         // Remove unnecessary optional chains as metadata is checked by include_metadata guard
         // Remove unnecessary optional chain for metadata.metadata as getMetadata() should return object with metadata property if it exists
         const metadataObj = metadata.metadata;
         const metadataData = metadataObj.getAll() as PdfMetadata | undefined; // Remove optional chain here
         if (metadataData !== undefined) {
-            output.metadata = metadataData;
+          output.metadata = metadataData;
         }
       }
       if (include_page_count) {

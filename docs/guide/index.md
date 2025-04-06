@@ -55,9 +55,12 @@ If you prefer containerization or your host integrates well with Docker:
     "pdf-reader-mcp": {
       "command": "docker",
       "args": [
-        "run", "-i", "--rm",
+        "run",
+        "-i",
+        "--rm",
         // Mount your project directory to /app inside the container
-        "-v", "/path/to/your/project:/app",
+        "-v",
+        "/path/to/your/project:/app",
         // Use the latest image
         "shtse8/pdf-reader-mcp:latest"
       ],
@@ -71,12 +74,12 @@ If you prefer containerization or your host integrates well with Docker:
 
 **Notes on Volume Mount (`-v`):**
 
-*   Replace `/path/to/your/project` with the **absolute path** to your project on the host machine.
-*   You can often use shell variables for the host path:
-    *   Linux/macOS: `-v "$PWD:/app"`
-    *   Windows Cmd: `-v "%CD%:/app"`
-    *   Windows PowerShell: `-v "${PWD}:/app"`
-*   The container's working directory is `/app`, so the server will treat the mounted volume as the project root.
+- Replace `/path/to/your/project` with the **absolute path** to your project on the host machine.
+- You can often use shell variables for the host path:
+  - Linux/macOS: `-v "$PWD:/app"`
+  - Windows Cmd: `-v "%CD%:/app"`
+  - Windows PowerShell: `-v "${PWD}:/app"`
+- The container's working directory is `/app`, so the server will treat the mounted volume as the project root.
 
 ## Basic Usage: The `read_pdf` Tool
 
@@ -141,7 +144,7 @@ Once the server is configured and running, your AI agent can use the `read_pdf` 
 }
 ```
 
-*(Refinement: Each object in `sources` must have exactly one of `path` or `url`)*
+_(Refinement: Each object in `sources` must have exactly one of `path` or `url`)_
 
 **Output:**
 
@@ -214,12 +217,12 @@ interface PdfSourceResult {
     },
     // Example of a failed source:
     {
-       "source": "nonexistent.pdf", // If this was included in request
-       "success": false,
-       "error": "File not found at 'nonexistent.pdf'. Resolved to: /path/to/project/nonexistent.pdf"
+      "source": "nonexistent.pdf", // If this was included in request
+      "success": false,
+      "error": "File not found at 'nonexistent.pdf'. Resolved to: /path/to/project/nonexistent.pdf"
     }
   ]
 }
 ```
 
-*(Further sections like API Reference, Advanced Usage, Troubleshooting can be added later)*
+_(Further sections like API Reference, Advanced Usage, Troubleshooting can be added later)_

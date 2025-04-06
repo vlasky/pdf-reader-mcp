@@ -37,7 +37,8 @@ const generateInputSchema = (schema: z.ZodType<unknown>): object => {
   return zodToJsonSchema(schema, { target: 'openApi3' }) as unknown as object;
 };
 
-server.setRequestHandler(ListToolsRequestSchema, () => { // Removed unnecessary async
+server.setRequestHandler(ListToolsRequestSchema, () => {
+  // Removed unnecessary async
   // Removed log
   // Map the aggregated definitions to the format expected by the SDK
   const availableTools = allToolDefinitions.map((def) => ({
@@ -70,7 +71,8 @@ async function main() {
   console.error('[Filesystem MCP] Server running on stdio');
 }
 
-main().catch((error: unknown) => { // Specify 'unknown' type for catch variable
+main().catch((error: unknown) => {
+  // Specify 'unknown' type for catch variable
   console.error('[Filesystem MCP] Server error:', error);
   process.exit(1);
 });

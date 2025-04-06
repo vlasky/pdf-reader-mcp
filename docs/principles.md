@@ -9,6 +9,7 @@ The primary goal is to solve the real problem of AI agents needing access to PDF
 ## 2. Simplicity & Minimalism
 
 We aim for the most direct approach:
+
 - A single, consolidated `read_pdf` tool instead of multiple specific tools.
 - Leveraging the robust `pdfjs-dist` library for core parsing.
 - Avoiding unnecessary abstractions.
@@ -16,6 +17,7 @@ We aim for the most direct approach:
 ## 3. Functional Programming Style (Influences)
 
 While not strictly functional, the code emphasizes:
+
 - Pure helper functions where possible (like path resolution checks).
 - Minimizing side effects within core logic (parsing doesn't alter files).
 - Using standard asynchronous patterns (`async/await`) effectively.

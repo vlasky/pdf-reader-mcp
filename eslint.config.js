@@ -31,8 +31,8 @@ export default tseslint.config(
       // '@typescript-eslint/no-floating-promises': ['error', { ignoreVoid: true }],
 
       // Keep existing specific rules or add new ones
-       '@typescript-eslint/no-unused-vars': ['warn', { 'argsIgnorePattern': '^_' }], // Keep warning for unused vars
-       '@typescript-eslint/no-explicit-any': 'warn', // Keep warning for explicit any
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }], // Keep warning for unused vars
+      '@typescript-eslint/no-explicit-any': 'warn', // Keep warning for explicit any
     },
   }),
   {
@@ -49,7 +49,7 @@ export default tseslint.config(
     rules: {
       // Add JS/CJS specific rules if needed
       '@typescript-eslint/no-var-requires': 'off', // Allow require in CJS if needed
-    }
+    },
   },
   eslintConfigPrettier // Add prettier config last to override other formatting rules
 );

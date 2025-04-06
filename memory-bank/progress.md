@@ -9,14 +9,14 @@
   - `read_pdf`: Implemented and integrated.
 - **MCP Server Structure:** Basic server setup working.
 - **Documentation:**
-    - `README.md`: Basic structure, **Sponsorship badges removed**.
-    - Memory Bank: Core files updated.
+  - `README.md`: Basic structure, **Sponsorship badges removed**.
+  - Memory Bank: Core files updated.
 - **Changelog:** `CHANGELOG.md` created.
 - **License:** `LICENSE` file created (MIT).
 - **GitHub Actions:** `.github/workflows/ci.yml` **refactored** for CI/CD according to guidelines (separate validate/publish/release jobs, PR trigger, auto notes).
 - **Testing Framework (Vitest):**
-    - Integrated, configured (`vitest.config.ts` with **100% coverage threshold**).
-    - All tests passing. **Coverage at ~95% (accepted)**.
+  - Integrated, configured (`vitest.config.ts` with **100% coverage threshold**).
+  - All tests passing. **Coverage at ~95% (accepted)**.
 - **Linter (ESLint):**
   - Integrated, configured (`eslint.config.js`) including Prettier compatibility and **strict type-aware rules** (`strictTypeChecked`).
   - Scripts (`lint`, `lint:fix`, `validate`, etc.) **updated** in `package.json` per guidelines.
@@ -39,10 +39,10 @@
   - Verify error handling.
 - **Publishing Workflow Test:** Test the full workflow with a version tag.
 - **Documentation (Major):**
-    - Rewrite `README.md` per Guideline #9.
-    - Set up VitePress (`docs` folder) per Guideline #6.
-    - Create Hero Page and detailed documentation content (Guide, Principles, Performance, Testing, Contributing, Changelog) per Guideline #6.
-    - **Ensure no sponsorship info** is included.
+  - Rewrite `README.md` per Guideline #9.
+  - Set up VitePress (`docs` folder) per Guideline #6.
+  - Create Hero Page and detailed documentation content (Guide, Principles, Performance, Testing, Contributing, Changelog) per Guideline #6.
+  - **Ensure no sponsorship info** is included.
 - **Benchmarking:** Implement and run benchmark tests for core functions per Guideline #5.
 - **(Optional) Pre-commit Hooks:** Consider adding Husky + lint-staged.
 
