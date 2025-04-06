@@ -22,7 +22,7 @@ The following results were obtained on 2025-04-07 using the setup described abov
 | Get Specific Pages (Pages 1 & 2) | ~5,242                     |                |
 | Get Metadata & Page Count        | ~4,912                     | Slowest        |
 
-*(Higher hz indicates better performance)*
+_(Higher hz indicates better performance)_
 
 **Interpretation:**
 

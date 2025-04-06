@@ -1,10 +1,10 @@
-<!-- Version: 1.15 | Last Updated: 2025-04-07 | Updated By: Sylph -->
+<!-- Version: 1.16 | Last Updated: 2025-04-07 | Updated By: Sylph -->
 
 # Active Context: PDF Reader MCP Server (Guidelines Alignment)
 
 ## 1. Current Focus
 
-Aligning the project configuration, structure, and CI/CD processes with the provided "TypeScript Project Development Guidelines". Completing documentation (excluding API docs due to TypeDoc issue).
+Finalizing project alignment and documentation according to Sylph Lab Playbook guidelines.
 
 ## 2. Recent Changes (Chronological Summary)
 
@@ -38,33 +38,33 @@ Aligning the project configuration, structure, and CI/CD processes with the prov
 - **Benchmarking & Documentation:**
   - Created initial benchmark file, fixed TS errors, and successfully ran benchmarks (`pnpm run benchmark`) after user provided `test/fixtures/sample.pdf`.
   - Updated `docs/performance/index.md` with benchmark setup and initial results.
-- **API Doc Generation Attempt:**
-  - Created `scripts/generate-api-docs.mjs` based on guidelines.
-  - Encountered persistent TypeDoc v0.28.1 initialization error (`An application handle must be retrieved...`) despite trying various script modifications and version changes (v0.27.x caused plugin incompatibility).
+- **API Doc Generation:**
+  - Initially encountered persistent TypeDoc v0.28.1 initialization error with Node.js script.
+  - **Resolved:** Changed `docs:api` script in `package.json` to directly call TypeDoc CLI (`typedoc --entryPoints ...`). Successfully generated API docs.
+- **Documentation Finalization:**
+  - Reviewed and updated `README.md`, `docs/guide/getting-started.md`, and VitePress config (`docs/.vitepress/config.mts`) based on guidelines.
+- **Code Commit:** Committed and pushed all recent changes.
 
 ## 3. Next Steps
 
 - **Build Completed:** Project successfully built (`pnpm run build`).
-- **GitHub Actions Triggered:** Pushed existing tag `v0.4.0` to trigger `ci.yml` workflow (tag was already remote).
+- **GitHub Actions Triggered:** Pushed existing tag `v0.4.0` to trigger `ci.yml` workflow (tag was already remote). Pushed recent commit `03646d7`.
 - **Runtime Testing (Blocked):** Requires user interaction with `@modelcontextprotocol/inspector` or a live agent. Skipping for now.
-- **API Doc Generation (Blocked/Deferred):** Unable to resolve TypeDoc v0.28.1 initialization error. Skipping API doc generation for now.
-- **Documentation Finalization (In Progress):**
-    - Set up initial VitePress structure, config, placeholders, installed dependencies, confirmed scripts.
-    - Populated initial content for README, API, Design, Performance, Comparison sections.
-    - Updated VitePress config.
-    - Fixed Markdown parsing issues.
-    - Successfully built docs.
-    - Created `CONTRIBUTING.md` and added initial `CHANGELOG.md` entry.
-    - **Completed:** Performance section (`docs/performance/index.md`) updated with benchmark results.
-    - **Next:** Review and finalize remaining documentation sections (Guide, Design, Comparison, README). Ensure all links work and content aligns with guidelines. Add required elements like share buttons, roadmap, etc.
+- **Documentation Finalization (Mostly Complete):**
+  - API docs generated.
+  - Main pages reviewed/updated.
+  - **Remaining:** Add complex features (PWA, share buttons, roadmap page) if requested.
+- **Release Preparation:**
+  - `CHANGELOG.md` updated for `1.0.0`.
+  - Consider using `standard-version` or similar for final release tagging/publishing.
 
 ## 4. Active Decisions & Considerations
 
-- **Switched to pnpm:** Changed package manager from npm to pnpm to align with TypeScript guidelines recommendation. Deleted `package-lock.json` and generated `pnpm-lock.yaml`.
+- **Switched to pnpm:** Changed package manager from npm to pnpm.
 - **Using `pdfjs-dist` as the core PDF library.**
 - Adopted the handler definition pattern from `filesystem-mcp`.
 - Consolidated tools into a single `read_pdf` handler.
-- Aligned project configuration (linting, formatting, testing, CI, Git Hooks, Dependabot) with the provided Guidelines.
+- Aligned project configuration with Guidelines.
 - **Accepted ~95% test coverage**.
 - **No Sponsorship:** Project will not include sponsorship links or files.
-- **Deferred API Doc Generation:** Due to unresolved TypeDoc v0.28.1 errors.
+- **Using TypeDoc CLI for API Doc Generation:** Bypassed script initialization issues.

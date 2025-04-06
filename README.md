@@ -1,11 +1,13 @@
 # PDF Reader MCP Server (@sylphlab/pdf-reader-mcp)
 
 <!-- Status Badges Area -->
+
 [![CI/CD Pipeline](https://github.com/sylphlab/pdf-reader-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/sylphlab/pdf-reader-mcp/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/sylphlab/pdf-reader-mcp/badge.svg?branch=main)](https://coveralls.io/github/sylphlab/pdf-reader-mcp?branch=main)
 [![npm version](https://badge.fury.io/js/%40sylphlab%2Fpdf-reader-mcp.svg)](https://badge.fury.io/js/%40sylphlab%2Fpdf-reader-mcp)
 [![Docker Pulls](https://img.shields.io/docker/pulls/sylphlab/pdf-reader-mcp.svg)](https://hub.docker.com/r/sylphlab/pdf-reader-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 <!-- End Status Badges Area -->
 
 Empower your AI agents (like Cline) with the ability to securely read and extract information (text, metadata, page count) from PDF files within your project context using a single, flexible tool.
@@ -149,7 +151,7 @@ Initial benchmarks using Vitest on a sample PDF show efficient handling of vario
 | Get Specific Pages (Pages 1 & 2) | ~5,242                     |                |
 | Get Metadata & Page Count        | ~4,912                     | Slowest        |
 
-*(Higher hz indicates better performance. Results may vary based on PDF complexity and environment.)*
+_(Higher hz indicates better performance. Results may vary based on PDF complexity and environment.)_
 
 See the [Performance Documentation](./docs/performance/index.md) for more details and future plans.
 
@@ -179,21 +181,21 @@ See the full [Comparison](./docs/comparison/index.md) documentation.
 ## Future Plans (Roadmap)
 
 - **Documentation:**
-    - Finalize all documentation sections (Guide, API, Design, Comparison).
-    - Resolve TypeDoc issue and generate API documentation.
-    - Add more examples and advanced usage patterns.
-    - Implement PWA support and mobile optimization for the docs site.
-    - Add share buttons and growth metrics to the docs site.
+  - Finalize all documentation sections (Guide, API, Design, Comparison).
+  - Resolve TypeDoc issue and generate API documentation.
+  - Add more examples and advanced usage patterns.
+  - Implement PWA support and mobile optimization for the docs site.
+  - Add share buttons and growth metrics to the docs site.
 - **Benchmarking:**
-    - Conduct comprehensive benchmarks with diverse PDF files (size, complexity).
-    - Measure memory usage.
-    - Compare URL vs. local file performance.
+  - Conduct comprehensive benchmarks with diverse PDF files (size, complexity).
+  - Measure memory usage.
+  - Compare URL vs. local file performance.
 - **Core Functionality:**
-    - Explore potential optimizations for very large PDF files.
-    - Investigate options for extracting images or annotations (longer term).
+  - Explore potential optimizations for very large PDF files.
+  - Investigate options for extracting images or annotations (longer term).
 - **Testing:**
-    - Increase test coverage towards 100% where practical.
-    - Add runtime tests once feasible.
+  - Increase test coverage towards 100% where practical.
+  - Add runtime tests once feasible.
 
 ## Documentation
 

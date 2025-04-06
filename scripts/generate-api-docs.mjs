@@ -32,9 +32,14 @@ async function main() {
     // Optional: Create a simple index.md if the plugin doesn't
     try {
       await mkdir(outputDir, { recursive: true });
-      await writeFile(path.join(outputDir, 'index.md'), '# API Reference\\n\\nBrowse the API documentation using the sidebar.', 'utf-8');
-    } catch (e) { /* Ignore if exists */ }
-
+      await writeFile(
+        path.join(outputDir, 'index.md'),
+        '# API Reference\\n\\nBrowse the API documentation using the sidebar.',
+        'utf-8'
+      );
+    } catch (e) {
+      /* Ignore if exists */
+    }
   } else {
     console.error('Failed to convert project.');
     process.exit(1);

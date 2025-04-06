@@ -1,1 +1,0 @@
-# API Reference\n\nBrowse the API documentation using the sidebar.

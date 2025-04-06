@@ -19,12 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Testing:** Achieved ~95% test coverage using Vitest.
 - **Benchmarking:** Implemented initial performance benchmarks using Vitest `bench`.
 - **Documentation:**
-    - Set up documentation website using VitePress.
-    - Created initial content for Guide, Design, Performance, Comparison sections.
-    - Updated `README.md` to follow standard structure.
-    - Added `CONTRIBUTING.md`.
-    - Updated Performance page with initial benchmark results.
-    - Added community links and call-to-action in VitePress config footer.
+  - Set up documentation website using VitePress.
+  - Created initial content for Guide, Design, Performance, Comparison sections.
+  - Updated `README.md` to follow standard structure.
+  - Added `CONTRIBUTING.md`.
+  - Updated Performance page with initial benchmark results.
+  - Added community links and call-to-action in VitePress config footer.
 - **Package Manager:** Switched from npm to pnpm.
 
 ### Changed

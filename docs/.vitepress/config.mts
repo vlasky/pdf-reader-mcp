@@ -59,7 +59,7 @@ export default defineConfig({
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/sylphlab/pdf-reader-mcp' },
-      { icon: 'issues', link: 'https://github.com/sylphlab/pdf-reader-mcp/issues' } // Add link to issues
+      { icon: 'issues', link: 'https://github.com/sylphlab/pdf-reader-mcp/issues' }, // Add link to issues
     ],
 
     footer: {
