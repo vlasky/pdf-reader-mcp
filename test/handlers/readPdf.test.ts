@@ -608,6 +608,72 @@ describe('handleReadPdfFunc Integration Tests', () => {
     }
   });
 
+
+  // --- Additional Coverage Tests ---
+
+  it('should not include page count when include_page_count is false', async () => {
+    const args = {
+      sources: [{ path: 'test.pdf' }],
+      include_page_count: false, // Explicitly false
+      include_metadata: false, // Keep it simple
+      include_full_text: false,
+    };
+    const result = await handler(args);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (result.content?.[0]) {
+      const parsedResult = JSON.parse(result.content[0].text) as ExpectedResultType;
+      expect(parsedResult.results[0]).toBeDefined();
+      if (parsedResult.results[0]?.data) {
+        expect(parsedResult.results[0].success).toBe(true);
+        expect(parsedResult.results[0].data).not.toHaveProperty('num_pages');
+        expect(parsedResult.results[0].data).not.toHaveProperty('metadata');
+        expect(parsedResult.results[0].data).not.toHaveProperty('info');
+      }
+    } else {
+      expect.fail('result.content[0] was undefined');
+    }
+    expect(mockGetMetadata).not.toHaveBeenCalled(); // Because include_metadata is false
+  });
+
+  it('should handle ENOENT error where resolvePath also fails in catch block', async () => {
+    const enoentError = new Error('Mock ENOENT') as NodeJS.ErrnoException;
+    enoentError.code = 'ENOENT';
+    const resolveError = new Error('Mock resolvePath failed in catch');
+    const targetPath = 'enoent/and/resolve/fails.pdf';
+
+    // Mock resolvePath: first call succeeds, second call (in catch) fails
+    vi.spyOn(pathUtils, 'resolvePath')
+      .mockImplementationOnce((p) => p) // First call succeeds
+      .mockImplementationOnce(() => { // Second call throws
+        throw resolveError;
+      });
+
+    mockReadFile.mockRejectedValue(enoentError);
+
+    const args = { sources: [{ path: targetPath }] };
+    const result = await handler(args);
+
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (result.content?.[0]) {
+      const parsedResult = JSON.parse(result.content[0].text) as ExpectedResultType;
+      expect(parsedResult.results[0]).toBeDefined();
+      if (parsedResult.results[0]) {
+        expect(parsedResult.results[0].success).toBe(false);
+        // Check for the specific error message from lines 323-324
+        expect(parsedResult.results[0].error).toBe(
+          `File not found at '${targetPath}', and path resolution also failed.`
+        );
+      }
+    } else {
+      expect.fail('result.content[0] was undefined');
+    }
+
+    // Ensure readFile was called with the path that resolvePath initially returned
+    expect(mockReadFile).toHaveBeenCalledWith(targetPath);
+    // Ensure resolvePath was called twice (once before readFile, once in catch)
+    expect(pathUtils.resolvePath).toHaveBeenCalledTimes(2);
+  });
+
   // --- Additional Error Coverage Tests ---
 
   it('should return error for invalid page range string (e.g., 5-3)', async () => {
