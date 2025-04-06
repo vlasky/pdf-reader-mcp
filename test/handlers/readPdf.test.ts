@@ -572,7 +572,8 @@ describe('handleReadPdfFunc Integration Tests', () => {
         // Ensure getDocument is mocked specifically for this URL
         mockGetDocument.mockReset(); // Reset previous mocks if necessary
         mockGetDocument.mockImplementation((source) => {
-          if (typeof source === 'object' && source.url === testUrl) {
+          // Add null check and type assertion/guard for source
+          if (typeof source === 'object' && source !== null && 'url' in source && typeof source.url === 'string' && source.url === testUrl) {
             return failingLoadingTask;
           }
           // Fallback for other potential calls in the test suite
