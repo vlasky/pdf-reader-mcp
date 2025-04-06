@@ -22,19 +22,24 @@ jobs:
         uses: actions/setup-node@v4.0.3
         with:
           node-version: '20'
-          cache: 'npm' # Enable npm caching
+          cache: 'pnpm' # Enable pnpm caching
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4 # Use pnpm setup action
+        with:
+          version: latest # Or specify a version
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Check Formatting
-        run: npm run check-format # Fails job if check fails
+        run: pnpm run check-format # Fails job if check fails
 
       - name: Lint Code
-        run: npm run lint # Fails job if lint fails
+        run: pnpm run lint # Fails job if lint fails
 
       - name: Run Tests and Check Coverage
-        run: npm run test:cov # Fails job if tests fail or coverage < 100%
+        run: pnpm run test:cov # Fails job if tests fail or coverage < 100%
 
       - name: Upload coverage to Coveralls
         uses: coverallsapp/github-action@v2.3.0 # Use fixed version
@@ -66,13 +71,18 @@ jobs:
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org/' # For npm publish
-          cache: 'npm'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build project
-        run: npm run build
+        run: pnpm run build
 
       - name: Get package version from tag
         id: get_version
@@ -95,7 +105,7 @@ jobs:
 
       # --- Publish to NPM ---
       - name: Publish to npm
-        run: npm publish --access public
+        run: pnpm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
