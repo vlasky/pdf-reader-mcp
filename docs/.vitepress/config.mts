@@ -57,10 +57,13 @@ export default defineConfig({
       ],
     },
 
-    socialLinks: [{ icon: 'github', link: 'https://github.com/sylphlab/pdf-reader-mcp' }],
+    socialLinks: [
+      { icon: 'github', link: 'https://github.com/sylphlab/pdf-reader-mcp' },
+      { icon: 'issues', link: 'https://github.com/sylphlab/pdf-reader-mcp/issues' } // Add link to issues
+    ],
 
     footer: {
-      message: 'Released under the MIT License.',
+      message: 'Released under the MIT License. Found this useful? Give us a star ⭐ on GitHub!', // Add call-to-action
       copyright: `Copyright © ${new Date().getFullYear()} Sylph Lab`,
     },
 

@@ -1,19 +1,48 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file.
 
-### [0.3.9](https://github.com/sylphlab/pdf-reader-mcp/compare/v0.4.2...v0.3.9) (2025-04-06)
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
 
-### Features
+### Added
 
-* setup docs and benchmarking framework\n\n- Initialize VitePress structure, config, and placeholder pages.\n- Install VitePress dependencies and add npm scripts.\n- Rewrite README.md according to guidelines.\n- Populate initial content for docs sections (API, Design, etc.).\n- Fix Markdown parsing issues and build docs successfully.\n- Create CONTRIBUTING.md and update CHANGELOG.md.\n- Add initial benchmark tests using Vitest.\n- Fix package.json structure and benchmark script.\n- Run benchmarks successfully after adding sample PDF. ([afd29df](https://github.com/sylphlab/pdf-reader-mcp/commit/afd29df444eb426bc53f71ed0cfa259145459c19))
+- Nothing yet.
 
+## [1.0.0] - 2025-04-07
 
-### Bug Fixes
+### Added
 
-* add missing @eslint/js dev dependency for flat config ([dcd2681](https://github.com/sylphlab/pdf-reader-mcp/commit/dcd2681abe5c60692db0147a03d5430aa6c14878))
-* correct Node version and format lockfile for CI ([a2eb985](https://github.com/sylphlab/pdf-reader-mcp/commit/a2eb9852d0722d6bff5dafe3e60d191fe91a0ace))
+- **Project Alignment:** Aligned project structure, configuration (TypeScript, ESLint, Prettier, Vitest), CI/CD (`.github/workflows/ci.yml`), Git Hooks (Husky, lint-staged, commitlint), and dependency management (Dependabot) with Sylph Lab Playbook guidelines.
+- **Testing:** Achieved ~95% test coverage using Vitest.
+- **Benchmarking:** Implemented initial performance benchmarks using Vitest `bench`.
+- **Documentation:**
+    - Set up documentation website using VitePress.
+    - Created initial content for Guide, Design, Performance, Comparison sections.
+    - Updated `README.md` to follow standard structure.
+    - Added `CONTRIBUTING.md`.
+    - Updated Performance page with initial benchmark results.
+    - Added community links and call-to-action in VitePress config footer.
+- **Package Manager:** Switched from npm to pnpm.
+
+### Changed
+
+- **Dependencies:** Updated various dependencies to align with guidelines and ensure compatibility.
+- **Configuration:** Refined `tsconfig.json`, `eslint.config.js`, `vitest.config.ts`, `package.json` based on guidelines.
+- **Project Identity:** Updated scope to `@sylphlab`.
+
+### Fixed
+
+- Resolved various configuration issues identified during guideline alignment.
+- Corrected Markdown parsing errors in initial documentation.
+- Addressed peer dependency warnings where possible.
+- **Note:** TypeDoc API generation is currently blocked due to unresolved initialization errors with TypeDoc v0.28.1.
+
+### Removed
+
+- Sponsorship related files and badges (`.github/FUNDING.yml`).
 
 ## [0.3.9] - 2025-04-05
 
@@ -87,18 +116,4 @@ All notable changes to this project will be documented in this file. See [standa
 
 - Bumped version from 0.2.2 to 0.3.0.
 
-## [0.4.0-dev] - 2025-04-06
-
-### Added
-
-- Initial VitePress documentation structure, configuration, and placeholder content.
-- `CONTRIBUTING.md` guidelines.
-
-### Changed
-
-- Updated `README.md` to align with standard structure.
-- Updated `typedoc` dependency to resolve installation conflicts.
-
-### Fixed
-
-- Markdown parsing errors in API documentation (`<Type>` -> `\<Type\>`).
+<!-- Note: Removed [0.4.0-dev] entry as changes are now part of 1.0.0 -->

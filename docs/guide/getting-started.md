@@ -6,69 +6,27 @@ This guide assumes you have an MCP client or host environment capable of launchi
 
 Ensure the server is launched with its **working directory set to the root of the project** containing the PDF files you want to access.
 
-- **If installed via npm:** Your MCP host might manage this automatically.
+- **If installed via npm/pnpm:** Your MCP host might manage this automatically via `npx @sylphlab/pdf-reader-mcp`.
 - **If running standalone:** `cd /path/to/your/project && node /path/to/pdf-reader-mcp/build/index.js`
-- **If using Docker:** `docker run -i --rm -v "/path/to/your/project:/app" sylphlab/pdf-reader-mcp:latest`
+- **If using Docker:** `docker run -i --rm -v \"/path/to/your/project:/app\" sylphlab/pdf-reader-mcp:latest`
 
 ## 2. Using the `read_pdf` Tool
 
 The server provides a single primary tool: `read_pdf`.
 
-**Tool Schema:**
+**Tool Input Schema:**
 
-```json
-{
-  "type": "object",
-  "properties": {
-    "sources": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "path": {
-            "type": "string",
-            "description": "Relative path to the local PDF file."
-          },
-          "url": {
-            "type": "string",
-            "format": "uri",
-            "description": "URL of the PDF file."
-          },
-          "pages": {
-            "anyOf": [
-              { "type": "array", "items": { "type": "integer", "minimum": 1 }, "minItems": 1 },
-              { "type": "string", "minLength": 1 }
-            ],
-            "description": "Extract text only from specific pages (1-based) or ranges (e.g., '1-3, 5'). Applies only to this source."
-          }
-        },
-        "additionalProperties": false,
-        // Requires either 'path' or 'url'
-        "oneOf": [{ "required": ["path"] }, { "required": ["url"] }]
-      },
-      "minItems": 1,
-      "description": "An array of PDF sources to process."
-    },
-    "include_full_text": {
-      "type": "boolean",
-      "default": false,
-      "description": "Include full text (ignored if 'pages' is specified for a source)."
-    },
-    "include_metadata": {
-      "type": "boolean",
-      "default": true,
-      "description": "Include metadata and info objects."
-    },
-    "include_page_count": {
-      "type": "boolean",
-      "default": true,
-      "description": "Include the total page count."
-    }
-  },
-  "required": ["sources"],
-  "additionalProperties": false
-}
-```
+The `read_pdf` tool accepts an object with the following properties:
+
+-   `sources` (Array<Object>, required): An array of PDF sources to process. Each source object must contain either a `path` or a `url`.
+    -   `path` (string, optional): Relative path to the local PDF file within the project root.
+    -   `url` (string, optional): URL of the PDF file.
+    -   `pages` (Array<number> | string, optional): Extract text only from specific pages (1-based) or ranges (e.g., `'1-3, 5'`). If provided, `include_full_text` is ignored for this source.
+-   `include_full_text` (boolean, optional, default: `false`): Include the full text content of each PDF (only if `pages` is not specified for that source).
+-   `include_metadata` (boolean, optional, default: `true`): Include metadata and info objects for each PDF.
+-   `include_page_count` (boolean, optional, default: `true`): Include the total number of pages for each PDF.
+
+*(See the [API Reference](./api/) (once generated) for the full JSON schema)*
 
 **Example MCP Request (Get metadata and page count for one PDF):**
 
@@ -109,14 +67,17 @@ The server provides a single primary tool: `read_pdf`.
 
 ## 3. Understanding the Response
 
-The response will be an array, with each element corresponding to a source in the request. Each element contains:
+The response will be an array named `results`, with each element corresponding to a source object in the request array. Each result object contains:
 
-- `source`: The original path or URL.
-- `status`: 'success' or 'error'.
-- `pageCount` (if requested and successful).
-- `metadata` (if requested and successful).
-- `info` (if requested and successful).
-- `text` (if full text requested or specific pages requested, and successful).
-- `error` (if status is 'error').
+-   `source` (string): The original path or URL provided in the request.
+-   `success` (boolean): Indicates if processing this source was successful.
+-   `data` (Object, optional): Present if `success` is `true`. Contains the requested data:
+    -   `num_pages` (number, optional): Total page count (if `include_page_count` was true).
+    -   `info` (Object, optional): PDF information dictionary (if `include_metadata` was true).
+    -   `metadata` (Object, optional): PDF metadata (if `include_metadata` was true).
+    -   `page_texts` (Array<Object>, optional): Array of objects, each with `page` (number) and `text` (string), for pages where text was extracted (if `pages` was specified or `include_full_text` was true without `pages`).
+-   `error` (Object, optional): Present if `success` is `false`. Contains:
+    -   `code` (string): An error code (e.g., `FileNotFound`, `InvalidRequest`, `PdfParsingError`, `DownloadError`, `UnknownError`).
+    -   `message` (string): A description of the error.
 
-See the API Reference for full details.
+*(See the [API Reference](./api/) (once generated) for detailed response structure and error codes.)*

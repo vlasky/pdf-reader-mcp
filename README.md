@@ -1,10 +1,12 @@
 # PDF Reader MCP Server (@sylphlab/pdf-reader-mcp)
 
+<!-- Status Badges Area -->
 [![CI/CD Pipeline](https://github.com/sylphlab/pdf-reader-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/sylphlab/pdf-reader-mcp/actions/workflows/ci.yml)
 [![Coverage Status](https://coveralls.io/repos/github/sylphlab/pdf-reader-mcp/badge.svg?branch=main)](https://coveralls.io/github/sylphlab/pdf-reader-mcp?branch=main)
 [![npm version](https://badge.fury.io/js/%40sylphlab%2Fpdf-reader-mcp.svg)](https://badge.fury.io/js/%40sylphlab%2Fpdf-reader-mcp)
 [![Docker Pulls](https://img.shields.io/docker/pulls/sylphlab/pdf-reader-mcp.svg)](https://hub.docker.com/r/sylphlab/pdf-reader-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<!-- End Status Badges Area -->
 
 Empower your AI agents (like Cline) with the ability to securely read and extract information (text, metadata, page count) from PDF files within your project context using a single, flexible tool.
 
@@ -15,7 +17,7 @@ Empower your AI agents (like Cline) with the ability to securely read and extrac
 Install as a dependency in your MCP host environment or project:
 
 ```bash
-npm install @sylphlab/pdf-reader-mcp
+pnpm add @sylphlab/pdf-reader-mcp # Or npm install / yarn add
 ```
 
 Configure your MCP host (e.g., `mcp_settings.json`) to use `npx`:
@@ -66,8 +68,8 @@ Configure your MCP host to run the container, mounting your project directory to
 ### Local Build (For Development)
 
 1. Clone: `git clone https://github.com/sylphlab/pdf-reader-mcp.git`
-2. Install: `cd pdf-reader-mcp && npm install`
-3. Build: `npm run build`
+2. Install: `cd pdf-reader-mcp && pnpm install`
+3. Build: `pnpm run build`
 4. Configure MCP Host:
    ```json
    {
@@ -137,7 +139,19 @@ Assuming the server is running and configured in your MCP host:
 
 ## Performance Advantages
 
-_(Performance benchmarks are planned and will be added to the documentation.)_
+Initial benchmarks using Vitest on a sample PDF show efficient handling of various operations:
+
+| Scenario                         | Operations per Second (hz) | Relative Speed |
+| :------------------------------- | :------------------------- | :------------- |
+| Handle Non-Existent File         | ~12,933                    | Fastest        |
+| Get Full Text                    | ~5,575                     |                |
+| Get Specific Page (Page 1)       | ~5,329                     |                |
+| Get Specific Pages (Pages 1 & 2) | ~5,242                     |                |
+| Get Metadata & Page Count        | ~4,912                     | Slowest        |
+
+*(Higher hz indicates better performance. Results may vary based on PDF complexity and environment.)*
+
+See the [Performance Documentation](./docs/performance/index.md) for more details and future plans.
 
 ## Features
 
@@ -162,19 +176,34 @@ Compared to direct file access (often infeasible) or generic filesystem tools, t
 
 See the full [Comparison](./docs/comparison/index.md) documentation.
 
-## Future Plans
+## Future Plans (Roadmap)
 
-- Implement comprehensive benchmark tests.
-- Enhance documentation with more examples and advanced use cases.
-- Explore potential optimizations for very large PDF files.
+- **Documentation:**
+    - Finalize all documentation sections (Guide, API, Design, Comparison).
+    - Resolve TypeDoc issue and generate API documentation.
+    - Add more examples and advanced usage patterns.
+    - Implement PWA support and mobile optimization for the docs site.
+    - Add share buttons and growth metrics to the docs site.
+- **Benchmarking:**
+    - Conduct comprehensive benchmarks with diverse PDF files (size, complexity).
+    - Measure memory usage.
+    - Compare URL vs. local file performance.
+- **Core Functionality:**
+    - Explore potential optimizations for very large PDF files.
+    - Investigate options for extracting images or annotations (longer term).
+- **Testing:**
+    - Increase test coverage towards 100% where practical.
+    - Add runtime tests once feasible.
 
 ## Documentation
 
-For detailed usage, API reference, and guides, please visit the **[Full Documentation Website](https://sylphlab.github.io/pdf-reader-mcp/)** (Link to be updated once deployed).
+For detailed usage, API reference, and guides, please visit the **[Full Documentation Website](https://sylphlab.github.io/pdf-reader-mcp/)** (Link to be updated upon deployment).
 
-## Contributing
+## Community & Support
 
-Contributions are welcome! Please read the [CONTRIBUTING.md](./CONTRIBUTING.md) guidelines and open an issue or pull request on GitHub.
+- **Found a bug or have a feature request?** Please open an issue on [GitHub Issues](https://github.com/sylphlab/pdf-reader-mcp/issues).
+- **Want to contribute?** We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md).
+- **Star & Watch:** If you find this project useful, please consider starring ⭐ and watching 👀 the repository on [GitHub](https://github.com/sylphlab/pdf-reader-mcp) to show your support and stay updated!
 
 ## License
 
