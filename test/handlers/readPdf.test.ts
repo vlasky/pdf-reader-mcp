@@ -77,7 +77,7 @@ describe('handleReadPdfFunc Integration Tests', () => {
       },
     });
     // eslint-disable-next-line @typescript-eslint/require-await
-    mockGetPage.mockImplementation(async (pageNum: number) => {
+    mockGetPage.mockImplementation((pageNum: number) => { // Removed unnecessary async
       if (pageNum > 0 && pageNum <= mockDocumentAPI.numPages) {
         return {
           getTextContent: vi
@@ -542,7 +542,7 @@ describe('handleReadPdfFunc Integration Tests', () => {
 
   it('should handle errors during page processing gracefully when specific pages are requested', async () => {
     // eslint-disable-next-line @typescript-eslint/require-await
-    mockGetPage.mockImplementation(async (pageNum: number) => {
+    mockGetPage.mockImplementation((pageNum: number) => { // Removed unnecessary async
       if (pageNum === 1)
         return {
           getTextContent: vi.fn().mockResolvedValueOnce({ items: [{ str: `Mock page text 1` }] }),
