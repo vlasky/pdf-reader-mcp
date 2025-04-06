@@ -1,4 +1,4 @@
-<!-- Version: 1.1 | Last Updated: 2025-04-06 | Updated By: Cline -->
+<!-- Version: 1.2 | Last Updated: 2025-04-06 | Updated By: Cline -->
 
 # Progress: PDF Reader MCP Server (Vitest Setup)
 
@@ -23,7 +23,8 @@
   - Configured via `vitest.config.ts`.
   - Added `test` and `test:coverage` scripts to `package.json`.
   - Created `test` directory.
-  - First test for `src/utils/pathUtils.ts` created and passing.
+  - Tests for `src/utils/pathUtils.ts` created and passing.
+  - Tests for `src/handlers/readPdf.ts` created and passing (covering various options and error cases).
 
 ## 2. What's Left to Build/Verify
 
@@ -32,13 +33,13 @@
   - Verify the server starts correctly.
   - Test the consolidated `read_pdf` tool via `@modelcontextprotocol/inspector` or a live agent.
   - Verify error handling (e.g., file not found, URL fetch errors, corrupted PDF).
-- **Testing:** Write tests for core handlers (e.g., `read_pdf`).
+- **Testing:** Core handlers (`read_pdf`, `pathUtils`) now have tests. Consider adding tests for edge cases or specific PDF structures if needed.
 - **Refinement:** Review code for potential improvements or edge cases missed.
 - **Publishing Workflow Test:** Test the updated GitHub Actions workflow by pushing a version tag (e.g., `v0.3.10` or similar) and verifying npm/Docker publish and GitHub Release creation.
 
 ## 3. Current Status
 
-Vitest testing framework has been successfully integrated. Basic configuration is complete, and the first utility function test is passing. Ready for further test development, build, and workflow verification.
+Vitest testing framework integrated. Tests for core utility (`pathUtils`) and the main handler (`readPdf`) are implemented and passing. Ready for build and workflow verification.
 
 ## 4. Known Issues/Risks
 
@@ -52,4 +53,4 @@ Vitest testing framework has been successfully integrated. Basic configuration i
 - **Per-Source Pages:** Logic now handles `pages` parameter within the source
   loop. Testing different combinations of sources with and without `pages` is
   important.
-- **Test Coverage:** Current test coverage is minimal; more tests are needed for core functionality.
+- **Test Coverage:** Core functionality is now covered by tests. Coverage can be expanded further if specific complex PDF scenarios arise.

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import path from 'path';
-import { resolvePath, PROJECT_ROOT } from '../src/utils/pathUtils'; // Adjust path as needed
+import { resolvePath, PROJECT_ROOT } from '../src/utils/pathUtils.js'; // Add .js extension
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 
 // Mock PROJECT_ROOT for consistent testing if needed, or use the actual one
