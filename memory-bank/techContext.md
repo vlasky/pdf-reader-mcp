@@ -1,4 +1,4 @@
-<!-- Version: 1.9 | Last Updated: 2025-04-06 | Updated By: Sylph -->
+<!-- Version: 1.10 | Last Updated: 2025-04-06 | Updated By: Sylph -->
 
 # Tech Context: PDF Reader MCP Server
 
@@ -6,7 +6,7 @@
 
 - **Runtime:** Node.js (>= 18.0.0 recommended)
 - **Language:** TypeScript (Compiled to JavaScript for execution)
-- **Package Manager:** npm (Node Package Manager)
+- **Package Manager:** pnpm (Switched from npm to align with guidelines)
 - **Linter:** ESLint (with TypeScript support, including **strict type-aware rules**)
 - **Formatter:** Prettier
 - **Testing:** Vitest (with **~95% coverage achieved**)

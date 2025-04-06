@@ -1,4 +1,4 @@
-<!-- Version: 1.12 | Last Updated: 2025-04-06 | Updated By: Sylph -->
+<!-- Version: 1.13 | Last Updated: 2025-04-06 | Updated By: Sylph -->
 
 # Active Context: PDF Reader MCP Server (Guidelines Alignment)
 
@@ -45,6 +45,8 @@ Aligning the project configuration, structure, and CI/CD processes with the prov
 - **Benchmarking:** Created initial benchmark file, fixed TS errors, and successfully ran benchmarks (`npm run benchmark`) after user provided `test/fixtures/sample.pdf`.
 
 ## 4. Active Decisions & Considerations
+
+- **Switched to pnpm:** Changed package manager from npm to pnpm to align with TypeScript guidelines recommendation. Deleted `package-lock.json` and generated `pnpm-lock.yaml`.
 
 - **Using `pdfjs-dist` as the core PDF library.**
 - Adopted the handler definition pattern from `filesystem-mcp`.
