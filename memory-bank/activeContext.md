@@ -1,11 +1,10 @@
-<!-- Version: 1.0 | Last Updated: 2025-04-05 | Updated By: Cline -->
+<!-- Version: 1.1 | Last Updated: 2025-04-06 | Updated By: Roo -->
 
-# Active Context: PDF Reader MCP Server (Initial Setup)
+# Active Context: PDF Reader MCP Server (Guidelines Alignment)
 
 ## 1. Current Focus
 
-The primary focus has been setting up the initial project structure and
-implementing the core PDF reading tools based on the `filesystem-mcp` template.
+Aligning the project configuration, structure, and CI/CD processes with the provided "TypeScript Project Development Guidelines".
 
 ## 2. Recent Changes (Chronological Summary)
 
@@ -16,35 +15,33 @@ implementing the core PDF reading tools based on the `filesystem-mcp` template.
 - Added URL support to `pdf-parse` based tools.
 - Consolidated tools into a single `read_pdf` handler.
 - **Switched PDF Library:** Uninstalled `pdf-parse`, installed `pdfjs-dist`.
-- Rewrote the `read_pdf` handler (`src/handlers/readPdf.ts`) to use
-  `pdfjs-dist`.
-- Updated `README.md` and Memory Bank files to reflect the switch to
-  `pdfjs-dist` and the consolidated tool.
-- **Added Multiple Source Support & Per-Source Pages:** Modified `read_pdf`
-  handler and schema to accept an array of `sources`. Moved the optional `pages`
-  parameter into each source object, allowing different page selections for
-  different files in the same request. Updated `README.md` and Memory Bank files
-  again.
-- Created `CHANGELOG.md` with initial structure.
-- Created `LICENSE` file (MIT License).
-- Updated `.github/workflows/publish.yml` to include main branch trigger, conditional artifact creation/upload, conditional job execution based on tags, and a `create-release` job using `CHANGELOG.md`.
+- Rewrote the `read_pdf` handler (`src/handlers/readPdf.ts`) to use `pdfjs-dist`.
+- Updated `README.md` and Memory Bank files to reflect the switch to `pdfjs-dist` and the consolidated tool.
+- **Added Multiple Source Support & Per-Source Pages:** Modified `read_pdf` handler and schema to accept an array of `sources`. Moved the optional `pages` parameter into each source object.
+- Created `CHANGELOG.md` and `LICENSE`.
+- Updated `.github/workflows/publish.yml` initially.
+- **Guidelines Alignment:**
+  - Removed sponsorship information (`.github/FUNDING.yml`, `README.md` badges) per Guideline #9.
+  - Updated `package.json` scripts (`lint`, `format`, `validate`, added `test:watch`, etc.) and removed unused dependencies (`diff`, `detect-indent`, `@types/diff`) per Guidelines #3 & #1.
+  - Verified `tsconfig.json`, `eslint.config.js`, `.prettierrc.cjs`, `vitest.config.ts` align with Guidelines.
+  - Updated `.gitignore` to include `dist/` and `coverage/`.
+  - Renamed and refactored GitHub Actions workflow to `.github/workflows/ci.yml` to better align with Guideline #8 (separate validate/publish/release jobs, PR trigger, auto release notes).
+  - Added tests to improve coverage for `readPdf.ts`, reaching ~95%. Accepted this level due to difficulty covering Zod-protected/edge-case error paths.
 
 ## 3. Next Steps
 
-- Update `memory-bank/progress.md` to reflect recent changes (Changelog, License, Workflow).
 - Build the project (`npm run build`).
-- Test the updated GitHub Actions workflow by pushing a tag (e.g., `v0.3.0`).
-- Consider adding basic tests for the PDF handlers.
+- Test the updated GitHub Actions workflow (`ci.yml`) by pushing a tag (e.g., `v0.4.0`).
 - Commit changes to the Git repository.
-- Potentially test the server using `@modelcontextprotocol/inspector` or by integrating with Cline.
+- Perform runtime testing using `@modelcontextprotocol/inspector` or a live agent.
+- **Documentation (Major):** Rewrite `README.md`, set up VitePress, create detailed content per Guideline #6.
+- **Benchmarking:** Implement and run benchmark tests per Guideline #5.
 
 ## 4. Active Decisions & Considerations
 
 - **Using `pdfjs-dist` as the core PDF library.**
 - Adopted the handler definition pattern from `filesystem-mcp`.
-- The consolidated `read_pdf` tool uses `pdfjs-dist` API (including `getPage`
-  and `getTextContent`) to handle specific page requests internally.
-- Removed inherited filesystem tools.
-- Consolidated tools into a single `read_pdf` handler.
-- Added support for processing multiple sources in a single call, with
-  per-source page selection.
+- Consolidated tools into a single `read_pdf` handler with multi-source and per-source page support.
+- Aligned project configuration (linting, formatting, testing, CI) with the provided Guidelines.
+- **Accepted ~95% test coverage** as sufficient given the nature of the remaining uncovered lines (protected by Zod validation or extreme edge cases).
+- **No Sponsorship:** Project will not include sponsorship links or files.

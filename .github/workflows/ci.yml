@@ -1,0 +1,150 @@
+name: CI, Publish &amp; Release
+
+on:
+  push:
+    branches:
+      - main # Trigger on push to main branch
+    tags:
+      - 'v*.*.*' # Trigger on push of version tags (e.g., v0.5.5)
+  pull_request:
+    branches:
+      - main # Trigger on PR to main branch
+
+jobs:
+  validate:
+    name: Validate Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm' # Enable npm caching
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check Formatting
+        run: npm run check-format # Fails job if check fails
+
+      - name: Lint Code
+        run: npm run lint # Fails job if lint fails
+
+      - name: Run Tests and Check Coverage
+        run: npm run test:cov # Fails job if tests fail or coverage < 100%
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/ # Upload the whole coverage directory
+
+  publish:
+    name: Build, Publish Packages
+    needs: validate # Depends on successful validation
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') # Only run for tags
+    outputs: # Define outputs for the release job
+      version: ${{ steps.get_version.outputs.version }}
+      artifact_path: ${{ steps.archive_build.outputs.artifact_path }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org/' # For npm publish
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Get package version from tag
+        id: get_version
+        run: |
+          VERSION=$(echo "${{ github.ref }}" | sed 's#refs/tags/##')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Archive build artifacts for release
+        id: archive_build
+        run: |
+          ARTIFACT_NAME="pdf-reader-mcp-${{ steps.get_version.outputs.version }}.tar.gz"
+          tar -czf $ARTIFACT_NAME build package.json README.md LICENSE CHANGELOG.md
+          echo "artifact_path=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
+
+      - name: Upload build artifact for release job
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifact
+          path: ${{ steps.archive_build.outputs.artifact_path }}
+
+      # --- Publish to NPM ---
+      - name: Publish to npm
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # --- Publish to Docker Hub ---
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: shtse8/pdf-reader-mcp
+          tags: |
+            type=semver,pattern={{version}},value=${{ steps.get_version.outputs.version }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ steps.get_version.outputs.version }}
+            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }} # latest tag only for version tags
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  release:
+    name: Create GitHub Release
+    needs: publish # Depends on successful publish
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') # Only run for tags
+    permissions:
+      contents: write # Need permission to create releases and release notes
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: release-artifact
+          # No path specified, downloads to current directory
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          generate_release_notes: true # Auto-generate release notes from commits
+          files: ${{ needs.publish.outputs.artifact_path }} # Attach the artifact archive
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,4 +1,4 @@
-<!-- Version: 1.6 | Last Updated: 2025-04-06 | Updated By: Roo -->
+<!-- Version: 1.7 | Last Updated: 2025-04-06 | Updated By: Roo -->
 
 # Tech Context: PDF Reader MCP Server
 
@@ -20,9 +20,6 @@
 - **`@types/glob`:** TypeScript type definitions for the `glob` library.
 - **`zod`:** Library for schema declaration and validation.
 - **`zod-to-json-schema`:** Utility to convert Zod schemas to JSON schemas.
-- **`diff`:** Library for generating text differences (used by inherited `edit_file`).
-- **`detect-indent`:** Library for detecting indentation (used by inherited `edit_file`).
-- **`@types/diff`:** TypeScript type definitions for the `diff` library.
 - **`pdfjs-dist`:** Mozilla's PDF rendering and parsing library.
 - **`vitest`:** Test runner framework.
 - **`@vitest/coverage-v8`:** Coverage provider for Vitest.
@@ -43,20 +40,22 @@
   - `vitest.config.ts`: Vitest test runner configuration (**100% coverage thresholds set**).
   - `eslint.config.js`: ESLint flat configuration (integrates Prettier, enables **strict type-aware linting** for TS files).
   - `.prettierrc.cjs`: Prettier formatting rules (using CommonJS).
-  - `.github/FUNDING.yml`: GitHub Sponsors and Buy Me a Coffee configuration.
+  - `.gitignore`: Specifies intentionally untracked files (`node_modules/`, `build/`, `dist/`, `coverage/`, etc.).
+  - `.github/workflows/ci.yml`: GitHub Actions workflow for validation, publishing, and release.
   - `package.json`: Project metadata, dependencies, and npm scripts.
     - `dependencies`: (See package.json for full list)
     - `devDependencies`: (Includes TypeScript, Vitest, ESLint, Prettier related packages - See package.json for full list)
-    - `scripts`:
+    - `scripts`: (Aligned with Guidelines)
       - `build`: Compiles TypeScript.
       - `watch`: Compiles TypeScript in watch mode.
       - `test`: Runs tests.
-      - `test:coverage` / `test:cov`: Runs tests with coverage.
-      - `lint`: Runs ESLint check (including strict type-aware rules).
-      - `lint:fix`: Runs ESLint check and fixes issues.
-      - `format`: Formats code using Prettier.
-      - `check-format`: Checks if code formatting matches Prettier rules.
-      - `validate`: Runs `check-format`, `lint`, and `test:cov` sequentially.
+      - `test:watch`: Runs tests in watch mode.
+      - `test:cov`: Runs tests with coverage.
+      - `lint`: Runs ESLint check (with cache).
+      - `lint:fix`: Runs ESLint check and fixes issues (with cache).
+      - `format`: Formats code using Prettier (with cache).
+      - `check-format`: Checks if code formatting matches Prettier rules (with cache).
+      - `validate`: Runs `check-format`, `lint`, and `test` sequentially.
       - `inspector`: Runs the MCP inspector.
       - `start`: Runs the compiled server.
 - **Build Output:** Compiled JavaScript in the `build` directory.

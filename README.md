@@ -3,9 +3,6 @@
 [![npm version](https://badge.fury.io/js/%40shtse8%2Fpdf-reader-mcp.svg)](https://badge.fury.io/js/%40shtse8%2Fpdf-reader-mcp)
 [![Docker Pulls](https://img.shields.io/docker/pulls/shtse8/pdf-reader-mcp.svg)](https://hub.docker.com/r/shtse8/pdf-reader-mcp)
 
-[![GitHub Sponsors](https://img.shields.io/github/sponsors/shtse8?style=flat-square)](https://github.com/sponsors/shtse8)
-[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-shtse8-yellow.svg?style=flat-square)](https://www.buymeacoffee.com/shtse8)
-
 <!-- Add other badges like License, Build Status if applicable -->
 
 **Empower your AI agents (like Cline/Claude) with the ability to read and
