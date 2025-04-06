@@ -1,13 +1,13 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { readPdfToolDefinition } from '../../src/handlers/readPdf.js'; // Add .js extension
+import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest'; // Removed afterEach
+// Removed unused import: import { readPdfToolDefinition } from '../../src/handlers/readPdf.js';
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
-import fs from 'node:fs/promises';
-import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
-import { resolvePath, PROJECT_ROOT } from '../../src/utils/pathUtils.js'; // Add .js extension
+// Removed unused import: import fs from 'node:fs/promises';
+// Removed unused import: import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs';
+import { resolvePath } from '../../src/utils/pathUtils.js'; // Removed PROJECT_ROOT
 
 // --- Mocking pdfjs-dist ---
 // Define mocks that can be accessed and reset
-const mockGetTextContent = vi.fn();
+// Removed unused variable: const mockGetTextContent = vi.fn();
 const mockGetMetadata = vi.fn();
 const mockGetPage = vi.fn();
 const mockGetDocument = vi.fn();
@@ -43,7 +43,7 @@ vi.doMock('node:fs/promises', () => {
 
 
 // Dynamically import the handler *once* after mocks are defined
-let handler: (args: unknown) => Promise<any>;
+let handler: (args: unknown) => Promise<{ content: { type: string; text: string }[] }>; // Use specific type
 beforeAll(async () => {
     const { readPdfToolDefinition: importedDefinition } = await import('../../src/handlers/readPdf.js');
     handler = importedDefinition.handler;

@@ -1,6 +1,6 @@
-<!-- Version: 1.2 | Last Updated: 2025-04-06 | Updated By: Cline -->
+<!-- Version: 1.3 | Last Updated: 2025-04-06 | Updated By: Roo -->
 
-# Progress: PDF Reader MCP Server (Vitest Setup)
+# Progress: PDF Reader MCP Server (ESLint Setup)
 
 ## 1. What Works
 
@@ -25,21 +25,34 @@
   - Created `test` directory.
   - Tests for `src/utils/pathUtils.ts` created and passing.
   - Tests for `src/handlers/readPdf.ts` created and passing (covering various options and error cases).
+- **Linter (ESLint):**
+  - Installed `eslint`, `typescript-eslint`, `@typescript-eslint/parser`,
+    `@typescript-eslint/eslint-plugin`.
+  - Configured using flat config (`eslint.config.js`).
+  - Added `lint` and `lint:fix` scripts to `package.json`.
+  - Existing codebase passes ESLint checks.
 
 ## 2. What's Left to Build/Verify
 
 - **Compilation:** Need to run `npm run build`.
 - **Runtime Testing:**
   - Verify the server starts correctly.
-  - Test the consolidated `read_pdf` tool via `@modelcontextprotocol/inspector` or a live agent.
-  - Verify error handling (e.g., file not found, URL fetch errors, corrupted PDF).
-- **Testing:** Core handlers (`read_pdf`, `pathUtils`) now have tests. Consider adding tests for edge cases or specific PDF structures if needed.
+  - Test the consolidated `read_pdf` tool via
+    `@modelcontextprotocol/inspector` or a live agent.
+  - Verify error handling (e.g., file not found, URL fetch errors, corrupted
+    PDF).
+- **Testing:** Core handlers (`read_pdf`, `pathUtils`) now have tests. Consider
+  adding tests for edge cases or specific PDF structures if needed.
 - **Refinement:** Review code for potential improvements or edge cases missed.
-- **Publishing Workflow Test:** Test the updated GitHub Actions workflow by pushing a version tag (e.g., `v0.3.10` or similar) and verifying npm/Docker publish and GitHub Release creation.
+- **Publishing Workflow Test:** Test the updated GitHub Actions workflow by
+  pushing a version tag (e.g., `v0.3.10` or similar) and verifying npm/Docker
+  publish and GitHub Release creation.
 
 ## 3. Current Status
 
-Vitest testing framework integrated. Tests for core utility (`pathUtils`) and the main handler (`readPdf`) are implemented and passing. Ready for build and workflow verification.
+ESLint integrated and configured. Existing code passes linting checks. Vitest
+testing framework integrated with tests for core utility and main handler
+passing. Ready for build and workflow verification.
 
 ## 4. Known Issues/Risks
 
@@ -53,4 +66,5 @@ Vitest testing framework integrated. Tests for core utility (`pathUtils`) and th
 - **Per-Source Pages:** Logic now handles `pages` parameter within the source
   loop. Testing different combinations of sources with and without `pages` is
   important.
-- **Test Coverage:** Core functionality is now covered by tests. Coverage can be expanded further if specific complex PDF scenarios arise.
+- **Test Coverage:** Core functionality is now covered by tests. Coverage can be
+  expanded further if specific complex PDF scenarios arise.

@@ -32,7 +32,7 @@ const PdfSourceSchema = z.object({
     url: z.string().url().optional().describe("URL of the PDF file."),
     pages: z.union([
         z.array(z.number().int().positive()).min(1),
-        z.string().min(1).refine(val => /^[0-9,\-]+$/.test(val), { message: "Page string must contain only numbers, commas, and hyphens." })
+        z.string().min(1).refine(val => /^[0-9,-]+$/.test(val), { message: "Page string must contain only numbers, commas, and hyphens." }) // Removed unnecessary escape for hyphen
     ]).optional().describe("Extract text only from specific pages (1-based) or ranges for *this specific source*. If provided, 'include_full_text' for the entire request is ignored for this source."),
 }).strict().refine(
     (data) => (data.path && !data.url) || (!data.path && data.url),
@@ -47,7 +47,7 @@ const ReadPdfArgsSchema = z.object({
   include_metadata: z.boolean().optional().default(true).describe("Include metadata and info objects for each PDF."),
   include_page_count: z.boolean().optional().default(true).describe("Include the total number of pages for each PDF."),
 }).strict().refine(
-    (data) => {
+    () => { // Ensure unused 'data' parameter is removed
         // The check for simultaneous 'pages' and 'include_full_text' is now implicitly handled
         // because 'pages' is per-source. If a source has 'pages', its result won't have 'full_text'.
         // If a source *doesn't* have 'pages', then 'include_full_text' applies to it.
@@ -77,12 +77,45 @@ const handleReadPdfFunc = async (args: unknown) => {
     include_page_count,
   } = parsedArgs;
 
-  const results: any[] = [];
+  // Define interfaces for clearer result typing (assuming they might have been lost in previous diffs)
+  interface PdfInfo {
+    PDFFormatVersion?: string;
+    IsLinearized?: boolean;
+    IsAcroFormPresent?: boolean;
+    IsXFAPresent?: boolean;
+    [key: string]: unknown; // Allow other properties
+  }
+
+  interface PdfMetadata {
+    [key: string]: unknown;
+  }
+
+  interface ExtractedPageText {
+    page: number;
+    text: string;
+  }
+
+  interface PdfResultData {
+    info?: PdfInfo;
+    metadata?: PdfMetadata;
+    num_pages?: number;
+    full_text?: string;
+    page_texts?: ExtractedPageText[];
+    warnings?: string[];
+  }
+
+  interface PdfSourceResult {
+    source: string;
+    success: boolean;
+    data?: PdfResultData;
+    error?: string;
+  }
+  const results: PdfSourceResult[] = []; // Ensure specific type is used
 
   for (const source of sources) {
     let pdfDataSource: Buffer | { url: string };
-    let sourceDescription: string = source.path ? `'${source.path}'` : (source.url ? `'${source.url}'` : 'unknown source');
-    let individualResult: any = { source: source.path ?? source.url };
+    const sourceDescription: string = source.path ? `'${source.path}'` : (source.url ? `'${source.url}'` : 'unknown source');
+    let individualResult: PdfSourceResult = { source: source.path ?? source.url ?? 'unknown', success: false }; // Ensure specific type and initialization
     let targetPages: number[] | undefined = undefined; // Pages specific to this source
 
     try {
@@ -97,9 +130,11 @@ const handleReadPdfFunc = async (args: unknown) => {
                 if (targetPages.length === 0 || targetPages.some(p => p <= 0)) {
                     throw new Error("Page numbers must be positive integers.");
                 }
-            } catch (error: any) {
+            } catch (error: unknown) { // Use unknown type
                 // Throw specific error for this source's page spec
-                throw new McpError(ErrorCode.InvalidParams, `Invalid page specification for source ${sourceDescription}: ${error.message}`);
+                // Add type guard for error message
+                const message = error instanceof Error ? error.message : String(error);
+                throw new McpError(ErrorCode.InvalidParams, `Invalid page specification for source ${sourceDescription}: ${message}`);
             }
         }
 
@@ -115,19 +150,22 @@ const handleReadPdfFunc = async (args: unknown) => {
 
       // 2. Load PDF document
       const loadingTask = pdfjsLib.getDocument(pdfDataSource);
-      const pdfDocument = await loadingTask.promise.catch((err: any) => {
+      const pdfDocument = await loadingTask.promise.catch((err: unknown) => { // Use unknown type
           console.error(`[PDF Reader MCP] PDF.js loading error for ${sourceDescription}:`, err);
-          throw new McpError(ErrorCode.InvalidRequest, `Failed to load PDF document. Reason: ${err?.message || 'Unknown loading error'}`, { cause: err });
+          // Add type guard for error message and cause
+          const message = err instanceof Error ? err.message : String(err);
+          throw new McpError(ErrorCode.InvalidRequest, `Failed to load PDF document. Reason: ${message || 'Unknown loading error'}`, { cause: err instanceof Error ? err : undefined });
       });
 
       // 3. Extract requested data
-      const output: any = {};
+      const output: PdfResultData = {}; // Ensure specific type
       const totalPages = pdfDocument.numPages;
 
       if (include_metadata) {
           const metadata = await pdfDocument.getMetadata();
-          output.info = metadata?.info;
-          output.metadata = metadata?.metadata?.getAll();
+          // Cast to expected types
+          output.info = metadata?.info as PdfInfo | undefined;
+          output.metadata = metadata?.metadata?.getAll() as PdfMetadata | undefined;
       }
       if (include_page_count) {
           output.num_pages = totalPages;
@@ -153,12 +191,15 @@ const handleReadPdfFunc = async (args: unknown) => {
               try {
                   const page = await pdfDocument.getPage(pageNum);
                   const textContent = await page.getTextContent();
-                  const pageText = textContent.items.map((item: any) => item.str).join('');
+                  // Assuming item.str exists, use unknown and cast
+                  const pageText = textContent.items.map((item: unknown) => (item as { str: string }).str).join(''); // Ensure type assertion
                   extractedPageTexts.push({ page: pageNum, text: pageText });
-              } catch (pageError: any) {
-                   console.warn(`[PDF Reader MCP] Error getting text content for page ${pageNum} in ${sourceDescription}: ${pageError.message}`);
+              } catch (pageError: unknown) { // Use unknown type
+                   // Add type guard for error message
+                   const message = pageError instanceof Error ? pageError.message : String(pageError);
+                   console.warn(`[PDF Reader MCP] Error getting text content for page ${pageNum} in ${sourceDescription}: ${message}`);
                    if (targetPages) {
-                      extractedPageTexts.push({ page: pageNum, text: `Error processing page: ${pageError.message}` });
+                      extractedPageTexts.push({ page: pageNum, text: `Error processing page: ${message}` });
                    }
               }
           }
@@ -175,20 +216,31 @@ const handleReadPdfFunc = async (args: unknown) => {
 
       individualResult = { ...individualResult, data: output, success: true }; // Nest data under 'data' key
 
-    } catch (error: any) {
+    } catch (error) { // Use unknown type for error
       let errorMessage = `Failed to process PDF from ${sourceDescription}.`;
-       if (error instanceof McpError) {
-           errorMessage = error.message;
-       } else if (source.path && error.code === 'ENOENT') {
-           const safePath = resolvePath(source.path);
-           errorMessage = `File not found at '${source.path}'. Resolved to: ${safePath}`;
-       } else if (error instanceof Error) {
+      if (error instanceof McpError) {
+          // If it's already an McpError, use its message directly
+          errorMessage = error.message;
+      } else if (source.path && typeof error === 'object' && error !== null && 'code' in error && error.code === 'ENOENT') {
+          // Check for ENOENT specifically for path-based sources
+          try {
+              const safePath = resolvePath(source.path);
+              errorMessage = `File not found at '${source.path}'. Resolved to: ${safePath}`;
+          } catch { // Remove unused variable binding
+              // Handle cases where resolvePath itself might fail (e.g., invalid chars)
+              errorMessage = `File not found at '${source.path}', and path resolution also failed.`;
+          }
+      } else if (error instanceof Error) {
+          // Generic Error
           errorMessage += ` Reason: ${error.message}`;
-       } else {
+      } else {
+          // Fallback for unknown error types
           errorMessage += ` Unknown error: ${String(error)}`;
-       }
-       individualResult.error = errorMessage;
-       individualResult.success = false;
+      }
+      individualResult.error = errorMessage;
+      individualResult.success = false;
+      // Ensure data is not included on error
+      delete individualResult.data; // Remove data property on error
     }
     results.push(individualResult);
   } // End loop over sources

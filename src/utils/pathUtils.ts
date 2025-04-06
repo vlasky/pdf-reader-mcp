@@ -1,5 +1,5 @@
 import path from "path";
-import { fileURLToPath } from 'url';
+// Removed unused import: import { fileURLToPath } from 'url';
 import { McpError, ErrorCode } from "@modelcontextprotocol/sdk/types.js";
 
 // Use the server's current working directory as the project root.

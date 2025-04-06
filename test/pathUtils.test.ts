@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect } from 'vitest'; // Removed beforeEach, vi
 import path from 'path';
 import { resolvePath, PROJECT_ROOT } from '../src/utils/pathUtils.js'; // Add .js extension
 import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
@@ -86,8 +86,8 @@ describe('resolvePath Utility', () => {
     }
   });
 
-  it('should throw McpError for non-string input', () => {
-    const userPath = 123 as any; // Invalid input type
+  it('should throw McpError for non-string input', () => { // Corrected line number for context
+    const userPath = 123 as unknown as string; // Use unknown then cast to string for test
     expect(() => resolvePath(userPath)).toThrow(McpError);
     expect(() => resolvePath(userPath)).toThrow('Path must be a string.');
      try {

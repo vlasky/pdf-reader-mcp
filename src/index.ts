@@ -31,9 +31,10 @@ const server = new Server(
 );
 
 // Helper function to convert Zod schema to JSON schema for MCP
-const generateInputSchema = (schema: z.ZodType<any, any, any>): object => {
-    // Need to cast as 'any' because zodToJsonSchema might return slightly incompatible types for MCP SDK
-    return zodToJsonSchema(schema, { target: 'openApi3' }) as any;
+// Use 'unknown' instead of 'any' for better type safety, although casting is still needed for the SDK
+const generateInputSchema = (schema: z.ZodType<unknown>): object => {
+    // Need to cast as 'unknown' then 'object' because zodToJsonSchema might return slightly incompatible types for MCP SDK
+    return zodToJsonSchema(schema, { target: 'openApi3' }) as unknown as object;
 };
 
 server.setRequestHandler(ListToolsRequestSchema, async () => {

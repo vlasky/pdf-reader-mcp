@@ -7,8 +7,9 @@ import { z } from 'zod';
 export interface ToolDefinition {
     name: string;
     description: string;
-    schema: z.ZodType<any, any, any>; // Use Zod schema type
-    handler: (args: unknown) => Promise<any>; // Handler function type
+    schema: z.ZodType<unknown>; // Use Zod schema type with unknown
+    // Define the specific return type expected by the SDK for tool handlers
+    handler: (args: unknown) => Promise<{ content: { type: string; text: string }[] }>;
 }
 
 // Aggregate only the consolidated PDF tool definition
