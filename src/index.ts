@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod'; // Import Zod
-import { zodToJsonSchema } from "zod-to-json-schema";
+import { zodToJsonSchema } from 'zod-to-json-schema';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
   McpError,
   ErrorCode,
-} from "@modelcontextprotocol/sdk/types.js";
+} from '@modelcontextprotocol/sdk/types.js';
 // Import the aggregated tool definitions
 import { allToolDefinitions } from './handlers/index.js';
 // Removed incorrect import left over from partial diff
@@ -21,9 +21,9 @@ import { allToolDefinitions } from './handlers/index.js';
 
 const server = new Server(
   {
-    name: "filesystem-mcp",
-    version: "0.4.0", // Increment version for definition refactor
-    description: "MCP Server for filesystem operations relative to the project root."
+    name: 'filesystem-mcp',
+    version: '0.4.0', // Increment version for definition refactor
+    description: 'MCP Server for filesystem operations relative to the project root.',
   },
   {
     capabilities: { tools: {} },
@@ -33,14 +33,14 @@ const server = new Server(
 // Helper function to convert Zod schema to JSON schema for MCP
 // Use 'unknown' instead of 'any' for better type safety, although casting is still needed for the SDK
 const generateInputSchema = (schema: z.ZodType<unknown>): object => {
-    // Need to cast as 'unknown' then 'object' because zodToJsonSchema might return slightly incompatible types for MCP SDK
-    return zodToJsonSchema(schema, { target: 'openApi3' }) as unknown as object;
+  // Need to cast as 'unknown' then 'object' because zodToJsonSchema might return slightly incompatible types for MCP SDK
+  return zodToJsonSchema(schema, { target: 'openApi3' }) as unknown as object;
 };
 
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   // Removed log
   // Map the aggregated definitions to the format expected by the SDK
-  const availableTools = allToolDefinitions.map(def => ({
+  const availableTools = allToolDefinitions.map((def) => ({
     name: def.name,
     description: def.description,
     inputSchema: generateInputSchema(def.schema), // Generate JSON schema from Zod schema
@@ -51,7 +51,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   // Use imported handlers
   // Find the tool definition by name and call its handler
-  const toolDefinition = allToolDefinitions.find(def => def.name === request.params.name);
+  const toolDefinition = allToolDefinitions.find((def) => def.name === request.params.name);
 
   if (!toolDefinition) {
     throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${request.params.name}`);
@@ -71,6 +71,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error("[Filesystem MCP] Server error:", error);
+  console.error('[Filesystem MCP] Server error:', error);
   process.exit(1);
 });

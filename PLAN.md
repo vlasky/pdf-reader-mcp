@@ -1,6 +1,7 @@
 # Plan: PDF Reader MCP Tool Development
 
 1. **Project Setup:**
+
    - Clone `https://github.com/shtse8/filesystem-mcp` to
      `c:/Users/shtse/pdf-reader`. (Already done implicitly by user starting in
      this empty dir, but good to note).
@@ -15,11 +16,13 @@
      - `memory-bank/progress.md`
 
 2. **Technology Selection & Dependency:**
+
    - Research and choose a suitable Node.js PDF processing library (e.g.,
      `pdf-parse` or `pdfjs-dist`).
    - Add the chosen library to `package.json` dependencies.
 
 3. **Feature Implementation:**
+
    - Define MCP tool schemas and implement logic:
      - `read_pdf_all_text`: Extract all text. Input: `{ "path": "string" }`
      - `read_pdf_page_text`: Extract text from specific pages. Input:
@@ -42,6 +45,7 @@
    ```
 
 4. **Documentation & Refinement:**
+
    - Update `README.md` with new PDF tool descriptions and usage examples.
    - Update Memory Bank files (`techContext.md`, `systemPatterns.md`,
      `progress.md`).

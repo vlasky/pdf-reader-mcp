@@ -52,9 +52,7 @@ The simplest way is via `npx`, configured in your MCP host (e.g.,
   "mcpServers": {
     "pdf-reader-mcp": {
       "command": "npx",
-      "args": [
-        "@shtse8/pdf-reader-mcp"
-      ],
+      "args": ["@shtse8/pdf-reader-mcp"],
       "name": "PDF Reader (npx)"
     }
   }
@@ -68,9 +66,7 @@ The simplest way is via `npx`, configured in your MCP host (e.g.,
   "mcpServers": {
     "pdf-reader-mcp": {
       "command": "bunx",
-      "args": [
-        "@shtse8/pdf-reader-mcp"
-      ],
+      "args": ["@shtse8/pdf-reader-mcp"],
       "name": "PDF Reader (bunx)"
     }
   }
@@ -101,7 +97,7 @@ This server provides a single, powerful tool: `read_pdf`.
   - `include_metadata` (boolean, optional, default `true`): Include metadata
     (`info` and `metadata` objects) for each PDF.
   - `include_page_count` (boolean, optional, default `true`): Include the total
-    number of pages (`num_pages`) for each PDF.
+  number of pages (`num_pages`) for each PDF.
   <!-- Removed deprecated top-level pages parameter description -->
 - **Output:** An object containing a `results` array. Each element corresponds
   to a source in the input `sources` array. **Processing continues even if some
@@ -123,6 +119,7 @@ This server provides a single, powerful tool: `read_pdf`.
       requested page out of bounds).
 
 1. **Get metadata and page count for multiple files:**
+
    ```json
    {
      "sources": [
@@ -132,10 +129,12 @@ This server provides a single, powerful tool: `read_pdf`.
      ]
    }
    ```
+
    _(Example Output:
    `{ "results": [ { "source": "report.pdf", "success": true, "data": { "info": {...}, "metadata": {...}, "num_pages": 10 } }, { "source": "http://example.com/another.pdf", "success": true, "data": { "info": {...}, "metadata": {...}, "num_pages": 5 } }, { "source": "nonexistent.pdf", "success": false, "error": "File not found..." } ] }`)_
 
 2. **Get full text for one file:**
+
    ```json
    {
      "sources": [{ "url": "http://example.com/document.pdf" }],
@@ -144,6 +143,7 @@ This server provides a single, powerful tool: `read_pdf`.
      "include_page_count": false
    }
    ```
+
    _(Example Output:
    `{ "results": [ { "source": "http://example.com/document.pdf", "success": true, "data": { "full_text": "..." } } ] }`)_
 
@@ -154,7 +154,7 @@ This server provides a single, powerful tool: `read_pdf`.
        { "path": "manual.pdf", "pages": "1-2" },
        { "url": "http://example.com/report.pdf", "pages": [5] }
      ],
-     "include_metadata": false, /* Default is true, explicitly set false */
+     "include_metadata": false /* Default is true, explicitly set false */,
      "include_page_count": false /* Default is true, explicitly set false */
    }
    ```

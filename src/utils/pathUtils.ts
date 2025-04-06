@@ -1,6 +1,6 @@
-import path from "path";
+import path from 'path';
 // Removed unused import: import { fileURLToPath } from 'url';
-import { McpError, ErrorCode } from "@modelcontextprotocol/sdk/types.js";
+import { McpError, ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 
 // Use the server's current working directory as the project root.
 // This relies on the process launching the server to set the CWD correctly.
@@ -21,13 +21,13 @@ export const resolvePath = (userPath: string): string => {
   }
   const normalizedUserPath = path.normalize(userPath);
   if (path.isAbsolute(normalizedUserPath)) {
-      throw new McpError(ErrorCode.InvalidParams, 'Absolute paths are not allowed.');
+    throw new McpError(ErrorCode.InvalidParams, 'Absolute paths are not allowed.');
   }
   // Resolve against the calculated PROJECT_ROOT
   const resolved = path.resolve(PROJECT_ROOT, normalizedUserPath);
   // Security check: Ensure the resolved path is still within the project root
   if (!resolved.startsWith(PROJECT_ROOT)) {
-      throw new McpError(ErrorCode.InvalidRequest, 'Path traversal detected. Access denied.');
+    throw new McpError(ErrorCode.InvalidRequest, 'Path traversal detected. Access denied.');
   }
   return resolved;
 };

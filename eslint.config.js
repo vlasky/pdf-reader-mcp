@@ -1,5 +1,6 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
+import eslintConfigPrettier from 'eslint-config-prettier'; // Import prettier config
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -29,5 +30,6 @@ export default tseslint.config(
     // Configuration for JavaScript files (if any, e.g., config files)
     files: ['**/*.js'],
     // Add JS specific rules if needed
-  }
+  },
+  eslintConfigPrettier // Add prettier config last to override other formatting rules
 );

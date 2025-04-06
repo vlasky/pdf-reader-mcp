@@ -1,70 +1,48 @@
-<!-- Version: 1.3 | Last Updated: 2025-04-06 | Updated By: Roo -->
+<!-- Version: 1.4 | Last Updated: 2025-04-06 | Updated By: Roo -->
 
-# Progress: PDF Reader MCP Server (ESLint Setup)
+# Progress: PDF Reader MCP Server (ESLint + Prettier Setup)
 
 ## 1. What Works
 
 - **Project Setup:** Cloned from `filesystem-mcp`, dependencies installed.
 - **Core Tool Handler (Consolidated, using `pdfjs-dist`, multi-source,
   per-source pages):**
-  - `read_pdf`: Implemented with parameters, supports an array of `sources`
-    (each optionally specifying `pages`), integrated. Returns an array of
-    results.
-- **MCP Server Structure:** Basic server setup allows the server to start and
-  list the single `read_pdf` tool. All unused handlers removed.
-- **Documentation:**
-  - `README.md`: Updated with PDF tool descriptions.
-  - Memory Bank: Core files created/updated with initial context.
-- **Changelog:** `CHANGELOG.md` created with initial structure.
+  - `read_pdf`: Implemented and integrated.
+- **MCP Server Structure:** Basic server setup working.
+- **Documentation:** `README.md`, Memory Bank core files updated.
+- **Changelog:** `CHANGELOG.md` created.
 - **License:** `LICENSE` file created (MIT).
-- **GitHub Actions:** `.github/workflows/publish.yml` updated to trigger on main/tags, conditionally publish, and create releases using `CHANGELOG.md`.
-- **Testing Framework (Vitest):**
-  - Installed `vitest` and `@vitest/coverage-v8`.
-  - Configured via `vitest.config.ts`.
-  - Added `test` and `test:coverage` scripts to `package.json`.
-  - Created `test` directory.
-  - Tests for `src/utils/pathUtils.ts` created and passing.
-  - Tests for `src/handlers/readPdf.ts` created and passing (covering various options and error cases).
-- **Linter (ESLint):**
-  - Installed `eslint`, `typescript-eslint`, `@typescript-eslint/parser`,
-    `@typescript-eslint/eslint-plugin`.
-  - Configured using flat config (`eslint.config.js`).
-  - Added `lint` and `lint:fix` scripts to `package.json`.
-  - Existing codebase passes ESLint checks.
+- **GitHub Actions:** `.github/workflows/publish.yml` updated for CI/CD, including ESLint check.
+- **Testing Framework (Vitest):** Integrated, configured, basic tests passing.
+- **Linter (ESLint):** Integrated, configured (`eslint.config.js`), scripts added, codebase passes checks.
+- **Formatter (Prettier):**
+  - Installed `prettier` and `eslint-config-prettier`.
+  - Configured via `.prettierrc.cjs`.
+  - Integrated with ESLint via `eslint-config-prettier` in `eslint.config.js`.
+  - Added `format` and `check-format` scripts to `package.json`.
+  - Codebase formatted using Prettier.
 
 ## 2. What's Left to Build/Verify
 
 - **Compilation:** Need to run `npm run build`.
 - **Runtime Testing:**
   - Verify the server starts correctly.
-  - Test the consolidated `read_pdf` tool via
-    `@modelcontextprotocol/inspector` or a live agent.
-  - Verify error handling (e.g., file not found, URL fetch errors, corrupted
-    PDF).
-- **Testing:** Core handlers (`read_pdf`, `pathUtils`) now have tests. Consider
-  adding tests for edge cases or specific PDF structures if needed.
-- **Refinement:** Review code for potential improvements or edge cases missed.
-- **Publishing Workflow Test:** Test the updated GitHub Actions workflow by
-  pushing a version tag (e.g., `v0.3.10` or similar) and verifying npm/Docker
-  publish and GitHub Release creation.
+  - Test the consolidated `read_pdf` tool via `@modelcontextprotocol/inspector` or a live agent.
+  - Verify error handling.
+- **Testing:** Core handlers have tests. Consider edge cases.
+- **Refinement:** Review code for improvements.
+- **Publishing Workflow Test:** Test the full workflow with a version tag.
+- **(Optional) Stricter ESLint Rules:** Consider enabling type-aware linting rules.
+- **(Optional) Pre-commit Hooks:** Consider adding Husky + lint-staged.
 
 ## 3. Current Status
 
-ESLint integrated and configured. Existing code passes linting checks. Vitest
-testing framework integrated with tests for core utility and main handler
-passing. Ready for build and workflow verification.
+ESLint and Prettier integrated and configured for code linting and formatting. Existing code passes checks and is formatted. Vitest testing framework integrated with basic tests passing. GitHub Actions workflow includes lint check. Ready for build and workflow verification.
 
 ## 4. Known Issues/Risks
 
-- **`pdfjs-dist` Complexity:** While more maintained, its API is more complex
-  than `pdf-parse`. Text extraction accuracy still depends on the PDF structure.
-  Potential compatibility nuances in Node.js environment exist.
-- **Error Handling:** Basic error handling for file access and URL fetching
-  implemented. More specific PDF parsing errors might need refinement based on
-  testing.
-- **Performance:** Performance on very large PDF files hasn't been tested.
-- **Per-Source Pages:** Logic now handles `pages` parameter within the source
-  loop. Testing different combinations of sources with and without `pages` is
-  important.
-- **Test Coverage:** Core functionality is now covered by tests. Coverage can be
-  expanded further if specific complex PDF scenarios arise.
+- **`pdfjs-dist` Complexity:** API complexity, text extraction accuracy depends on PDF, potential Node.js compatibility nuances.
+- **Error Handling:** Basic handling implemented; specific PDF parsing errors might need refinement.
+- **Performance:** Not tested on very large PDFs.
+- **Per-Source Pages:** Logic handles per-source `pages`; testing combinations is important.
+- **Test Coverage:** Core functionality covered; can be expanded.
