@@ -18,16 +18,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.1.7
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest # Use the latest pnpm version
+
       - name: Set up Node.js
         uses: actions/setup-node@v4.0.3
         with:
           node-version: '20'
-          cache: 'pnpm' # Enable pnpm caching
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4 # Use pnpm setup action
-        with:
-          version: latest # Or specify a version
+          cache: 'pnpm' # Let pnpm handle caching via pnpm/action-setup
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -66,17 +66,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.1.7
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4.0.3
-        with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org/' # For npm publish
-          cache: 'pnpm'
-
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: latest
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4.0.3
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org/' # For pnpm publish
+          cache: 'pnpm' # Let pnpm handle caching
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
