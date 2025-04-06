@@ -16,10 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.0.3
         with:
           node-version: '20'
           cache: 'npm' # Enable npm caching
@@ -36,8 +36,15 @@ jobs:
       - name: Run Tests and Check Coverage
         run: npm run test:cov # Fails job if tests fail or coverage < 100%
 
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2.3.0 # Use fixed version
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ./coverage/lcov.info # Verify path is correct
+          parallel: false # Set to true if using parallel jobs
+
       - name: Upload coverage reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: coverage-report
           path: coverage/ # Upload the whole coverage directory
@@ -52,10 +59,10 @@ jobs:
       artifact_path: ${{ steps.archive_build.outputs.artifact_path }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.0.3
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org/' # For npm publish
@@ -81,7 +88,7 @@ jobs:
           echo "artifact_path=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
 
       - name: Upload build artifact for release job
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: release-artifact
           path: ${{ steps.archive_build.outputs.artifact_path }}
@@ -94,20 +101,20 @@ jobs:
 
       # --- Publish to Docker Hub ---
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v3.2.0
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v3.5.0
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v3.3.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v5.5.1
         with:
           images: sylphlab/pdf-reader-mcp
           tags: |
@@ -116,7 +123,7 @@ jobs:
             type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }} # latest tag only for version tags
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v6.7.0
         with:
           context: .
           push: true
@@ -134,13 +141,13 @@ jobs:
       contents: write # Need permission to create releases and release notes
     steps:
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.8
         with:
           name: release-artifact
           # No path specified, downloads to current directory
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.0.6
         with:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}

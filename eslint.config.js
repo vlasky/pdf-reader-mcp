@@ -14,7 +14,7 @@ export default tseslint.config(
     files: ['**/*.ts'],
     extends: [
       ...tseslint.configs.strictTypeChecked, // Apply strictest type-aware rules ONLY to TS files
-      // Consider adding tseslint.configs.stylisticTypeChecked for style rules that need types
+      ...tseslint.configs.stylisticTypeChecked, // Apply stylistic rules requiring TS config
     ],
     languageOptions: {
       parserOptions: {
@@ -23,16 +23,27 @@ export default tseslint.config(
       },
     },
     rules: {
-      // You can override rules from recommendedTypeChecked here if needed
-      // Example: Allow 'any' type if necessary (use with caution)
-      // '@typescript-eslint/no-explicit-any': 'off',
+      // General JS/TS Rules (applied within TS context)
+      'no-console': ['warn', { allow: ['warn', 'error', 'info'] }],
+      'prefer-const': 'error',
+      'eqeqeq': ['error', 'always'],
+      'no-unused-vars': 'off', // Use TS version
+      'complexity': ['error', { 'max': 10 }],
+      'max-lines': ['warn', { 'max': 300, 'skipBlankLines': true, 'skipComments': true }],
+      'max-lines-per-function': ['warn', { 'max': 50, 'skipBlankLines': true, 'skipComments': true }],
+      'max-depth': ['warn', 3],
+      'max-params': ['warn', 4],
 
-      // Example: Relax rule about floating promises if needed for specific cases
-      // '@typescript-eslint/no-floating-promises': ['error', { ignoreVoid: true }],
-
-      // Keep existing specific rules or add new ones
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }], // Keep warning for unused vars
-      '@typescript-eslint/no-explicit-any': 'warn', // Keep warning for explicit any
+      // TypeScript Specific Rules (override/add)
+      '@typescript-eslint/no-unused-vars': ['error', { 'argsIgnorePattern': '^_', 'varsIgnorePattern': '^_' }],
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/explicit-function-return-type': 'error',
+      '@typescript-eslint/no-non-null-assertion': 'error',
+      '@typescript-eslint/no-use-before-define': 'error',
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/consistent-type-imports': 'error',
+      '@typescript-eslint/no-misused-promises': 'error',
+      '@typescript-eslint/prefer-readonly': 'warn',
     },
   }),
   {
