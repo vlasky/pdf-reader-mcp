@@ -571,9 +571,15 @@ describe('handleReadPdfFunc Integration Tests', () => {
         const failingLoadingTask = { promise: Promise.reject(loadError) };
         // Ensure getDocument is mocked specifically for this URL
         mockGetDocument.mockReset(); // Reset previous mocks if necessary
-        mockGetDocument.mockImplementation((source) => {
-          // Add null check and type assertion/guard for source
-          if (typeof source === 'object' && source !== null && 'url' in source && typeof source.url === 'string' && source.url === testUrl) {
+        // Explicitly type source as unknown and use stricter type guards/assertions
+        mockGetDocument.mockImplementation((source: unknown) => {
+          if (
+            typeof source === 'object' &&
+            source !== null &&
+            Object.prototype.hasOwnProperty.call(source, 'url') && // Use safer check
+            typeof (source as { url?: unknown }).url === 'string' && // Assert type for check
+            (source as { url: string }).url === testUrl // Assert type for comparison
+          ) {
             return failingLoadingTask;
           }
           // Fallback for other potential calls in the test suite
