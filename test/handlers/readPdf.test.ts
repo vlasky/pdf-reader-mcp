@@ -608,7 +608,6 @@ describe('handleReadPdfFunc Integration Tests', () => {
     }
   });
 
-
   // --- Additional Coverage Tests ---
 
   it('should not include page count when include_page_count is false', async () => {
@@ -644,7 +643,8 @@ describe('handleReadPdfFunc Integration Tests', () => {
     // Mock resolvePath: first call succeeds, second call (in catch) fails
     vi.spyOn(pathUtils, 'resolvePath')
       .mockImplementationOnce((p) => p) // First call succeeds
-      .mockImplementationOnce(() => { // Second call throws
+      .mockImplementationOnce(() => {
+        // Second call throws
         throw resolveError;
       });
 
