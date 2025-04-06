@@ -4,3 +4,7 @@ dist/
 *.log
 coverage/
 .env*
+
+# VitePress
+docs/.vitepress/dist
+docs/.vitepress/cache

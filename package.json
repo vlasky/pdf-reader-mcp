@@ -24,7 +24,10 @@
     "lint:fix": "eslint . --ext .ts,.tsx,.js,.cjs --fix --cache",
     "format": "prettier --write . --cache",
     "check-format": "prettier --check . --cache",
-    "validate": "npm run check-format && npm run lint && npm run test"
+    "validate": "npm run check-format && npm run lint && npm run test",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "0.6.0",
@@ -44,6 +47,8 @@
     "prettier": "^3.5.3",
     "typescript": "^5.3.3",
     "typescript-eslint": "^8.29.0",
-    "vitest": "^3.1.1"
+    "vitepress": "^1.6.3",
+    "vitest": "^3.1.1",
+    "vue": "^3.5.13"
   }
 }
