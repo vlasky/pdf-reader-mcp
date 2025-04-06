@@ -12,7 +12,7 @@ let pdfExists = false;
 try {
   await fs.access(path.resolve(PROJECT_ROOT, SAMPLE_PDF_PATH));
   pdfExists = true;
-} catch (error) {
+} catch (error: unknown) { // Explicitly type error as unknown
   // Check if error is an instance of Error before accessing message
   const message = error instanceof Error ? error.message : String(error);
   console.warn(
@@ -33,7 +33,7 @@ describe('read_pdf Handler Benchmarks', () => {
           include_page_count: true,
           include_full_text: false,
         });
-      } catch (error) {
+      } catch (error: unknown) { // Explicitly type error as unknown
         console.warn(
           `Benchmark 'Get Metadata & Page Count' failed: ${error instanceof Error ? error.message : String(error)}`
         );
@@ -54,7 +54,7 @@ describe('read_pdf Handler Benchmarks', () => {
           include_page_count: false,
           include_full_text: true,
         });
-      } catch (error) {
+      } catch (error: unknown) { // Explicitly type error as unknown
         console.warn(
           `Benchmark 'Get Full Text' failed: ${error instanceof Error ? error.message : String(error)}`
         );
@@ -75,7 +75,7 @@ describe('read_pdf Handler Benchmarks', () => {
           include_page_count: false,
           include_full_text: false, // Should be ignored when pages is set
         });
-      } catch (error) {
+      } catch (error: unknown) { // Explicitly type error as unknown
         console.warn(
           `Benchmark 'Get Specific Page (Page 1)' failed: ${error instanceof Error ? error.message : String(error)}`
         );
@@ -96,7 +96,7 @@ describe('read_pdf Handler Benchmarks', () => {
           include_metadata: false,
           include_page_count: false,
         });
-      } catch (error) {
+      } catch (error: unknown) { // Explicitly type error as unknown
         console.warn(
           `Benchmark 'Get Specific Pages (Pages 1 & 2)' failed: ${error instanceof Error ? error.message : String(error)}`
         );
@@ -115,7 +115,7 @@ describe('read_pdf Handler Benchmarks', () => {
           include_metadata: true,
           include_page_count: true,
         });
-      } catch (error) {
+      } catch (error: unknown) { // Explicitly type error as unknown
         // Expecting an error here, but log if something unexpected happens during the benchmark itself
         console.warn(
           `Benchmark 'Handle Non-Existent File' unexpectedly failed internally: ${error instanceof Error ? error.message : String(error)}`

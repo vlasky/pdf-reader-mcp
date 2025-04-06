@@ -76,9 +76,8 @@ describe('handleReadPdfFunc Integration Tests', () => {
         },
       },
     });
-    // eslint-disable-next-line @typescript-eslint/require-await
+    // Removed unnecessary async and eslint-disable comment
     mockGetPage.mockImplementation((pageNum: number) => {
-      // Removed unnecessary async
       if (pageNum > 0 && pageNum <= mockDocumentAPI.numPages) {
         return {
           getTextContent: vi
@@ -122,7 +121,7 @@ describe('handleReadPdfFunc Integration Tests', () => {
     expect(mockGetMetadata).toHaveBeenCalled();
     expect(mockGetPage).toHaveBeenCalledTimes(3);
 
-    // Add check for content existence and access safely, disable ESLint rule
+    // Add check for content existence and access safely
     expect(result.content).toBeDefined();
     expect(result.content.length).toBeGreaterThan(0);
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -163,7 +162,7 @@ describe('handleReadPdfFunc Integration Tests', () => {
     expect(mockGetDocument).toHaveBeenCalledWith(Buffer.from('mock pdf content'));
     expect(mockGetMetadata).not.toHaveBeenCalled();
 
-    // Add check for content existence and access safely, disable ESLint rule
+    // Add check for content existence and access safely
     expect(result.content).toBeDefined();
     expect(result.content.length).toBeGreaterThan(0);
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -198,7 +197,7 @@ describe('handleReadPdfFunc Integration Tests', () => {
         },
       ],
     };
-    // Add check for content existence and access safely, disable ESLint rule
+    // Add check for content existence and access safely
     expect(result.content).toBeDefined();
     expect(result.content.length).toBeGreaterThan(0);
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -234,7 +233,7 @@ describe('handleReadPdfFunc Integration Tests', () => {
     expect(mockGetDocument).toHaveBeenCalledWith({ url: testUrl });
     expect(mockGetMetadata).toHaveBeenCalled();
     expect(mockGetPage).not.toHaveBeenCalled();
-    // Add check for content existence and access safely, disable ESLint rule
+    // Add check for content existence and access safely
     expect(result.content).toBeDefined();
     expect(result.content.length).toBeGreaterThan(0);
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -255,7 +254,7 @@ describe('handleReadPdfFunc Integration Tests', () => {
       include_page_count: true,
     };
     // Setup mocks for the second source (URL)
-    const secondMockGetPage = vi.fn().mockImplementation(async (pageNum: number) => {
+    const secondMockGetPage = vi.fn().mockImplementation((pageNum: number) => { // Removed unnecessary async
       if (pageNum === 1)
         return {
           getTextContent: vi.fn().mockResolvedValue({ items: [{ str: 'URL Mock page text 1' }] }),
@@ -328,7 +327,7 @@ describe('handleReadPdfFunc Integration Tests', () => {
     expect(mockGetDocument).toHaveBeenCalledWith({ url: urlSource });
     expect(mockGetPage).toHaveBeenCalledTimes(1); // Should be called once for local.pdf page 1
     expect(secondMockGetPage).toHaveBeenCalledTimes(2);
-    // Add check for content existence and access safely, disable ESLint rule
+    // Add check for content existence and access safely
     expect(result.content).toBeDefined();
     expect(result.content.length).toBeGreaterThan(0);
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -356,7 +355,7 @@ describe('handleReadPdfFunc Integration Tests', () => {
         },
       ],
     };
-    // Add check for content existence and access safely, disable ESLint rule
+    // Add check for content existence and access safely
     expect(result.content).toBeDefined();
     expect(result.content.length).toBeGreaterThan(0);
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -373,7 +372,7 @@ describe('handleReadPdfFunc Integration Tests', () => {
     mockGetDocument.mockReturnValue(failingLoadingTask);
     const args = { sources: [{ path: 'bad.pdf' }] };
     const result = await handler(args);
-    // Add check for content existence and access safely, disable ESLint rule
+    // Add check for content existence and access safely
     expect(result.content).toBeDefined();
     expect(result.content.length).toBeGreaterThan(0);
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -437,7 +436,7 @@ describe('handleReadPdfFunc Integration Tests', () => {
     });
     const args = { sources: [{ path: 'some/path' }] };
     const result = await handler(args);
-    // Add check for content existence and access safely, disable ESLint rule
+    // Add check for content existence and access safely
     expect(result.content).toBeDefined();
     expect(result.content.length).toBeGreaterThan(0);
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -462,7 +461,7 @@ describe('handleReadPdfFunc Integration Tests', () => {
     mockReadFile.mockRejectedValue(genericError); // Simulate error after path resolution
     const args = { sources: [{ path: 'generic/error/path' }] };
     const result = await handler(args);
-    // Add check for content existence and access safely, disable ESLint rule
+    // Add check for content existence and access safely
     expect(result.content).toBeDefined();
     expect(result.content.length).toBeGreaterThan(0);
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -487,7 +486,7 @@ describe('handleReadPdfFunc Integration Tests', () => {
     mockReadFile.mockRejectedValue(nonError); // Simulate error after path resolution
     const args = { sources: [{ path: 'non/error/path' }] };
     const result = await handler(args);
-    // Add check for content existence and access safely, disable ESLint rule
+    // Add check for content existence and access safely
     expect(result.content).toBeDefined();
     expect(result.content.length).toBeGreaterThan(0);
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -530,7 +529,7 @@ describe('handleReadPdfFunc Integration Tests', () => {
     };
     expect(mockGetPage).toHaveBeenCalledTimes(1);
     expect(mockGetPage).toHaveBeenCalledWith(1);
-    // Add check for content existence and access safely, disable ESLint rule
+    // Add check for content existence and access safely
     expect(result.content).toBeDefined();
     expect(result.content.length).toBeGreaterThan(0);
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -542,9 +541,8 @@ describe('handleReadPdfFunc Integration Tests', () => {
   });
 
   it('should handle errors during page processing gracefully when specific pages are requested', async () => {
-    // eslint-disable-next-line @typescript-eslint/require-await
+    // Removed unnecessary async and eslint-disable comment
     mockGetPage.mockImplementation((pageNum: number) => {
-      // Removed unnecessary async
       if (pageNum === 1)
         return {
           getTextContent: vi.fn().mockResolvedValueOnce({ items: [{ str: `Mock page text 1` }] }),
@@ -579,7 +577,7 @@ describe('handleReadPdfFunc Integration Tests', () => {
       ],
     };
     expect(mockGetPage).toHaveBeenCalledTimes(3);
-    // Add check for content existence and access safely, disable ESLint rule
+    // Add check for content existence and access safely
     expect(result.content).toBeDefined();
     expect(result.content.length).toBeGreaterThan(0);
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
