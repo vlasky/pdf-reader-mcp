@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM node:20-alpine AS builder
+FROM node:lts-alpine AS builder
 WORKDIR /app
 
 # Copy package files
@@ -24,7 +24,7 @@ RUN ./node_modules/.bin/tsc -p tsconfig.json
 RUN pnpm prune --prod --ignore-scripts
 
 # Stage 2: Create the final lightweight image
-FROM node:20-alpine
+FROM node:lts-alpine
 WORKDIR /app
 
 # Create a non-root user and group for security
