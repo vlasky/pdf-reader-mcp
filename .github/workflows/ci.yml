@@ -48,6 +48,13 @@ jobs:
           files: ./coverage/lcov.info # Specify LCOV file path
           fail_ci_if_error: true # Optional: fail CI if upload error
 
+
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          # No file specified, action defaults to common patterns like test-report.junit.xml
       - name: Upload coverage reports
         uses: actions/upload-artifact@v4.4.0
         with:
@@ -105,7 +112,7 @@ jobs:
 
       # --- Publish to NPM ---
       - name: Publish to npm
-        run: pnpm publish --access public
+        run: pnpm publish --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
