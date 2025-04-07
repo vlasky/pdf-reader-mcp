@@ -33,7 +33,7 @@ RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Copy built artifacts and production dependencies from the builder stage
 COPY --from=builder --chown=appuser:appgroup /app/node_modules ./node_modules
-COPY --from=builder --chown=appuser:appgroup /app/build ./build
+COPY --from=builder --chown=appuser:appgroup /app/dist ./dist
 # Copy package.json for metadata, might be useful for inspection
 COPY --from=builder --chown=appuser:appgroup /app/package.json ./
 
@@ -42,4 +42,4 @@ USER appuser
 
 # Command to run the server using the built output
 # This will start the MCP server listening on stdio
-CMD ["node", "build/index.js"]
+CMD ["node", "dist/index.js"]

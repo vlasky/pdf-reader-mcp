@@ -42,7 +42,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "inspector": "npx @modelcontextprotocol/inspector build/index.js",
+    "inspector": "npx @modelcontextprotocol/inspector dist/index.js",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "test:cov": "vitest run --coverage --reporter=junit --outputFile=test-report.junit.xml",

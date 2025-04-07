@@ -100,7 +100,7 @@ jobs:
         id: archive_build
         run: |
           ARTIFACT_NAME="pdf-reader-mcp-${{ steps.get_version.outputs.version }}.tar.gz"
-          tar -czf $ARTIFACT_NAME build package.json README.md LICENSE CHANGELOG.md
+          tar -czf $ARTIFACT_NAME dist package.json README.md LICENSE CHANGELOG.md
           echo "artifact_path=$ARTIFACT_NAME" >> $GITHUB_OUTPUT
 
       - name: Upload build artifact for release job
