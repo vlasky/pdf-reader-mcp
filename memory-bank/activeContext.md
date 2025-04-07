@@ -55,16 +55,16 @@ Finalizing project alignment and documentation according to Sylph Lab Playbook g
 
 - **Build Completed:** Project successfully built (`pnpm run build`).
 - **GitHub Actions Status:**
-    - Pushed commit `c62a7e3` (CI run `14297957598` **passed** format/lint/test checks, but **failed** at Codecov upload due to missing `CODECOV_TOKEN`).
+  - Pushed commit `c62a7e3` (CI run `14297957598` **passed** format/lint/test checks, but **failed** at Codecov upload due to missing `CODECOV_TOKEN`).
 - **Runtime Testing (Blocked):** Requires user interaction with `@modelcontextprotocol/inspector` or a live agent. Skipping for now.
 - **Documentation Finalization (Mostly Complete):**
-    - API docs generated.
-    - Main pages reviewed/updated.
-    - **Remaining:** Add complex features (PWA, share buttons, roadmap page) if requested.
+  - API docs generated.
+  - Main pages reviewed/updated.
+  - **Remaining:** Add complex features (PWA, share buttons, roadmap page) if requested.
 - **Release Preparation:**
-    - `CHANGELOG.md` updated for `1.0.0`.
-    - Consider using `standard-version` or similar for final release tagging/publishing.
-    - **Project is ready for final review, pending Codecov token configuration.**
+  - `CHANGELOG.md` updated for `1.0.0`.
+  - Consider using `standard-version` or similar for final release tagging/publishing.
+  - **Project is ready for final review, pending Codecov token configuration.**
 
 ## 4. Active Decisions & Considerations
 
