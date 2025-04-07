@@ -4,7 +4,7 @@
     "module": "NodeNext", // Recommended for Node.js ES Modules
     "moduleResolution": "NodeNext", // Align with module setting
     "outDir": "./dist",
-    // "rootDir": "./src", // Removed rootDir to allow including files outside src (like tests)
+    "rootDir": "./src",
     // Strictest settings (some might be implied by strict: true)
     "strict": true,
     "noImplicitAny": true,
@@ -33,7 +33,7 @@
     "forceConsistentCasingInFileNames": true,
     "types": ["node", "vitest/globals"]
   },
-  "include": ["src/**/*", "test/**/*", "vitest.config.ts"], // Include test files and config
+  "include": ["src/**/*"], // Only include source files for the main build
   "declaration": true,
   "sourceMap": true,
   "removeComments": false,

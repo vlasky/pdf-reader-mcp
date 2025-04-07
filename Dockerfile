@@ -42,4 +42,4 @@ USER appuser
 
 # Command to run the server using the built output
 # This will start the MCP server listening on stdio
-CMD ["node", "dist/src/index.js"]
+CMD ["node", "dist/index.js"]

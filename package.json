@@ -4,7 +4,7 @@
   "description": "An MCP server providing tools to read PDF files.",
   "type": "module",
   "bin": {
-    "pdf-reader-mcp": "./dist/src/index.js"
+    "pdf-reader-mcp": "./dist/index.js"
   },
   "files": [
     "dist/",
@@ -42,7 +42,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "inspector": "npx @modelcontextprotocol/inspector dist/src/index.js",
+    "inspector": "npx @modelcontextprotocol/inspector dist/index.js",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "test:cov": "vitest run --coverage --reporter=junit --outputFile=test-report.junit.xml",
@@ -54,7 +54,7 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "start": "node dist/src/index.js",
+    "start": "node dist/index.js",
     "typecheck": "tsc --noEmit",
     "benchmark": "vitest bench",
     "clean": "rm -rf dist coverage",
