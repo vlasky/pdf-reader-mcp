@@ -1,10 +1,10 @@
-<!-- Version: 1.24 | Last Updated: 2025-04-07 | Updated By: Sylph -->
+<!-- Version: 1.35 | Last Updated: 2025-04-07 | Updated By: Sylph -->
 
 # Active Context: PDF Reader MCP Server (Guidelines Alignment)
 
 ## 1. Current Focus
 
-Project alignment and documentation according to Sylph Lab Playbook guidelines are complete. CI workflow fixed, Test Analytics integrated, and Git history corrected _again_. Version correctly bumped to `0.3.11` and pushed.
+Project alignment and documentation according to Sylph Lab Playbook guidelines are complete. CI workflow fixed (formatting, publish step, Dockerfile, parallelization, pre-commit hook), Test Analytics integrated, and Git history corrected multiple times. Dockerfile updated to use LTS Node. Version bumped to `0.3.16` and pushed successfully.
 
 ## 2. Recent Changes (Chronological Summary)
 
@@ -52,10 +52,20 @@ Project alignment and documentation according to Sylph Lab Playbook guidelines a
   - **Integrated Codecov Test Analytics:** Updated `package.json` to generate JUnit XML test reports and added `codecov/test-results-action@v1` to `.github/workflows/ci.yml` to upload them.
   - Added `test-report.junit.xml` to `.gitignore`.
 - **Switched Coverage Tool:** Updated `.github/workflows/ci.yml` to replace Coveralls with Codecov based on user feedback. Added Codecov badge to `README.md`.
-- **Version Bump Correction Saga (0.3.11):**
-  - **Attempt 1:** Ran `standard-version` before committing `.gitignore` changes, pushed incorrect `v0.3.11` tag/commit.
-  - **Attempt 2 (Correction):** Reset local branch (`git reset --hard cb8cc40`), deleted local tag, committed `.gitignore` (`1bff7bb`), re-ran `standard-version` (created `f8f076e`), force pushed. Workflow _still_ failed, indicating CI/Test Analytics changes were missing from the commit history.
-  - **Attempt 3 (Final Correction):** Soft reset (`git reset --soft HEAD~1` from `f8f076e`), discarded incorrect Memory Bank updates, re-applied missing changes (`--no-git-checks` in `ci.yml`, JUnit reporter in `package.json`, Test Analytics step in `ci.yml`), committed all changes together (`d89d55d`), deleted local and remote `v0.3.11` tags, re-tagged `v0.3.11` on `d89d55d`, force pushed `main` and the new tag.
+- **Version Bump & CI Saga (0.3.11 -> 0.3.16):**
+  - **Initial Goal (0.3.11):** Fix CI publish error (`--no-git-checks`), integrate Test Analytics, add `.gitignore` entry.
+  - **Problem 1:** Incorrect Git history manipulation led to pushing an incomplete `v0.3.11`.
+  - **Problem 2:** Force push/re-push of corrected `v0.3.11` / `v0.3.12` / `v0.3.13` / `v0.3.14` tags didn't trigger workflow or failed on CI checks.
+  - **Problem 3:** CI failed on `check-format` due to unformatted `ci.yml` / `CHANGELOG.md` (not caught by pre-commit hook initially).
+  - **Problem 4:** Further Git history confusion led to incorrect version bumps (`0.3.13`, `0.3.14`, `0.3.15`) and tag creation issues due to unstaged changes and leftover local tags.
+  - **Problem 5:** Docker build failed due to incorrect lockfile and missing `pnpm` install in `Dockerfile`.
+  - **Problem 6:** Workflow parallelization changes were not committed before attempting a release.
+  - **Problem 7:** `publish-npm` job failed due to missing dependencies for `prepublishOnly` script.
+  - **Problem 8:** `pre-commit` hook was running `pnpm test` instead of `pnpm lint-staged`.
+  - **Problem 9:** Docker build failed again due to `husky` command not found during `pnpm prune`.
+  - **Problem 10:** Dockerfile was using hardcoded `node:20-alpine` instead of `node:lts-alpine`.
+  - **Final Resolution:** Reset history multiple times, applied fixes sequentially (formatting `fe7eda1`, Dockerfile pnpm install `c202fd4`, parallelization `a569b62`, pre-commit/npm-publish fix `e96680c`, Dockerfile prune fix `02f3f91`, Dockerfile LTS `50f9bdd`), ensured clean working directory, ran `standard-version` successfully to create `v0.3.16` commit and tag, pushed `main` and tag `v0.3.16`.
+    - **Fixed `package.json` Paths:** Corrected `bin`, `files`, and `start` script paths from `build/` to `dist/` to align with `tsconfig.json` output directory and resolve executable error.
 
 ## 3. Next Steps
 
@@ -63,7 +73,7 @@ Project alignment and documentation according to Sylph Lab Playbook guidelines a
 - **GitHub Actions Status:**
   - Pushed commit `c150022` (CI run `14298157760` **passed** format/lint/test checks, but **failed** at Codecov upload due to missing `CODECOV_TOKEN`).
   - Pushed tag `v0.3.10` (Triggered publish/release workflow - status needed verification).
-  - **Pushed tag `v0.3.11` (Final Corrected Version)**. Publish/release workflow triggered. Status needs verification.
+  - **Pushed tag `v0.3.16`**. Publish/release workflow triggered. Status needs verification.
 - **Runtime Testing (Blocked):** Requires user interaction with `@modelcontextprotocol/inspector` or a live agent. Skipping for now.
 - **Documentation Finalization (Mostly Complete):**
   - API docs generated.
@@ -72,7 +82,7 @@ Project alignment and documentation according to Sylph Lab Playbook guidelines a
   - **Remaining:** Add complex features (PWA, share buttons, roadmap page) if requested.
 - **Release Preparation:**
   - `CHANGELOG.md` updated for `0.3.10`.
-  - **Project is ready for final review. Requires Codecov token configuration and verification of the _final, correct_ `v0.3.11` publish/release workflow.**
+  - **Project is ready for final review. Requires Codecov token configuration and verification of the `v0.3.16` publish/release workflow.**
 
 ## 4. Active Decisions & Considerations
 
@@ -86,6 +96,7 @@ Project alignment and documentation according to Sylph Lab Playbook guidelines a
 - **Using TypeDoc CLI for API Doc Generation:** Bypassed script initialization issues.
 - **Switched to Codecov:** Replaced Coveralls with Codecov for coverage reporting. Test Analytics integration added.
 - **Codecov Token Required:** CI is currently blocked on Codecov upload (coverage and test results) due to missing `CODECOV_TOKEN` secret in GitHub repository settings. This needs to be added by the user.
-- **Version bumped to `0.3.11`**.
-- **Publish Workflow:** Modified to bypass Git checks during `pnpm publish`. Verification pending on the _final, correct_ `v0.3.11` workflow run.
-- **CI Workflow:** Added Codecov Test Analytics upload step.
+- **Version bumped to `0.3.16`**.
+- **Publish Workflow:** Parallelized. Modified to bypass Git checks during `pnpm publish`. Docker build fixed (pnpm install, prune ignore scripts, LTS node). Dependencies installed before publish. Verification pending on the `v0.3.16` workflow run.
+- **CI Workflow:** Added Codecov Test Analytics upload step. Formatting fixed. Parallelized publish steps.
+- **Pre-commit Hook:** Fixed to run `lint-staged`.
