@@ -134,6 +134,9 @@ jobs:
 
       # No need to install dependencies again if publish doesn't need them
       # If pnpm publish needs package.json, it's checked out
+      - name: Install all dependencies for prepublishOnly script
+        run: pnpm install --frozen-lockfile
+
       - name: Publish to npm
         run: pnpm publish --access public --no-git-checks
         env:
