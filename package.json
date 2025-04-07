@@ -4,10 +4,10 @@
   "description": "An MCP server providing tools to read PDF files.",
   "type": "module",
   "bin": {
-    "pdf-reader-mcp": "./dist/index.js"
+    "pdf-reader-mcp": "./build/index.js"
   },
   "files": [
-    "dist/",
+    "build/",
     "README.md",
     "LICENSE"
   ],
@@ -54,10 +54,10 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "start": "node dist/index.js",
+    "start": "node build/index.js",
     "typecheck": "tsc --noEmit",
     "benchmark": "vitest bench",
-    "clean": "rm -rf dist coverage",
+    "clean": "rm -rf build coverage",
     "docs:api": "typedoc --entryPoints src/index.ts --tsconfig tsconfig.json --plugin typedoc-plugin-markdown --out docs/api --readme none",
     "prepublishOnly": "pnpm run clean && pnpm run build",
     "release": "standard-version",
