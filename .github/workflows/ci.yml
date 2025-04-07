@@ -111,7 +111,6 @@ jobs:
 
       # Publish steps moved to parallel jobs below
 
-
   publish-npm:
     name: Publish to NPM
     needs: build-archive # Depends on build-archive completion
