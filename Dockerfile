@@ -4,10 +4,10 @@ WORKDIR /app
 
 # Copy package files
 # Using package-lock.json ensures reproducible installs
-COPY package.json package-lock.json ./
+COPY package.json pnpm-lock.yaml ./
 
 # Install ALL dependencies (including dev for build), ignore scripts for now
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the application source code
 # This includes tsconfig.json and the src directory
@@ -19,7 +19,7 @@ RUN ./node_modules/.bin/tsc -p tsconfig.json
 # The build script already includes chmod +x for the output
 
 # Remove development dependencies after build
-RUN npm prune --omit=dev
+RUN pnpm prune --prod
 
 # Stage 2: Create the final lightweight image
 FROM node:20-alpine
