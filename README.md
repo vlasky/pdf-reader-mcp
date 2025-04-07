@@ -3,7 +3,7 @@
 <!-- Status Badges Area -->
 
 [![CI/CD Pipeline](https://github.com/sylphlab/pdf-reader-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/sylphlab/pdf-reader-mcp/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/sylphlab/pdf-reader-mcp/graph/badge.svg?token=YOUR_CODECOV_TOKEN_PLACEHOLDER)](https://codecov.io/gh/sylphlab/pdf-reader-mcp)
+[![codecov](https://codecov.io/gh/sylphlab/pdf-reader-mcp/graph/badge.svg?token=VYRQFB40UN)](https://codecov.io/gh/sylphlab/pdf-reader-mcp)
 [![npm version](https://badge.fury.io/js/%40sylphlab%2Fpdf-reader-mcp.svg)](https://badge.fury.io/js/%40sylphlab%2Fpdf-reader-mcp)
 [![Docker Pulls](https://img.shields.io/docker/pulls/sylphlab/pdf-reader-mcp.svg)](https://hub.docker.com/r/sylphlab/pdf-reader-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
