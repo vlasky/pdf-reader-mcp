@@ -1,10 +1,10 @@
-<!-- Version: 1.19 | Last Updated: 2025-04-07 | Updated By: Sylph -->
+<!-- Version: 1.24 | Last Updated: 2025-04-07 | Updated By: Sylph -->
 
 # Active Context: PDF Reader MCP Server (Guidelines Alignment)
 
 ## 1. Current Focus
 
-Project alignment and documentation according to Sylph Lab Playbook guidelines are complete. Version bumped to `0.3.10`.
+Project alignment and documentation according to Sylph Lab Playbook guidelines are complete. CI workflow fixed, Test Analytics integrated, and Git history corrected _again_. Version correctly bumped to `0.3.11` and pushed.
 
 ## 2. Recent Changes (Chronological Summary)
 
@@ -44,20 +44,26 @@ Project alignment and documentation according to Sylph Lab Playbook guidelines a
 - **Documentation Finalization:**
   - Reviewed and updated `README.md`, `docs/guide/getting-started.md`, and VitePress config (`docs/.vitepress/config.mts`) based on guidelines.
 - **Code Commit:** Committed and pushed all recent changes.
-- **CI Fixes:**
+- **CI Fixes & Enhancements:**
   - Fixed Prettier formatting issues identified by CI.
   - Fixed ESLint errors/warnings (`no-undef`, `no-unused-vars`, `no-unsafe-call`, `require-await`, unused eslint-disable) identified by CI.
   - Deleted unused `scripts/generate-api-docs.mjs` file.
-  - Pushed fixes to trigger CI again.
+  - **Fixed `pnpm publish` error:** Added `--no-git-checks` flag to the publish command in `.github/workflows/ci.yml` to resolve `ERR_PNPM_GIT_UNCLEAN` error during tag-triggered publish jobs.
+  - **Integrated Codecov Test Analytics:** Updated `package.json` to generate JUnit XML test reports and added `codecov/test-results-action@v1` to `.github/workflows/ci.yml` to upload them.
+  - Added `test-report.junit.xml` to `.gitignore`.
 - **Switched Coverage Tool:** Updated `.github/workflows/ci.yml` to replace Coveralls with Codecov based on user feedback. Added Codecov badge to `README.md`.
-- **Version Bump:** Used `standard-version` to bump version to `0.3.10`, update `CHANGELOG.md`, and create tag `v0.3.10`. Pushed changes and tag.
+- **Version Bump Correction Saga (0.3.11):**
+  - **Attempt 1:** Ran `standard-version` before committing `.gitignore` changes, pushed incorrect `v0.3.11` tag/commit.
+  - **Attempt 2 (Correction):** Reset local branch (`git reset --hard cb8cc40`), deleted local tag, committed `.gitignore` (`1bff7bb`), re-ran `standard-version` (created `f8f076e`), force pushed. Workflow _still_ failed, indicating CI/Test Analytics changes were missing from the commit history.
+  - **Attempt 3 (Final Correction):** Soft reset (`git reset --soft HEAD~1` from `f8f076e`), discarded incorrect Memory Bank updates, re-applied missing changes (`--no-git-checks` in `ci.yml`, JUnit reporter in `package.json`, Test Analytics step in `ci.yml`), committed all changes together (`d89d55d`), deleted local and remote `v0.3.11` tags, re-tagged `v0.3.11` on `d89d55d`, force pushed `main` and the new tag.
 
 ## 3. Next Steps
 
 - **Build Completed:** Project successfully built (`pnpm run build`).
 - **GitHub Actions Status:**
   - Pushed commit `c150022` (CI run `14298157760` **passed** format/lint/test checks, but **failed** at Codecov upload due to missing `CODECOV_TOKEN`).
-  - Pushed tag `v0.3.10` (Triggered publish/release workflow - status needs verification).
+  - Pushed tag `v0.3.10` (Triggered publish/release workflow - status needed verification).
+  - **Pushed tag `v0.3.11` (Final Corrected Version)**. Publish/release workflow triggered. Status needs verification.
 - **Runtime Testing (Blocked):** Requires user interaction with `@modelcontextprotocol/inspector` or a live agent. Skipping for now.
 - **Documentation Finalization (Mostly Complete):**
   - API docs generated.
@@ -66,7 +72,7 @@ Project alignment and documentation according to Sylph Lab Playbook guidelines a
   - **Remaining:** Add complex features (PWA, share buttons, roadmap page) if requested.
 - **Release Preparation:**
   - `CHANGELOG.md` updated for `0.3.10`.
-  - **Project is ready for final review, pending Codecov token configuration and verification of publish/release workflow.**
+  - **Project is ready for final review. Requires Codecov token configuration and verification of the _final, correct_ `v0.3.11` publish/release workflow.**
 
 ## 4. Active Decisions & Considerations
 
@@ -78,6 +84,8 @@ Project alignment and documentation according to Sylph Lab Playbook guidelines a
 - **Accepted ~95% test coverage**.
 - **No Sponsorship:** Project will not include sponsorship links or files.
 - **Using TypeDoc CLI for API Doc Generation:** Bypassed script initialization issues.
-- **Switched to Codecov:** Replaced Coveralls with Codecov for coverage reporting.
-- **Codecov Token Required:** CI is currently blocked on Codecov upload due to missing `CODECOV_TOKEN` secret in GitHub repository settings.
-- **Version bumped to `0.3.10`**.
+- **Switched to Codecov:** Replaced Coveralls with Codecov for coverage reporting. Test Analytics integration added.
+- **Codecov Token Required:** CI is currently blocked on Codecov upload (coverage and test results) due to missing `CODECOV_TOKEN` secret in GitHub repository settings. This needs to be added by the user.
+- **Version bumped to `0.3.11`**.
+- **Publish Workflow:** Modified to bypass Git checks during `pnpm publish`. Verification pending on the _final, correct_ `v0.3.11` workflow run.
+- **CI Workflow:** Added Codecov Test Analytics upload step.

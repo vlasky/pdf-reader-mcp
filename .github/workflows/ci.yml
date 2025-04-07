@@ -48,7 +48,6 @@ jobs:
           files: ./coverage/lcov.info # Specify LCOV file path
           fail_ci_if_error: true # Optional: fail CI if upload error
 
-
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1

@@ -1,4 +1,4 @@
-<!-- Version: 1.22 | Last Updated: 2025-04-07 | Updated By: Sylph -->
+<!-- Version: 1.27 | Last Updated: 2025-04-07 | Updated By: Sylph -->
 
 # Progress: PDF Reader MCP Server (Guidelines Applied)
 
@@ -10,7 +10,7 @@
 - **MCP Server Structure:** Basic server setup working.
 - **Changelog:** `CHANGELOG.md` created and updated for `1.0.0`.
 - **License:** `LICENSE` file created (MIT).
-- **GitHub Actions:** `.github/workflows/ci.yml` refactored for CI/CD according to guidelines.
+- **GitHub Actions:** `.github/workflows/ci.yml` refactored for CI/CD according to guidelines. Fixed `pnpm publish` step by adding `--no-git-checks`. Added Codecov Test Analytics upload. Git history corrected _again_ via force push.
 - **Testing Framework (Vitest):**
   - Integrated, configured. All tests passing. Coverage at ~95% (accepted).
 - **Linter (ESLint):**
@@ -19,7 +19,7 @@
   - Integrated, configured. Codebase formatted.
 - **TypeScript Configuration:** `tsconfig.json` updated with strictest settings.
 - **Package Configuration:** `package.json` updated.
-- **Git Ignore:** `.gitignore` updated.
+- **Git Ignore:** `.gitignore` updated (added JUnit report, confirmed).
 - **Sponsorship:** Removed.
 - **Project Identity:** Updated scope to `@sylphlab`.
 - **Git Hooks:** Configured using Husky, lint-staged, and commitlint.
@@ -34,12 +34,12 @@
   - Performance section updated with benchmark results.
   - **API documentation generated successfully using TypeDoc CLI.**
   - VitePress config updated with minor additions.
-- **Version Control:** All recent changes committed and pushed to `main` branch.
+- **Version Control:** All recent changes committed (`d89d55d`). Tag `v0.3.11` created on correct commit and force pushed after multiple corrections.
 
 ## 2. What's Left to Build/Verify
 
 - **Runtime Testing (Blocked):** Requires user interaction.
-- **Publishing Workflow Test:** Needs verification once workflow completes for tag `v0.4.0` and commit `03646d7`.
+- **Publishing Workflow Test:** Triggered by pushing final corrected tag `v0.3.11`. Needs verification.
 - **Documentation (Optional Enhancements):**
   - Add complex features (PWA, share buttons, roadmap page) if requested.
 - **Release Preparation:**
@@ -48,7 +48,7 @@
 
 ## 3. Current Status
 
-Project configuration and core functionality are aligned with guidelines. Documentation is largely complete, including generated API docs. Codebase passes all checks and tests (~95% coverage). **Project is ready for final review before potential release tagging (e.g., v1.0.0).**
+Project configuration and core functionality are aligned with guidelines. Documentation is largely complete, including generated API docs. Codebase passes all checks and tests (~95% coverage). **Version bumped to `0.3.11` and final corrected tag pushed. Project is ready for final review and workflow verification.**
 
 ## 4. Known Issues/Risks
 
