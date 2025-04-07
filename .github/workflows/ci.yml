@@ -41,12 +41,12 @@ jobs:
       - name: Run Tests and Check Coverage
         run: pnpm run test:cov # Fails job if tests fail or coverage < 100%
 
-      - name: Upload coverage to Coveralls
-        uses: coverallsapp/github-action@v2.3.0 # Use fixed version
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4.5.0 # Use Codecov action with fixed version
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: ./coverage/lcov.info # Verify path is correct
-          parallel: false # Set to true if using parallel jobs
+          token: ${{ secrets.CODECOV_TOKEN }} # Use Codecov token
+          files: ./coverage/lcov.info # Specify LCOV file path
+          fail_ci_if_error: true # Optional: fail CI if upload error
 
       - name: Upload coverage reports
         uses: actions/upload-artifact@v4.4.0
