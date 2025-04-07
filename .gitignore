@@ -8,3 +8,6 @@ coverage/
 # VitePress
 docs/.vitepress/dist
 docs/.vitepress/cache
+
+# Test Reports
+test-report.junit.xml
