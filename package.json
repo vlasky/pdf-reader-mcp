@@ -57,7 +57,7 @@
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit",
     "benchmark": "vitest bench",
-    "clean": "rm -rf build coverage",
+    "clean": "rm -rf dist coverage",
     "docs:api": "typedoc --entryPoints src/index.ts --tsconfig tsconfig.json --plugin typedoc-plugin-markdown --out docs/api --readme none",
     "prepublishOnly": "npm run clean && npm run build",
     "release": "standard-version",
