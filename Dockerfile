@@ -21,7 +21,7 @@ RUN ./node_modules/.bin/tsc -p tsconfig.json
 # The build script already includes chmod +x for the output
 
 # Remove development dependencies after build
-RUN pnpm prune --prod
+RUN pnpm prune --prod --ignore-scripts
 
 # Stage 2: Create the final lightweight image
 FROM node:20-alpine
