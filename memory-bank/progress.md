@@ -1,4 +1,4 @@
-<!-- Version: 1.36 | Last Updated: 2025-04-07 | Updated By: Sylph -->
+<!-- Version: 1.37 | Last Updated: 2025-04-07 | Updated By: Sylph -->
 
 # Progress: PDF Reader MCP Server (Guidelines Applied)
 
@@ -34,13 +34,13 @@
   - Performance section updated with benchmark results.
   - **API documentation generated successfully using TypeDoc CLI.**
   - VitePress config updated with minor additions.
-- **Version Control:** All recent changes committed (incl. formatting `fe7eda1`, Dockerfile pnpm install `c202fd4`, parallelization `a569b62`, pre-commit/npm-publish fix `e96680c`, Dockerfile prune fix `02f3f91`, Dockerfile LTS `50f9bdd`, release commit for `v0.3.16`). Tag `v0.3.16` created and pushed.
+- **Version Control:** All recent changes committed (incl. formatting `fe7eda1`, Dockerfile pnpm install `c202fd4`, parallelization `a569b62`, pre-commit/npm-publish fix `e96680c`, Dockerfile prune fix `02f3f91`, Dockerfile LTS `50f9bdd`, `package.json` path fix `ab1100d`, release commit for `v0.3.17` `bb9d2e5`). Tag `v0.3.17` created and pushed.
 - **Package Executable Path:** Fixed incorrect paths (`build/` -> `dist/`) in `package.json` (`bin`, `files`, `start` script).
 
 ## 2. What's Left to Build/Verify
 
 - **Runtime Testing (Blocked):** Requires user interaction.
-- **Publishing Workflow Test:** Triggered by pushing tag `v0.3.16`. Needs verification.
+- **Publishing Workflow Test:** Triggered by pushing tag `v0.3.17`. Needs verification.
 - **Documentation (Optional Enhancements):**
   - Add complex features (PWA, share buttons, roadmap page) if requested.
 - **Release Preparation:**
@@ -49,7 +49,7 @@
 
 ## 3. Current Status
 
-Project configuration and core functionality are aligned with guidelines. Documentation is largely complete, including generated API docs. Codebase passes all checks and tests (~95% coverage). **Version bumped to `0.3.16` and tag pushed. Project is ready for final review and workflow verification.**
+Project configuration and core functionality are aligned with guidelines. Documentation is largely complete, including generated API docs. Codebase passes all checks and tests (~95% coverage). **Version bumped to `0.3.17` and tag pushed. Project is ready for final review and workflow verification.**
 
 ## 4. Known Issues/Risks
 

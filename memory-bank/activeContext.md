@@ -1,4 +1,4 @@
-<!-- Version: 1.35 | Last Updated: 2025-04-07 | Updated By: Sylph -->
+<!-- Version: 1.36 | Last Updated: 2025-04-07 | Updated By: Sylph -->
 
 # Active Context: PDF Reader MCP Server (Guidelines Alignment)
 
@@ -66,6 +66,8 @@ Project alignment and documentation according to Sylph Lab Playbook guidelines a
   - **Problem 10:** Dockerfile was using hardcoded `node:20-alpine` instead of `node:lts-alpine`.
   - **Final Resolution:** Reset history multiple times, applied fixes sequentially (formatting `fe7eda1`, Dockerfile pnpm install `c202fd4`, parallelization `a569b62`, pre-commit/npm-publish fix `e96680c`, Dockerfile prune fix `02f3f91`, Dockerfile LTS `50f9bdd`), ensured clean working directory, ran `standard-version` successfully to create `v0.3.16` commit and tag, pushed `main` and tag `v0.3.16`.
     - **Fixed `package.json` Paths:** Corrected `bin`, `files`, and `start` script paths from `build/` to `dist/` to align with `tsconfig.json` output directory and resolve executable error.
+      - **Committed & Pushed Fix:** Committed (`ab1100d`) and pushed the `package.json` path fix to `main`.
+      - **Version Bump & Push:** Bumped version to `0.3.17` using `standard-version` (commit `bb9d2e5`) and pushed the commit and tag `v0.3.17` to `main`.
 
 ## 3. Next Steps
 
@@ -96,7 +98,7 @@ Project alignment and documentation according to Sylph Lab Playbook guidelines a
 - **Using TypeDoc CLI for API Doc Generation:** Bypassed script initialization issues.
 - **Switched to Codecov:** Replaced Coveralls with Codecov for coverage reporting. Test Analytics integration added.
 - **Codecov Token Required:** CI is currently blocked on Codecov upload (coverage and test results) due to missing `CODECOV_TOKEN` secret in GitHub repository settings. This needs to be added by the user.
-- **Version bumped to `0.3.16`**.
-- **Publish Workflow:** Parallelized. Modified to bypass Git checks during `pnpm publish`. Docker build fixed (pnpm install, prune ignore scripts, LTS node). Dependencies installed before publish. Verification pending on the `v0.3.16` workflow run.
+- **Version bumped to `0.3.17`**.
+- **Publish Workflow:** Parallelized. Modified to bypass Git checks during `pnpm publish`. Docker build fixed (pnpm install, prune ignore scripts, LTS node). Dependencies installed before publish. Verification pending on the `v0.3.17` workflow run.
 - **CI Workflow:** Added Codecov Test Analytics upload step. Formatting fixed. Parallelized publish steps.
 - **Pre-commit Hook:** Fixed to run `lint-staged`.
