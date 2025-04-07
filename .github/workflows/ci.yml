@@ -60,8 +60,8 @@ jobs:
           name: coverage-report
           path: coverage/ # Upload the whole coverage directory
 
-  publish:
-    name: Build, Publish Packages
+  build-archive:
+    name: Build and Archive Artifacts
     needs: validate # Depends on successful validation
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v') # Only run for tags
@@ -109,13 +109,46 @@ jobs:
           name: release-artifact
           path: ${{ steps.archive_build.outputs.artifact_path }}
 
-      # --- Publish to NPM ---
+      # Publish steps moved to parallel jobs below
+
+
+  publish-npm:
+    name: Publish to NPM
+    needs: build-archive # Depends on build-archive completion
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') # Only run for tags
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.7
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Set up Node.js for NPM
+        uses: actions/setup-node@v4.0.3
+        with:
+          node-version: 'lts/*'
+          registry-url: 'https://registry.npmjs.org/'
+          cache: 'pnpm'
+
+      # No need to install dependencies again if publish doesn't need them
+      # If pnpm publish needs package.json, it's checked out
       - name: Publish to npm
         run: pnpm publish --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # --- Publish to Docker Hub ---
+  publish-docker:
+    name: Publish to Docker Hub
+    needs: build-archive # Depends on build-archive completion
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v') # Only run for tags
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.7
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.2.0
 
@@ -133,10 +166,11 @@ jobs:
         uses: docker/metadata-action@v5.5.1
         with:
           images: sylphlab/pdf-reader-mcp
+          # Use version from the build-archive job output
           tags: |
-            type=semver,pattern={{version}},value=${{ steps.get_version.outputs.version }}
-            type=semver,pattern={{major}}.{{minor}},value=${{ steps.get_version.outputs.version }}
-            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }} # latest tag only for version tags
+            type=semver,pattern={{version}},value=${{ needs.build-archive.outputs.version }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ needs.build-archive.outputs.version }}
+            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6.7.0
@@ -150,7 +184,7 @@ jobs:
 
   release:
     name: Create GitHub Release
-    needs: publish # Depends on successful publish
+    needs: [publish-npm, publish-docker] # Depends on successful parallel publishes
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v') # Only run for tags
     permissions:
@@ -168,6 +202,6 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
           generate_release_notes: true # Auto-generate release notes from commits
-          files: ${{ needs.publish.outputs.artifact_path }} # Attach the artifact archive
+          files: ${{ needs.build-archive.outputs.artifact_path }} # Attach the artifact archive from build-archive job
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
