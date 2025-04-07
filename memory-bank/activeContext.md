@@ -1,10 +1,10 @@
-<!-- Version: 1.17 | Last Updated: 2025-04-07 | Updated By: Sylph -->
+<!-- Version: 1.18 | Last Updated: 2025-04-07 | Updated By: Sylph -->
 
 # Active Context: PDF Reader MCP Server (Guidelines Alignment)
 
 ## 1. Current Focus
 
-Finalizing project alignment and documentation according to Sylph Lab Playbook guidelines. Verifying CI status after fixing linting issues.
+Finalizing project alignment and documentation according to Sylph Lab Playbook guidelines. Verifying CI status after switching coverage tool to Codecov.
 
 ## 2. Recent Changes (Chronological Summary)
 
@@ -49,26 +49,22 @@ Finalizing project alignment and documentation according to Sylph Lab Playbook g
   - Fixed ESLint errors/warnings (`no-undef`, `no-unused-vars`, `no-unsafe-call`, `require-await`, unused eslint-disable) identified by CI.
   - Deleted unused `scripts/generate-api-docs.mjs` file.
   - Pushed fixes to trigger CI again.
+- **Switched Coverage Tool:** Updated `.github/workflows/ci.yml` to replace Coveralls with Codecov based on user feedback.
 
 ## 3. Next Steps
 
 - **Build Completed:** Project successfully built (`pnpm run build`).
 - **GitHub Actions Status:**
-  - Pushed existing tag `v0.4.0` (failed due to initial lint/format issues).
-  - Pushed commit `03646d7` (failed due to initial lint/format issues).
-  - Pushed commit `5344783` (failed due to lint issues).
-  - Pushed commit `ffc1bdd` (failed due to format issues).
-  - Pushed commit `97a8335` (failed due to format issues).
-  - Pushed commit `a91d313` (CI run `14297879907` **passed** format/lint/test checks, but **failed** at Coveralls upload due to Coveralls internal server error).
+    - Pushed commit `c62a7e3` (CI run `14297957598` **passed** format/lint/test checks, but **failed** at Codecov upload due to missing `CODECOV_TOKEN`).
 - **Runtime Testing (Blocked):** Requires user interaction with `@modelcontextprotocol/inspector` or a live agent. Skipping for now.
 - **Documentation Finalization (Mostly Complete):**
-  - API docs generated.
-  - Main pages reviewed/updated.
-  - **Remaining:** Add complex features (PWA, share buttons, roadmap page) if requested.
+    - API docs generated.
+    - Main pages reviewed/updated.
+    - **Remaining:** Add complex features (PWA, share buttons, roadmap page) if requested.
 - **Release Preparation:**
-  - `CHANGELOG.md` updated for `1.0.0`.
-  - Consider using `standard-version` or similar for final release tagging/publishing.
-  - **Project is ready for final review.**
+    - `CHANGELOG.md` updated for `1.0.0`.
+    - Consider using `standard-version` or similar for final release tagging/publishing.
+    - **Project is ready for final review, pending Codecov token configuration.**
 
 ## 4. Active Decisions & Considerations
 
@@ -80,4 +76,5 @@ Finalizing project alignment and documentation according to Sylph Lab Playbook g
 - **Accepted ~95% test coverage**.
 - **No Sponsorship:** Project will not include sponsorship links or files.
 - **Using TypeDoc CLI for API Doc Generation:** Bypassed script initialization issues.
-- **Ignoring Coveralls Failure:** The CI failure is external to the project code and related to Coveralls service. Core checks passed.
+- **Switched to Codecov:** Replaced Coveralls with Codecov for coverage reporting.
+- **Codecov Token Required:** CI is currently blocked on Codecov upload due to missing `CODECOV_TOKEN` secret in GitHub repository settings.
