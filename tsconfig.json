@@ -3,7 +3,7 @@
     "target": "ES2022",
     "module": "NodeNext", // Recommended for Node.js ES Modules
     "moduleResolution": "NodeNext", // Align with module setting
-    "outDir": "./build",
+    "outDir": "./dist",
     // "rootDir": "./src", // Removed rootDir to allow including files outside src (like tests)
     // Strictest settings (some might be implied by strict: true)
     "strict": true,
@@ -37,5 +37,5 @@
   "declaration": true,
   "sourceMap": true,
   "removeComments": false,
-  "exclude": ["node_modules", "build", "**/*.test.ts", "**/*.spec.ts", "**/*.bench.ts"]
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts", "**/*.bench.ts"]
 }
