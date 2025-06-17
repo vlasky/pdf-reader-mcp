@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/sylphxltd-pdf-reader-mcp-badge.png)](https://mseep.ai/app/sylphxltd-pdf-reader-mcp)
+
 # PDF Reader MCP Server (@sylphlab/pdf-reader-mcp)
 
 <!-- Status Badges Area -->
