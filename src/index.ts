@@ -33,8 +33,19 @@ const server = new Server(
 // Helper function to convert Zod schema to JSON schema for MCP
 // Use 'unknown' instead of 'any' for better type safety, although casting is still needed for the SDK
 const generateInputSchema = (schema: z.ZodType<unknown>): object => {
-  // Need to cast as 'unknown' then 'object' because zodToJsonSchema might return slightly incompatible types for MCP SDK
-  return zodToJsonSchema(schema, { target: 'openApi3' }) as unknown as object;
+  // Generate JSON Schema compatible with Claude (draft 2020-12)
+  const jsonSchema = zodToJsonSchema(schema, {
+    target: 'jsonSchema7',
+    $refStrategy: 'none',
+  });
+
+  // Convert to 2020-12 format by updating the $schema field
+  const result = { ...jsonSchema } as Record<string, unknown>;
+  if ('$schema' in result && typeof result['$schema'] === 'string') {
+    result['$schema'] = 'https://json-schema.org/draft/2020-12/schema#';
+  }
+
+  return result as unknown as object;
 };
 
 server.setRequestHandler(ListToolsRequestSchema, () => {

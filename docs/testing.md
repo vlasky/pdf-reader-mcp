@@ -16,14 +16,12 @@ We use [Vitest](https://vitest.dev/) as our primary testing framework. Its key a
 Our testing strategy focuses on:
 
 1.  **High Code Coverage:**
-
     - **Target:** 100% statement, branch, function, and line coverage.
     - **Configuration:** Enforced via `thresholds` in `vitest.config.ts`.
     - **Current Status:** ~95%. The remaining uncovered lines are primarily in error handling paths that are difficult to trigger due to Zod's upfront validation or represent extreme edge cases. This level is currently accepted.
     - **Tool:** Coverage reports generated using `@vitest/coverage-v8`.
 
 2.  **Correctness & Functionality:**
-
     - **Unit Tests:** (Currently minimal, focus is on integration) Could test utility functions like `pathUtils` in isolation.
     - **Integration Tests:** The primary focus is testing the `read_pdf` handler (`test/handlers/readPdf.test.ts`) with mocked dependencies (`pdfjs-dist`, `fs`). These tests verify:
       - Correct parsing of various input arguments (paths, URLs, page selections, flags).

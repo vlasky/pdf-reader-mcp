@@ -183,11 +183,12 @@ const loadPdfDocument = async (
   source: { path?: string | undefined; url?: string | undefined }, // Explicitly allow undefined
   sourceDescription: string
 ): Promise<pdfjsLib.PDFDocumentProxy> => {
-  let pdfDataSource: Buffer | { url: string };
+  let pdfDataSource: Uint8Array | { url: string };
   try {
     if (source.path) {
       const safePath = resolvePath(source.path); // resolvePath handles security checks
-      pdfDataSource = await fs.readFile(safePath);
+      const buffer = await fs.readFile(safePath);
+      pdfDataSource = new Uint8Array(buffer); // Convert Buffer to Uint8Array for PDF.js
     } else if (source.url) {
       pdfDataSource = { url: source.url };
     } else {
@@ -252,8 +253,16 @@ const extractMetadataAndPageCount = async (
       if (infoData !== undefined) {
         output.info = infoData;
       }
-      const metadataObj = pdfMetadata.metadata;
-      const metadataData = metadataObj.getAll() as PdfMetadata | undefined;
+      const metadataObj = pdfMetadata.metadata as { getAll?(): PdfMetadata } | null;
+      // PDF.js metadata object has a getAll method, but TypeScript doesn't know about it
+      let metadataData: PdfMetadata | undefined = undefined;
+      if (metadataObj?.getAll) {
+        try {
+          metadataData = metadataObj.getAll();
+        } catch {
+          // Ignore getAll errors
+        }
+      }
       if (metadataData !== undefined) {
         output.metadata = metadataData;
       }

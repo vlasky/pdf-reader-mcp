@@ -1,6 +1,8 @@
 [![MseeP.ai Security Assessment Badge](https://mseep.net/pr/sylphxltd-pdf-reader-mcp-badge.png)](https://mseep.ai/app/sylphxltd-pdf-reader-mcp)
 
-# PDF Reader MCP Server (@sylphlab/pdf-reader-mcp)
+# PDF Reader MCP Server (@vlasky/pdf-reader-mcp)
+
+> **🍴 Fork Notice:** This is a fork of [@sylphlab/pdf-reader-mcp](https://github.com/sylphlab/pdf-reader-mcp) with Claude Code compatibility fixes. Once the original package is updated to support Claude Code's JSON Schema draft 2020-12 requirement, consider switching back to the original package.
 
 <!-- Status Badges Area -->
 
@@ -25,7 +27,7 @@ Empower your AI agents (like Cline) with the ability to securely read and extrac
 Install as a dependency in your MCP host environment or project:
 
 ```bash
-pnpm add @sylphlab/pdf-reader-mcp # Or npm install / yarn add
+pnpm add @vlasky/pdf-reader-mcp # Or npm install / yarn add
 ```
 
 Configure your MCP host (e.g., `mcp_settings.json`) to use `npx`:
@@ -35,7 +37,7 @@ Configure your MCP host (e.g., `mcp_settings.json`) to use `npx`:
   "mcpServers": {
     "pdf-reader-mcp": {
       "command": "npx",
-      "args": ["@sylphlab/pdf-reader-mcp"],
+      "args": ["@vlasky/pdf-reader-mcp"],
       "name": "PDF Reader (npx)"
     }
   }
@@ -43,6 +45,16 @@ Configure your MCP host (e.g., `mcp_settings.json`) to use `npx`:
 ```
 
 _(Ensure the host sets the correct `cwd` for the target project)_
+
+### Using Claude Code
+
+To add this MCP server to Claude Code, run the following command from your project directory:
+
+```bash
+claude mcp add pdf-reader -- npx --yes @vlasky/pdf-reader-mcp
+```
+
+This will automatically configure the PDF Reader MCP server in your Claude Code environment.
 
 ### Using Docker
 

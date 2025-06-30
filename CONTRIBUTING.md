@@ -1,11 +1,12 @@
 # Contributing to PDF Reader MCP Server
 
+> **🍴 Fork Notice:** This is a fork of [@sylphlab/pdf-reader-mcp](https://github.com/sylphlab/pdf-reader-mcp) with Claude Code compatibility fixes. Please consider contributing to both this fork and the [original repository](https://github.com/sylphlab/pdf-reader-mcp) to benefit the wider community, as the maintenance timeline and longevity of this fork is uncertain.
+
 Thank you for considering contributing! We welcome contributions from the community.
 
 ## How to Contribute
 
 1.  **Reporting Issues:** If you find a bug or have a feature request, please open an issue on GitHub.
-
     - Provide a clear description of the issue.
     - Include steps to reproduce (for bugs).
     - Explain the motivation for the feature request.
@@ -17,12 +18,12 @@ Thank you for considering contributing! We welcome contributions from the commun
     - Add tests for your changes and ensure all tests pass (`npm test`).
     - Ensure your commit messages follow the Conventional Commits standard.
     - Push your branch to your fork.
-    - Open a Pull Request against the `main` branch of the `sylphlab/pdf-reader-mcp` repository.
+    - Open a Pull Request against the `main` branch of the `vlasky/pdf-reader-mcp` repository.
     - Provide a clear description of your changes in the PR.
 
 ## Development Setup
 
-1.  Clone the repository: `git clone https://github.com/sylphlab/pdf-reader-mcp.git`
+1.  Clone the repository: `git clone https://github.com/vlasky/pdf-reader-mcp.git`
 2.  Navigate into the directory: `cd pdf-reader-mcp`
 3.  Install dependencies: `npm install`
 4.  Build the project: `npm run build`

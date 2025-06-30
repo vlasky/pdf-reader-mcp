@@ -3,21 +3,18 @@
 When an AI agent needs to access information within PDF files, several approaches exist. Here's how the PDF Reader MCP Server compares:
 
 1.  **Direct File Access by Agent:**
-
     - **Feasibility:** Often impossible. PDFs are binary; LLMs typically process text. Sending raw binary data is usually not supported or useful.
     - **Security:** Extremely risky if the agent has broad filesystem access.
     - **Efficiency:** Impractical due to file size and format.
     - **PDF Reader MCP Advantage:** Provides a secure, structured way to get _textual_ data from the binary PDF.
 
 2.  **Generic Filesystem MCP Server (like `@shtse8/filesystem-mcp`):**
-
     - **Functionality:** Can read file _content_, but for PDFs, this would be the raw binary data, which is not directly useful to an LLM.
     - **Security:** Offers similar path confinement benefits if implemented correctly.
     - **Efficiency:** Inefficient for PDFs as it doesn't parse the content.
     - **PDF Reader MCP Advantage:** Specializes in _parsing_ PDFs to extract meaningful text and metadata.
 
 3.  **External CLI Tools (e.g., `pdftotext`, `pdfinfo`):**
-
     - **Functionality:** Can extract text and metadata.
     - **Security:** Requires the agent host to execute arbitrary commands, potentially increasing security risks. Output might need further parsing.
     - **Efficiency:** Involves process creation overhead for each command. Communication might be less streamlined than MCP.
