@@ -51,7 +51,7 @@ _(Ensure the host sets the correct `cwd` for the target project)_
 To add this MCP server to Claude Code, run the following command from your project directory:
 
 ```bash
-claude mcp add pdf-reader -- npx --yes @vlasky/pdf-reader-mcp
+claude mcp add pdf-reader npx @vlasky/pdf-reader-mcp
 ```
 
 This will automatically configure the PDF Reader MCP server in your Claude Code environment.
@@ -61,7 +61,7 @@ This will automatically configure the PDF Reader MCP server in your Claude Code 
 Pull the image:
 
 ```bash
-docker pull sylphlab/pdf-reader-mcp:latest
+docker pull vlasky/pdf-reader-mcp:latest
 ```
 
 Configure your MCP host to run the container, mounting your project directory to `/app`:
@@ -77,7 +77,7 @@ Configure your MCP host to run the container, mounting your project directory to
         "--rm",
         "-v",
         "/path/to/your/project:/app", // Or use "$PWD:/app", "%CD%:/app", etc.
-        "sylphlab/pdf-reader-mcp:latest"
+        "vlasky/pdf-reader-mcp:latest"
       ],
       "name": "PDF Reader (Docker)"
     }
@@ -87,7 +87,7 @@ Configure your MCP host to run the container, mounting your project directory to
 
 ### Local Build (For Development)
 
-1. Clone: `git clone https://github.com/sylphlab/pdf-reader-mcp.git`
+1. Clone: `git clone https://github.com/vlasky/pdf-reader-mcp.git`
 2. Install: `cd pdf-reader-mcp && pnpm install`
 3. Build: `pnpm run build`
 4. Configure MCP Host:
@@ -96,7 +96,7 @@ Configure your MCP host to run the container, mounting your project directory to
      "mcpServers": {
        "pdf-reader-mcp": {
          "command": "node",
-         "args": ["/path/to/cloned/repo/pdf-reader-mcp/build/index.js"],
+         "args": ["/path/to/cloned/repo/pdf-reader-mcp/dist/index.js"],
          "name": "PDF Reader (Local Build)"
        }
      }
